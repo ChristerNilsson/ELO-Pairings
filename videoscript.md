@@ -8,15 +8,15 @@ The elo numbers spans from 1400 to 2400 approx.
 Quite steep in the top and bottom 10% and more flattened in the remaining 80%.
 
 [1985 Nordenfur](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=243754366#gid=243754366)
-Let's study one player, named Tim. He had 1985 as his elo and is marked in green.  
+Let's study one player. He has elo 1985 and is marked in green.  
 The red bars indicates the players he met,  
 ranging from 1721 to 2416, 695 elos.  
 The dark blue bars indicates the players he would have met using ELO Pairings instead,  
 ranging from 1936 to 2035, 99 elos.  
-Please note, in Swiss this player never met ANY of his closest players.  
+Please note, in Swiss he never met ANY of his closest players.  
 
 [1828 Johansson](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=10301852#gid=10301852)
-This is another view of another player. He had elo 1828.  
+This is another view of another player. He has elo 1828.  
 The blue bars indicates ELO Pairings and the red bars Swiss Pairing.  
 Please note the big swings in Swiss, containing some slaughter rounds.  
 ELO Pairings starts with the closest player, in elo,  
@@ -28,23 +28,32 @@ This matrix indicates which player met each other.
 It is mirrored in the main diagonal and  
 contains the round numbers.  
 The axis are sorted by elo strength.  
-As you can see the games have quite wide elo differences.  
+As you can see the games have quite wide elo differences,
+the worst being around 750 elos
 
 [ELO Matrix](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=830847657#gid=830847657)
 The same tournament, but paired using ELO Pairings instead.  
-The games are stacking up around the diagonal.  
+Most games are very close to the diagonal.  
 No matter the game results, the matrix will always look like this.  
 One chess friend of mine, christened this *Floating Berger*.  
 Every player has his personal Berger group, kind of, with himself in the middle.  
-Our friend, Tim 1985 can be found in line 22.
+Our friend, 1985 Nordenfur can be found in line 22:  
+  8 5 4 1 * 3 2 6 7
 
 # Probability
 
 [What does a difference of 500 elo mean?](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=1487995663#gid=1487995663)
 
 As you can see here, if the difference is 500 elos, the better player will win 19 times out of 20.  
-The inferior player will win one in twenty.  
-[Rating Calculator](https://ratings.fide.com/calc.phtml?page=change)
+The inferior player will win one game in twenty.  
+
+[Rating Calculator](https://ratings.fide.com/calc.phtml?page=change)  
+
+Alternative formula:  
+![Alt text](image.png)
+
+RA = 1400 and RB = 2800 gives PA = 0.000316  
+(one win in 3163 games)
 
 # A small demo
 
