@@ -4,17 +4,11 @@
 
 * TOUR - turneringens namn
 * DATE - datum
-* ROUNDS - turneringens rondantal
-* NAME - spelarnas namn, separerade med |
-* ELO - spelarnas ranking, separerade med |
-* GAMES - antal partier rond. Används vid lagspel eller dubbelrondigt. Default=1
+* PLAYERS - spelarnas elo och namn, separerade med !
 
 # Fält som skapas automatiskt
 
 * ROUND - aktuell rond
-* OPP - Spelarnas motståndare.  
-* COL - Spelarnas färger
-* RES - Spelarnas resultat. 0=Förlust 1=Remi 2-Vinst
 
 # Färsk URL skapas vid varje lottning
 Den hamnar på klippbordet.
