@@ -46,7 +46,7 @@ window.setup = ->
 
 	window.windowResized()
 
-window.draw = ->
+window.draw = -> 
 	background 'gray'
 	textSize g.ZOOM[g.state]
 	g.pages[g.state].draw()

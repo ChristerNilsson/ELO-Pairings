@@ -51,7 +51,7 @@ The inferior player will win one in twenty.
 This is a simulation of a smaller chess tournament with 14 players and four rounds  
 using the brand new ELO Pairings web page.  
 
-[14 players demo](http://127.0.0.1:5500/?TOUR=Senior_Stockholm&DATE=2024-05-28&ROUNDS=8&ROUND=0&SP=0.0&TPP=30&PPP=60&PAUSED=()&PLAYERS=(1825|Alpha)(1697|Bravo)(1684|Charlie)(1681|Delta)(1644|Echo)(1598|Foxtrot)(1598|Golf)(1583|Hotel)(1561|India)(1559|Juliett)(1539|Kilo)(1535|Lima)(1532|Mike)(1400|November))
+[14 players demo](https://christernilsson.github.io/ELO-Pairings?TOUR=Senior_Stockholm&DATE=2024-05-28&ROUNDS=8&ROUND=0&SP=0.0&TPP=30&PPP=60&PAUSED=()&PLAYERS=(1825|Alpha)(1697|Bravo)(1684|Charlie)(1681|Delta)(1644|Echo)(1598|Foxtrot)(1598|Golf)(1583|Hotel)(1561|India)(1559|Juliett)(1539|Kilo)(1535|Lima)(1532|Mike)(1400|November))
 
 This is the starting screen.  
 You have prepared all the names and elos the night before and maybe you would like to pause some of the people that got delayed in traffic.
