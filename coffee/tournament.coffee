@@ -204,7 +204,7 @@ export class Tournament
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
 
 		players = urlParams.get 'PLAYERS'
-		players = players.replaceAll ')(', ')|('
+		players = players.replaceAll ')(', ')!('
 		players = players.replaceAll '_',' '
 		players = '(' + players + ')'
 		players = parseExpr players
