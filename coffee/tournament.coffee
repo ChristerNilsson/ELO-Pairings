@@ -188,7 +188,7 @@ export class Tournament
 		g.state = g.TABLES
 
 	fetchURL : (url = location.search) ->
-		if url == '' then window.location.href = "https://github.com/ChristerNilsson/Dense/blob/main/README.md"
+		if url == '' then window.location.href = "https://github.com/ChristerNilsson/ELO-Pairings/blob/main/README.md"
 		print 'fetchURL',url
 		getParam = (name,def) -> urlParams.get(name) || def
 
@@ -281,8 +281,8 @@ export class Tournament
 
 	makeURL : (timestamp) ->
 		res = []
-		#res.push "https://christernilsson.github.io/Dense"
-		res.push "http://127.0.0.1:5500"
+		res.push "https://christernilsson.github.io/ELO-Pairings"
+		#res.push "http://127.0.0.1:5500"
 		res.push "?TOUR=" + @title.replaceAll ' ','_'
 		res.push "&TIMESTAMP=" + timestamp
 		#res.push "&ROUNDS=" + @rounds

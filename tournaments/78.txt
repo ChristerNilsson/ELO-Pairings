@@ -1,5 +1,4 @@
-https://christernilsson.github.io/Dense
-127.0.0.1:5500
+https://christernilsson.github.io/ELO-Pairings
 ?TOUR=Tyresö_Open_2024
 &ROUND=0
 &PLAYERS=

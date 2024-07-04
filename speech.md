@@ -46,8 +46,8 @@ Detta beräknas genom att ta fram medelvärdet av alla partiers absoluta elo-dif
 Sparseness för Swiss blev 220.4 och för ELO Pairings 44.85 (simulerat).  
 Swiss är i detta fall, alltså fem gånger glesare än ELO Pairings.
 
-[Swiss Dutch](swiss.txt)  
-[ELO Pairings](dense.txt)  
+[Swiss Dutch](swiss-78.txt)  
+[ELO Pairings](elo-78.txt)  
 [ELO Pairings vs Swiss](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?usp=sharing)
 
 ELO Pairings har utgångspunkten att alla ska möta spelare med liknande spelstyrka.  
