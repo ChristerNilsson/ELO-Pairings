@@ -2,7 +2,9 @@
 
 [ELO Chart](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=483813383#gid=483813383)
 
-This is data taken from a tournament in Stockholm, named [Tyresö Open 2024](https://member.schack.se/ShowTournamentServlet?id=13664&listingtype=2).  
+This is data taken from a tournament in Stockholm, named [Tyresö Open 2024]
+(https://member.schack.se/ShowTournamentServlet?id=13664&listingtype=2).  
+All data is taken from this web page.
 It had 81 players and 8 rounds.  
 The elo numbers spans from 1400 to 2400 approx.  
 Quite steep in the top and bottom 10% and more flattened in the remaining 80%.
@@ -18,7 +20,7 @@ Please note, in Swiss he never met ANY of his closest players.
 [1828 Johansson](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=10301852#gid=10301852)
 This is another view of another player. He has elo 1828.  
 The blue bars indicates ELO Pairings and the red bars Swiss Pairing.  
-Please note the big swings in Swiss, containing some slaughter rounds.  
+Please note the big swings in Swiss, containing some nasty slaughter rounds.  
 ELO Pairings starts with the closest player, in elo,  
 and then the amplitude rises slowly with every round.  
 Note the differences: 538 vs 25  
@@ -49,8 +51,7 @@ The inferior player will win one game in twenty.
 
 [Rating Calculator](https://ratings.fide.com/calc.phtml?page=change)  
 
-Alternative formula:  
-![Alt text](image.png)
+[Alternative formula](https://docs.google.com/spreadsheets/d/1DHRnlp8Q6RnnG-gF-fg0liyS2zZINEF5typxI497JyE/edit?gid=60645458#gid=60645458)
 
 RA = 1400 and RB = 2800 gives PA = 0.000316  
 (one win in 3163 games)
@@ -60,7 +61,7 @@ RA = 1400 and RB = 2800 gives PA = 0.000316
 This is a simulation of a smaller chess tournament with 14 players and four rounds  
 using the brand new ELO Pairings web page.  
 
-[14 players demo](https://christernilsson.github.io/ELO-Pairings?TOUR=Senior_Stockholm&DATE=2024-05-28&ROUNDS=8&ROUND=0&SP=0.0&TPP=30&PPP=60&PAUSED=()&PLAYERS=(1825!Alpha)(1697!Bravo)(1684!Charlie)(1681!Delta)(1644!Echo)(1598!Foxtrot)(1598!Golf)(1583!Hotel)(1561!India)(1559!Juliett)(1539!Kilo)(1535!Lima)(1532!Mike)(1400!November))
+[14 players demo](https://christernilsson.github.io/ELO-Pairings/?TOUR=Senior_Stockholm&DATE=2024-05-28&PLAYERS=(1825!JOHANSSON_Lennart)(1697!BJ%C3%96RKDAHL_G%C3%B6ran)(1684!SILINS_Peteris)(1681!STOLOV_Leonid)(1644!PETTERSSON_Lars-%C3%85ke)(1598!ISRAEL_Dan)(1598!AIKIO_Onni)(1583!PERSSON_Kjell)(1561!LILJESTR%C3%96M_Tor)(1559!LEHVONEN_Jouko)(1539!ANDERSSON_Lars_Owe)(1535!%C3%85BERG_Lars-Erik)(1532!ANTONSSON_G%C3%B6rgen)(1400!STR%C3%96MB%C3%84CK_Henrik))
 
 This is the starting screen.  
 You have prepared all the names and elos the night before and maybe you would like to pause some of the people that got delayed in traffic.
@@ -68,25 +69,25 @@ Use toggle or space to alter their statuses.
 
 # Pair four rounds
 I will start by pairing four rounds, filling in random results.  
-  P RP RP RP RP RP  
+  P RP RP RP RP
   
 # Standings
-* The winner of this simulation is Charlie
+* The winner of this simulation is SILINS
 * The last column, Elos, contains the sum of all game scores weighted with the elos of the opponents.
    * This is similar to calculating with the well known Sonneborn-Berger, using elos instead of total scores.
 * Green background indicates a win
 * Red a loss
 * And Gray a draw
    * Colors of the pieces are the same as the color of the numbers.
-* In the first round, Charlie met Delta and won with black pieces, earning 1681 elos.
-* In the second round, Charlie met Alpha and won as white, earning 1825 elos.
-* In the third round Charlie met Bravo and drew with black, winning half of 1697 = 848.5 elos
-   * Bravo got half of 1684 = 842 elos
-   * In the fourth round, Charlie met Echo and won as white, earning 1644 elos.
-* Please note that Charlie met all the four highest ranked players 4 1 2 5 except number 3 as this is Charlie himself.   
+* In the first round, SILINS met STOLOV and won with black pieces, earning 1681 elos.
+* In the second round, SILINS met JOHANSSON and won as white, earning 1825 elos.
+* In the third round SILINS met BJÖRKDAHL and drew with black, winning half of 1697 = 848.5 elos
+   * BJÖRKDAHL got half of 1684 = 842 elos
+   * In the fourth round, SILINS met ÅBERG and won as white, earning 1644 elos.
+* Please note that SILINS met all the four highest ranked players 4 1 2 5 except number 3 as this is SILINS himself.   
 * This sums up to 1681 + 1825 + 848.5 + 1644 = 5998.5, which is the winning weighted score.
-* Also note, Kilo ended up as number four, even being as low rated as 1539.
-* Kilo, having elo 1539, met players with ratings 1532, 1535, 1561 and 1598.
+* Also note, ANDERSSON ended up as number four, even being as low rated as 1539.
+* ANDERSSON, having elo 1539, met players with ratings 1532, 1535, 1561 and 1598.
    * Two players were stronger and two weaker.
 
 # Navigation
@@ -100,6 +101,7 @@ I will start by pairing four rounds, filling in random results.
    * Tables
    * Names
    * Active
+
 Zooming is handled using the I key for In and O key for Out
 
 # Entering Results
@@ -118,4 +120,4 @@ Zooming is handled using the I key for In and O key for Out
 * Print the top file, the newest one.
 
 # How do I continue?
-A good starting point is to edit this [URL](tournaments/14.txt) and then copy and paste it in the address field of your browser.
+A good starting point is to edit this [URL](https://github.com/ChristerNilsson/ELO-Pairings/blob/main/tournaments/14.txt) and then copy and paste it in the address field of your browser.
