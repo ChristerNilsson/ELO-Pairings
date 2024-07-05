@@ -1,10 +1,6 @@
 https://christernilsson.github.io/ELO-Pairings
 ?TOUR=Senior_Stockholm
 &DATE=2024-05-28
-&ROUND=0
-&TPP=30
-&PPP=60
-&PAUSED=()
 &PLAYERS=
 (1825!Alpha)
 (1697!Bravo)

@@ -197,7 +197,7 @@ export class Tournament
 		@title = urlParams.get('TOUR').replaceAll '_',' '
 		@datum = urlParams.get('DATE') or ""
 		#@rounds = parseInt urlParams.get 'ROUNDS'
-		@round = parseInt urlParams.get 'ROUND'
+		@round = parseInt getParam 'ROUND',0
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
 		@sp = parseFloat getParam 'SP', 0.0 # ScorePoints
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
