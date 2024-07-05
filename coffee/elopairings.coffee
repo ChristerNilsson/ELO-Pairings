@@ -21,7 +21,7 @@ g.pages = []
 
 window.windowResized = -> 
 	resizeCanvas windowWidth, windowHeight-4
-	g.LPP = height // g.ZOOM[g.state] - 4
+	g.LPP = Math.trunc height / g.ZOOM[g.state] - 5
 
 window.setup = ->
 	createCanvas windowWidth-4,windowHeight-4
@@ -33,7 +33,7 @@ window.setup = ->
 
 	g.ZOOM = [20,20,20,20] # vertical line distance for four states
 	g.state = g.TABLES
-	g.LPP = height // g.ZOOM[g.state] - 4
+	g.LPP = Math.trunc height / g.ZOOM[g.state] - 5
 
 	g.N = 0 # number of players
 	g.tournament = new Tournament()

@@ -2,12 +2,12 @@ import { g,print,range,scalex,scaley } from './globals.js'
 
 export class Lista
 	constructor : (@objects=[], @columnTitles="", @buttons={}, @drawFunction=null) -> # a list of players. Or a list of pairs of players
-		#(g.LPP+10)//2 # den skall alltid visas i mitten
 		@N = @objects.length
 		@paintYellowRow = true
 		@errors = [] # list with index of erroneous rows
-		@currentRow = 0 
-		@PageDown()
+		@currentRow = 0
+		@offset = 0
+		@adjustOffset 0
 
 	draw : -> # ritar de rader som syns i fönstret enbart
 		s = @columnTitles
@@ -15,43 +15,38 @@ export class Lista
 		textAlign window.LEFT
 		text s,10,scaley(4)
 
-		y = (2 + g.LPP)//2 # mitten av skärmen
 		fill 'black'
-		r = g.tournament.round - 1
-		a = (1-g.LPP)//2
-		b = (1+g.LPP)//2
-		for delta in range a,b
-			iRow = @currentRow + delta
-			if iRow < 0 then continue
+		for i in range g.LPP # i inom fönstret
+			iRow = @offset + i # index till listan
 			if iRow >= @N then continue
 			p = @objects[iRow]
-			s = @drawFunction p, iRow
+			s = @drawFunction p, i
 			if iRow == @currentRow
 				fill 'yellow'
 				w = if @paintYellowRow then width else scaley(23.4)
-				rect 0, scaley(y + 3.5), w, scaley(1)
+				rect 0, scaley(i + 4.5), w, scaley(1)
 				fill 'black'
 			fill if iRow in @errors then 'red' else 'black'
-			text s,10, scaley(y + delta+4)
+			text s,10, scaley(i + 5)
 
 	keyPressed : (event, key) -> @buttons[key].click()
-	mouseWheel : (event) -> @move if event.delta < 0 then -1 else 1
+	mouseWheel : (event) -> @adjustOffset if event.delta < 0 then -1 else 1
 	mousePressed : -> 
-		if mouseY > scaley(4)
-			@move round mouseY / g.ZOOM[g.state] - g.LPP/2 - 4 - 1
-		else
+		if mouseY < scaley(4)
 			for key,button of @buttons
 				if button.active and button.inside mouseX,mouseY then button.click()
+		else
+			@adjustOffset round mouseY / g.ZOOM[g.state] - 5 - @currentRow + @offset
 
-	ArrowUp   : -> @move -1
-	ArrowDown : -> @move 1
-	PageUp    : -> @move -g.LPP//2 
-	PageDown  : -> @move g.LPP//2
-	Home      : -> @move -@currentRow
-	End       : -> @move @N - @currentRow
+	adjustOffset : (delta) ->
+		if 0 <= @currentRow + delta < @N then @currentRow += delta
+		if @currentRow < @offset then @offset = @currentRow
+		else 
+			if @currentRow >= @offset + g.LPP then @offset = @currentRow - g.LPP + 1
 
-	move : (delta) ->
-		@currentRow += delta
-		if @currentRow < 0 then @currentRow = 0
-		if @currentRow >= @N then @currentRow = @N-1
-		event.preventDefault()
+	ArrowUp   : -> if @currentRow > 0      then @adjustOffset -1
+	ArrowDown : -> if @currentRow < @N - 1 then @adjustOffset +1
+	PageUp    : -> if @currentRow > 0      then @adjustOffset(Math.max(@currentRow - g.LPP, 0) - @currentRow )
+	PageDown  : -> if @currentRow < @N - 1 then @adjustOffset(Math.min(@currentRow + g.LPP, @N - 1) - @currentRow)
+	Home      : -> @adjustOffset 0 - @currentRow
+	End       : -> @adjustOffset @N-1 - @currentRow
