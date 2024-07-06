@@ -40,7 +40,7 @@ export class Tables extends Page
 
 			nr = index + 1
 			s = ""
-			s +=       g.txtT (pos+1).toString(),    3, window.RIGHT
+			s +=       g.txtT (pos+1).toString(),3, window.RIGHT
 			s += ' ' + g.txtT pa.elo.toString(), 4, window.RIGHT
 			s += ' ' + g.txtT pa.name,          25, window.LEFT
 			s += ' ' + g.txtT both,              7, window.CENTER
