@@ -21,24 +21,24 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Id",           3,window.RIGHT
 		header += ' ' + g.txtT "Elo",          4,window.RIGHT
 		header += ' ' + g.txtT "Name",        25,window.LEFT
-		header += ' ' + g.txtT rheader,3*@round,window.LEFT 
-		header += ' ' + g.txtT "Elos",       8,window.RIGHT
+		header += ' ' + g.txtT rheader, 3*@round,window.LEFT 
+		header += ' ' + g.txtT "Elos",         8,window.RIGHT
 
 		@playersByEloSum = _.clone @t.persons.slice 0,g.N
 		@playersByEloSum = _.sortBy @playersByEloSum, (p) => -p.eloSum(@t.round)
 
 		print (p.eloSum(@t.round) for p in @playersByEloSum)
 
-		@lista = new Lista @playersByEloSum, header, @buttons, (p,index) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
+		@lista = new Lista @playersByEloSum, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
 			textAlign LEFT
 			fill 'black' 
 			s = ""
-			s +=       g.txtT (1+index).toString(),   3, window.RIGHT
+			s +=       g.txtT (1+pos).toString(),     3, window.RIGHT
 			s += ' ' + g.txtT (1+p.id).toString(),    3, window.RIGHT
 			s += ' ' + g.txtT p.elo.toString(),       4, window.RIGHT
 			s += ' ' + g.txtT p.name,                25, window.LEFT
-			s += ' ' + g.txtT '',         3 * (@t.round-1), window.CENTER
+			s += ' ' + g.txtT '',      3 * (@t.round-1), window.CENTER
 			s += ' ' + g.txtT p.eloSum(@t.round-1).toFixed(1),  7, window.RIGHT
 
 			for r in range g.tournament.round #- 1

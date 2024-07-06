@@ -20,7 +20,7 @@ export class Lista
 			iRow = @offset + i # index till listan
 			if iRow >= @N then continue
 			p = @objects[iRow]
-			s = @drawFunction p, i
+			s = @drawFunction p, i, iRow
 			if iRow == @currentRow
 				fill 'yellow'
 				w = if @paintYellowRow then width else scaley(23.4)

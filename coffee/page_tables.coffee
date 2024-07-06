@@ -32,7 +32,7 @@ export class Tables extends Page
 		header += ' ' + g.txtT 'Black', 25,window.LEFT
 		header += ' ' + g.txtT 'Elo',    4,window.RIGHT
 
-		@lista = new Lista @t.pairs, header, @buttons, (pair,index) =>
+		@lista = new Lista @t.pairs, header, @buttons, (pair,index,pos) =>
 			[a,b] = pair
 			pa = @t.persons[a]
 			pb = @t.persons[b]
@@ -40,11 +40,11 @@ export class Tables extends Page
 
 			nr = index + 1
 			s = ""
-			s += g.txtT nr.toString(), 3, window.RIGHT
+			s +=       g.txtT (pos+1).toString(),    3, window.RIGHT
 			s += ' ' + g.txtT pa.elo.toString(), 4, window.RIGHT
-			s += ' ' + g.txtT pa.name, 25, window.LEFT
-			s += ' ' + g.txtT both,7, window.CENTER
-			s += ' ' + g.txtT pb.name, 25, window.LEFT
+			s += ' ' + g.txtT pa.name,          25, window.LEFT
+			s += ' ' + g.txtT both,              7, window.CENTER
+			s += ' ' + g.txtT pb.name,          25, window.LEFT
 			s += ' ' + g.txtT pb.elo.toString(), 4, window.RIGHT
 			s
 
