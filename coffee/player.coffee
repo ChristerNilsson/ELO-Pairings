@@ -9,25 +9,20 @@ export class Player
 		@active = not @active
 		g.tournament.paused = (p.id for p in g.tournament.persons when not p.active)
 
-	# eloSum : (rounds) => 
-	# 	#if g.tournament.round == 0 then return 0
-	# 	summa = 0
-	# 	if @name == 'BYE' then return 0
-	# 	for r in range rounds
-	# 		if @opp[r] != -1 then summa += g.tournament.persons[@opp[r]].elo * @res[r] / 2 # g.tournament.bonus[@col[r] + @res[r]] 
-	# 	summa
-
-	f : (diff) -> 1 / (1 + pow 10, diff/400)		
+	calc : (diff) -> 1 / (1 + pow 10, diff/400)		
 
 	eloSum : (rounds) => 
 		asum = 0
 		bsum = 0
 		for r in range rounds
 			if @opp[r] != -1
-				asum += @f g.tournament.persons[@opp[r]].elo - @elo
-				bsum += @res[r] / 2
-				# if @id==0 then print @name,asum,bsum
-		@elo + (bsum - asum) * 40
+				b = @elo
+				c = g.tournament.persons[@opp[r]].elo
+				diff = b - c
+				if @res[r] == '2' then asum +=  40 * @calc diff
+				if @res[r] == '1' then asum +=  20 * @calc diff
+				if @res[r] == '0' then asum += -40 * @calc -diff
+		@elo + asum
 
 	avgEloDiff : ->
 		res = []

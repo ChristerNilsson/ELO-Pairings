@@ -1,3 +1,5 @@
+# todo Bör man sortera på performance vid lottningen? Detta skulle kunnas innebära att man når toppen snabbare. (eller botten)
+
 import { parseExpr } from './parser.js'
 import { g,print,range } from './globals.js' 
 import { Button,spread } from './button.js' 
