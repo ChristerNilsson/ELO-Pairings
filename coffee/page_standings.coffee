@@ -22,7 +22,8 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Elo",          4,window.RIGHT
 		header += ' ' + g.txtT "Name",        25,window.LEFT
 		header += ' ' + g.txtT rheader, 3*@round,window.LEFT 
-		header += ' ' + g.txtT "Elos",         8,window.RIGHT
+		header += ' ' + g.txtT "Chg",          7,window.RIGHT
+		header += ' ' + g.txtT "Perf",         6,window.RIGHT
 
 		@playersByEloSum = _.clone @t.persons.slice 0,g.N
 		@playersByEloSum = _.sortBy @playersByEloSum, (p) => -p.eloSum(@t.round)
@@ -33,13 +34,15 @@ export class Standings extends Page
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
 			textAlign LEFT
 			fill 'black' 
+			perf = p.eloSum(@t.round-1)
 			s = ""
 			s +=       g.txtT (1+pos).toString(),     3, window.RIGHT
 			s += ' ' + g.txtT (1+p.id).toString(),    3, window.RIGHT
 			s += ' ' + g.txtT p.elo.toString(),       4, window.RIGHT
 			s += ' ' + g.txtT p.name,                25, window.LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1), window.CENTER
-			s += ' ' + g.txtT p.eloSum(@t.round-1).toFixed(1),  7, window.RIGHT
+			s += ' ' + g.txtT (perf - p.elo).toFixed(1),  6, window.RIGHT
+			s += ' ' + g.txtT perf.toFixed(1),  6, window.RIGHT
 
 			for r in range g.tournament.round #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)
@@ -85,10 +88,12 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Name", 25, window.LEFT
 		for r in range @t.round
 			header += g.txtT "#{r+1}",6,window.RIGHT
-		header += ' ' + g.txtT "Elos", 9,window.RIGHT
+		header += ' ' + g.txtT "Chg",  7,window.RIGHT
+		header += ' ' + g.txtT "Perf", 6,window.RIGHT
 		if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12,window.LEFT
 		
 		for person,i in @playersByEloSum
+			perf = person.eloSum(@t.round)
 			if i % @t.ppp == 0 then res.push header
 			s = ""
 			s +=       g.txtT (1+i).toString(),          3, window.RIGHT
@@ -101,7 +106,10 @@ export class Standings extends Page
 					s += '      '
 				else 
 					s += g.txtT "#{1+person.opp[r]}#{g.RINGS[person.col[r][0]]}#{"0½1"[person.res[r]]}", 6, window.RIGHT			
-			s += ' ' + g.txtT person.eloSum(@t.round).toFixed(1),  8, window.RIGHT
+
+			s += ' ' + g.txtT (perf - person.elo).toFixed(1),  6, window.RIGHT
+			s += ' ' + g.txtT perf.toFixed(1),  6, window.RIGHT
+			# s += ' ' + g.txtT person.eloSum(@t.round).toFixed(1),  8, window.RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"

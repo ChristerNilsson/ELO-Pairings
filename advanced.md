@@ -1,5 +1,38 @@
 # Advanced
 
+# Observera
+
+Detta kan innebära att möjlighet att publicera större turneringar på vissa plattformar, t ex Youtube, inte går.
+Ett enda tecken kan tiodubblas.
+
+t ex 
+```
+"!" = %2521
+"(" = %2528
+"Å" = %25C3%2585
+"Ä" = %25C3%2584
+"Ö" = %25C3%2596
+```
+
+Lösningen kan vara att undvika åäöÅÄÖ och ersätta parenteser med t ex _ och -.
+Eller, som chatGPT föreslår, en länkförkortare.
+Oklart vad de klarar av.
+
+Det verkar som om en JSON-förkortare kan användas istället.
+jsonblob.com
+
+Länken i Youtube måste vara manglad.  
+    * "(" = %28
+    * ")" = %29
+    * "!" = %21
+    * "=" = %3D
+    * å =
+    * ä =
+    * ö = %C3%B6
+    * Å = %C3%85
+    * Ä = %C4%84
+    * Ö = %C3%96
+
 # Obligatoriska fält
 
 * TOUR - turneringens namn
