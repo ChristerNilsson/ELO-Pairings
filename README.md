@@ -1,5 +1,9 @@
 # Elo Pairings
 
+* All players meet players with similar ELO Performance
+* ELO Performance is also used to determine standings
+* Same color only possible after even number of rounds. WW is not possible. BWW is.
+
 [14 players](https://christernilsson.github.io/ELO-Pairings/?TOUR=Klass_1&DATE=2024-05-28&PLAYERS=(1825!JOHANSSON_Lennart_B.)(1697!BJÖRKDAHL_Göran)(1684!SILINS_Peteris)(1681!STOLOV_Leonid)(1644!PETTERSSON_Lars-Åke)(1598!AIKIO_Onni)(1598!ISRAEL_Dan)(1583!PERSSON_Kjell)(1561!LILJESTRÖM_Tor)(1559!LEHVONEN_Jouko)(1539!ANDERSSON_Lars_Owe)(1535!ÅBERG_Lars-Erik)(1532!ANTONSSON_Görgen)(1400!STRÖMBÄCK_Henrik)) 
 
 [Edit](https://github.com/ChristerNilsson/ELO-Pairings/blob/main/tournaments/14.txt)  
@@ -92,18 +96,12 @@ Print the file, and put up the alphabetical Name sheets, well separated, in the 
 
 ### Instructions
 	Edit the URL above.  
-	Add the names of the players.  
+	Add the elos and names of the players.  
 
 	* TOUR contains the header of the tournament. Optional
 	* DATE contains the Date. Optional
-	* ROUNDS contains the number of rounds.
-	* ROUND contains the current round.
-	* PLAYERS contains elos and names, separated with a bar character.
-
-	The following parameters are internal and handled by the program:
-	* OPP contains the opponents
-	* COL contains the colours, B & W
-	* RES contains the scores, 0, 1 or 2 for victory.
+	* PLAYERS contains elos and names, separated with an exclamation sign.
+	* K contains 40 for beginners, 20 for ordinary, 10 for expert players
 
 ### Entering results twice
 Make a habit of always entering the result twice.  

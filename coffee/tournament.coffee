@@ -214,7 +214,7 @@ export class Tournament
 		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
-		# if @round > 0 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+		if @round > 0 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
 		# if @round > 0 then downloadFile @makeMatrix(), "#{@title} R#{@round} Matrix.txt" # (time outar, filen sparas inte)
 
 		@round += 1
@@ -320,7 +320,6 @@ export class Tournament
 		#res.push "http://127.0.0.1:5500"
 		res.push "?TOUR=" + @title.replaceAll ' ','_'
 		res.push "&TIMESTAMP=" + timestamp
-		#res.push "&ROUNDS=" + @rounds
 		res.push "&ROUND=" + @round
 		res.push "&PLAYERS=" 
 		
