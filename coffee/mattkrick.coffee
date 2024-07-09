@@ -1,7 +1,14 @@
-range = _.range
+
+# OBSERVERA!
+
+# Denna fil är inte korrekt översatt från js till coffee av Christer Nilsson
+# Den ger olika resultat beroende på om indata är osorterat, fallande eller stigande
+# Originalet (javascript) är konsistent.
 
 # Converted to Coffeescript form JS by Christer Nilsson. Original: https://github.com/mattkrick/EdmondsBlossom
 # Converted to JS from Python by Matt Krick. Original: https://jorisvr.nl/files/graphmatching/20130407/mwmatching.py
+
+range = _.range
 
 export class Edmonds
 	constructor : (@edges, @maxCardinality=true) ->

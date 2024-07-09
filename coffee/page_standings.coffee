@@ -25,16 +25,16 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Chg",          7,window.RIGHT
 		header += ' ' + g.txtT "Perf",         6,window.RIGHT
 
-		@playersByEloSum = _.clone @t.persons.slice 0,g.N
-		@playersByEloSum = _.sortBy @playersByEloSum, (p) => -p.eloSum(@t.round)
+		@playersByPerformance = _.clone @t.persons.slice 0,g.N
+		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -p.performance(@t.round)
 
-		print (p.eloSum(@t.round) for p in @playersByEloSum)
+		print (p.performance(@t.round) for p in @playersByPerformance)
 
-		@lista = new Lista @playersByEloSum, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
+		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
 			textAlign LEFT
 			fill 'black' 
-			perf = p.eloSum(@t.round-1)
+			perf = p.performance(@t.round-1) # -1)
 			s = ""
 			s +=       g.txtT (1+pos).toString(),     3, window.RIGHT
 			s += ' ' + g.txtT (1+p.id).toString(),    3, window.RIGHT
@@ -53,6 +53,20 @@ export class Standings extends Page
 		@lista.paintYellowRow = false
 		spread @buttons, 10, @y, @h
 
+	mouseMoved : ->
+		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
+		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
+		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
+			a = iy
+			pa = @playersByPerformance[a]
+			b = pa.opp[r]
+			pb = @playersByPerformance[b]
+			PD = pa.scoringProbability r
+			chg = pa.calcRound r
+			g.help = "#{pa.elo} #{pa.name} vs #{pb.elo} #{pb.name}:#{g.prBoth(pa.res[r])}=> chg = #{chg.toFixed(1)}"
+		else
+			g.help = ""
+
 	mouseWheel   : (event )-> @lista.mouseWheel event
 	mousePressed : (event) -> @lista.mousePressed event
 	keyPressed   : (event) -> @buttons[key].click()
@@ -63,6 +77,8 @@ export class Standings extends Page
 		@lista.draw()
 		for key,button of @buttons
 			button.draw()
+		textAlign LEFT
+		text g.help, 10, 58
 
 	lightbulb : (color, x, y, result, opponent) ->
 		if result == "" then return
@@ -92,8 +108,8 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Perf", 7,window.RIGHT
 		if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12,window.LEFT
 		
-		for person,i in @playersByEloSum
-			perf = person.eloSum(@t.round)
+		for person,i in @playersByPerformance
+			perf = person.performance(@t.round)
 			if i % @t.ppp == 0 then res.push header
 			s = ""
 			s +=       g.txtT (1+i).toString(),          3, window.RIGHT
@@ -109,7 +125,7 @@ export class Standings extends Page
 
 			s += ' ' + g.txtT (perf - person.elo).toFixed(1),  6, window.RIGHT
 			s += ' ' + g.txtT perf.toFixed(2),  7, window.RIGHT
-			# s += ' ' + g.txtT person.eloSum(@t.round).toFixed(1),  8, window.RIGHT
+			# s += ' ' + g.txtT person.performance(@t.round).toFixed(1),  8, window.RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"

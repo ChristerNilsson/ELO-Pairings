@@ -3,31 +3,33 @@ import { g,print,range,scalex,scaley } from './globals.js'
 export class Player
 	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="") -> @active = true
 
-	toString : -> "#{@id} #{@name} elo:#{@elo} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} eloSum:#{@eloSum(g.tournament.round).toFixed(0)}"
+	toString : -> "#{@id} #{@name} elo:#{@elo} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} perf:#{@performance(g.tournament.round).toFixed(0)}"
 
 	toggle : -> 
 		@active = not @active
 		g.tournament.paused = (p.id for p in g.tournament.persons when not p.active)
 
-	calc : (diff) -> 1 / (1 + pow 10, diff/400)		
+	scoringProbability : (diff) -> 1 / (1 + pow 10, diff/400)
 
-	eloSum : (rounds) => 
+	calcRound : (r) -> # Hur hantera frirond?
+		if @opp[r] == -1 then return 0
+		b = @elo
+		c = g.tournament.persons[@opp[r]].elo
+		diff = b - c
+		if @res[r] == '2' then return       g.K * @scoringProbability diff
+		if @res[r] == '1' then return 0.5 * g.K * @scoringProbability diff
+		if @res[r] == '0' then return      -g.K * @scoringProbability -diff
+		0
+
+	performance : (rounds) -> 
 		asum = 0
-		bsum = 0
 		for r in range rounds
-			if @opp[r] != -1
-				b = @elo
-				c = g.tournament.persons[@opp[r]].elo
-				diff = b - c
-				if @res[r] == '2' then asum +=  40 * @calc diff
-				if @res[r] == '1' then asum +=  20 * @calc diff
-				if @res[r] == '0' then asum += -40 * @calc -diff
+			asum += @calcRound r
 		@elo + asum
 
 	avgEloDiff : ->
 		res = []
 		for id in @opp.slice 0, @opp.length - 1
-			#res.push abs normera(@elo) - normera(tournament.persons[id].elo)
 			if id != -1 then res.push abs @elo - g.tournament.persons[id].elo
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
@@ -38,17 +40,15 @@ export class Player
 			if ch=='w' then result += 1
 		result
 
-	score : ->
-		result = 0
-		n = g.tournament.round
-		sp = g.tournament.sp
-		for i in range n
-			if i < @col.length and i < @res.length
-				key = @col[i] + @res[i]
-				#result += {'w2': 1-sp, 'b2': 1, 'w1': 0.5-sp, 'b1': 0.5+sp, 'w0': 0, 'b0': sp}[key]
-				res = {'w2': 1, 'b2': 1+2*sp, 'w1': 0.5-sp, 'b1': 0.5+sp, 'w0': 0, 'b0': 0}[key]
-		#print 'id,score',@id, @res, result,n
-		result
+	# score : ->
+	# 	result = 0
+	# 	n = g.tournament.round
+	# 	for i in range n
+	# 		if i < @col.length and i < @res.length
+	# 			key = @col[i] + @res[i]
+	# 			res = {'w2': 1, 'b2': 1, 'w1': 0.5, 'b1': 0.5, 'w0': 0, 'b0': 0}[key]
+	# 	#print 'id,score',@id, @res, result,n
+	# 	result
 
 	read : (player) -> 
 		@elo = parseInt player[0]

@@ -14,11 +14,9 @@ Varken den starkare eller den svagare spelaren uppskattar förutsägbara partier
 
 Schweizer-systemet är orättvist: en vinst mot en högrankad spelare är värd exakt lika mycket som en vinst mot en lågrankad spelare.
 
-Inom boxning möter en tungviktare aldrig en flugviktare. Inom schacket anses det vara en förmån!
-
 Principer för ett sådant system:
-a) Para ihop spelare med samma Elo-tal, från första till sista rond.
-b) Vikta partipoäng (1 eller ½) med motståndarens Elo-tal för att avgöra placering.
+1. Para ihop spelare med liknande Elo Performance
+2. Använd Elo Performance för att avgöra placering
 
 Dags att damma av den gamla principen: Lika barn leka bäst!
 
@@ -34,11 +32,9 @@ Neither the stronger nor the weaker player appreciates predictable games.
 
 The Swiss system is unfair: a win against a high-rated player is worth exactly as much as a win against a low-rated player.
 
-In boxing, a heavyweight never faces a flyweight. In chess, it's considered a privilege!
-
 Principles for such a system:
-a) Pair players with the same Elo rating, from the first to the last round.
-b) Weight game points (1 or ½) with the opponent's Elo rating to determine standings.
+a) Pair players with similar Elo Performance
+b) Use ELO Performance to determine standings
 
 Time to revive the old principle: Birds of a feather flock together!
 

@@ -1,7 +1,9 @@
 import { g, range, print, scalex, scaley } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
-import { Edmonds } from './mattkrick.js' 
+
+# import { Edmonds } from './mattkrick.js' 
+import { Edmonds } from './blossom.js' 
 
 import { Tables } from './page_tables.js' 
 import { Names } from './page_names.js' 
@@ -38,11 +40,21 @@ export class Tournament
 			for b in range a+1,g.N
 				pb = @persons[b]
 				if not pb.active then continue
-				if g.DIFF == 'ELO' then diff = abs pa.elo - pb.elo
-				if g.DIFF == 'ID'  then diff = abs pa.id - pb.id
-				if g.COST == 'LINEAR'    then cost = 2000 - diff
-				if g.COST == 'QUADRATIC' then cost = 2000 - diff ** 1.01
-				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
+				if g.DIFF == 'ELO'  then diff = abs pa.elo - pb.elo
+				if g.DIFF == 'PERF' then diff = abs pa.elo - pb.elo
+				#	diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
+				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
+				# if g.COST == 'LINEAR'    then cost = 9999 - diff
+				cost = 9999 - diff ** g.EXPONENT
+
+				#print a, b, a not in pb.opp, pa.balans(), pb.balans()
+				# pa.id != pb.id and pa.id not in pb.opp and abs(pa.balans() + pb.balans()) <= g.COLORS
+
+				if g.ok pa,pb
+				#	print 'ok',a,b,cost
+					edges.push [pa.id, pb.id, cost]
+				#else
+					#print 'not ok',a,b,cost
 		edges
 	
 	findSolution : (edges) -> 
@@ -75,6 +87,25 @@ export class Tournament
 				solution[j] = -1
 				solution[i] = -1
 		result
+
+	solutionCost : (pairs) ->
+		summa = 0
+		for [a,b] in pairs
+			pa = @persons[a]
+			pb = @persons[b]
+			if g.DIFF == 'PERF'
+				da = pa.performance(g.tournament.round)
+				db = pb.performance(g.tournament.round)
+			if g.DIFF == 'ELO'
+				da = pa.elo
+				db = pb.elo
+			if g.DIFF == 'ID'
+				da = pa.id
+				db = pb.id
+			diff = Math.abs da - db
+			print a,b,da,db,diff
+			summa += diff ** g.EXPONENT
+		summa
 
 	preMatch : ->
 		for p in @persons
@@ -152,7 +183,10 @@ export class Tournament
 
 		start = new Date()
 		net = @makeEdges @persons
+		#net = _.sortBy net, (e) -> -e[2]
+		print net
 		solution = @findSolution net
+
 		print 'cpu:',new Date() - start,'ms'
 		print 'solution', solution
 
@@ -167,6 +201,7 @@ export class Tournament
 
 		@pairs = @unscramble solution
 		print 'pairs',@pairs
+		print 'solutionCost', @solutionCost @pairs
 
 		@postMatch()
 

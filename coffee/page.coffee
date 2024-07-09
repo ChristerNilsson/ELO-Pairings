@@ -31,6 +31,10 @@ export class Page
 		@h = 1
 		@lista = new Lista
 
+	mouseMoved : ->
+	# 	# if @inside mouseX,mouseY then 
+	# 	g.help =   [mouseX,mouseY] #,10,scaley(@y+3.2*@h/2)
+
 	showHeader : (round) ->
 		y = 0.6
 		textAlign LEFT,CENTER

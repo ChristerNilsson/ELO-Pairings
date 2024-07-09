@@ -15,14 +15,16 @@ g.seed = 0
 export random = -> (((Math.sin(g.seed++)/2+0.5)*10000)%100)/100
 
 # parameters that somewhat affects matching
-g.COST = 'QUADRATIC' # QUADRATIC=1.01 or LINEAR=1
-g.DIFF = 'ID' # ID or ELO
-g.COLORS = 1 # 1 or 2
+g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
+g.DIFF = 'PERF' # ID or ELO or PERF. PERF ett krav för att spelarna ska kunna "klättra"
+g.COLORS = 1 # 1 (or 2)
 
 g.TABLES    = 0
 g.NAMES     = 1
 g.STANDINGS = 2
 g.ACTIVE    = 3
+
+g.K = 40 # 40=juniors 20=normal 10=masters
 
 g.pages = []
 
@@ -31,7 +33,7 @@ g.message = ""
 g.showType = (a) -> if typeof a == 'string' then "'#{a}'" else a
 export assert = (a,b) -> if not _.isEqual a,b then print "Assert failure: #{JSON.stringify a} != #{JSON.stringify b}"
 
-g.ok = (p0, p1) -> p0.id != p1.id and p0.id not in p1.opp and abs(p0.balans() + p1.balans()) <= g.COLORS
+g.ok = (a,b) -> a.id != b.id and a.id not in b.opp and abs(a.balans() + b.balans()) <= g.COLORS
 g.other = (col) -> if col == 'b' then 'w' else 'b'
 
 g.myRound = (x,decs) -> x.toFixed decs
@@ -76,18 +78,18 @@ assert false, 2 > 12
 # assert [[2,1],[12,1],[3,4],[12,2]], _.sortBy(xxx, (x) -> x[1])
 # assert [[3,4],[12,1],[2,1],[12,2]], _.sortBy(xxx, (x) -> -x[1])
 
-g.normera = (a,b,k) -> Math.round (b - k*a) / (k-1) # Räknar ut vad som ska adderas till elotalen
-assert  -406, g.normera 1406,2406,2   # 1000,2000
-assert -1900, g.normera 1950,2000,2   #   50,100
-assert     0, g.normera 1000,2000,2   # 1000,2000
-assert   200, g.normera 900,2000,2    # 1100,2200
-assert -1200, g.normera 1600,2000,2   #  400,800
-assert  -500, g.normera 1000,2000,3   #  500,1500
-assert -1000, g.normera 1200,1800,4   #  200,800
-assert -1067, g.normera 1400,2400,4   #  333,1333
-assert  -800, g.normera 1600,2000,1.5 #  800,1200
-assert   400, g.normera 1600,2000,1.2 # 2000,2400
-assert  2400, g.normera 1600,2000,1.1 # 4000,4400
+# g.normera = (a,b,k) -> Math.round (b - k*a) / (k-1) # Räknar ut vad som ska adderas till elotalen
+# assert  -406, g.normera 1406,2406,2   # 1000,2000
+# assert -1900, g.normera 1950,2000,2   #   50,100
+# assert     0, g.normera 1000,2000,2   # 1000,2000
+# assert   200, g.normera 900,2000,2    # 1100,2200
+# assert -1200, g.normera 1600,2000,2   #  400,800
+# assert  -500, g.normera 1000,2000,3   #  500,1500
+# assert -1000, g.normera 1200,1800,4   #  200,800
+# assert -1067, g.normera 1400,2400,4   #  333,1333
+# assert  -800, g.normera 1600,2000,1.5 #  800,1200
+# assert   400, g.normera 1600,2000,1.2 # 2000,2400
+# assert  2400, g.normera 1600,2000,1.1 # 4000,4400
 
 g.calcMissing = ->
 	missing = 0

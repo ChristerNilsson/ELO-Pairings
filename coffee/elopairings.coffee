@@ -53,6 +53,7 @@ window.draw = ->
 	textSize g.ZOOM[g.state]
 	g.pages[g.state].draw()
 
+window.mouseMoved = (event) -> g.pages[g.state].mouseMoved event
 window.mousePressed = (event) -> g.pages[g.state].mousePressed event
 window.mouseWheel   = (event) -> g.pages[g.state].mouseWheel event
 window.keyPressed   = (event) -> 
