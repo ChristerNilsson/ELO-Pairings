@@ -371,7 +371,7 @@ export class Tournament
 		@dumpCanvas title,@distans(rounds),canvas
 
 	makeMatrix : ->
-		return
+		# return
 		matrix = []
 		for r in range @round
 			res = []
