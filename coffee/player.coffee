@@ -40,16 +40,6 @@ export class Player
 			if ch=='w' then result += 1
 		result
 
-	# score : ->
-	# 	result = 0
-	# 	n = g.tournament.round
-	# 	for i in range n
-	# 		if i < @col.length and i < @res.length
-	# 			key = @col[i] + @res[i]
-	# 			res = {'w2': 1, 'b2': 1, 'w1': 0.5, 'b1': 0.5, 'w0': 0, 'b0': 0}[key]
-	# 	#print 'id,score',@id, @res, result,n
-	# 	result
-
 	read : (player) -> 
 		@elo = parseInt player[0]
 		@name = player[1]

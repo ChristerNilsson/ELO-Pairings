@@ -101,8 +101,20 @@ Print the file, and put up the alphabetical Name sheets, well separated, in the 
 	* TOUR contains the header of the tournament. Optional
 	* DATE contains the Date. Optional
 	* PLAYERS contains elos and names, separated with an exclamation sign.
-	* K contains 40 for beginners, 20 for ordinary, 10 for expert players
+	* K contains 40 for beginners, 20 for ordinary, 10 for expert players. Default: 20
+	* TPP contains Tables Per Page. Default 30
+	* PPP contains Players Per Page. Default 60
+	* PAUSED contains id:s of paused players
 
+### ELO Performance
+
+ELO Performance is calculated using this formula:  
+PA = probability of win for stronger player  
+RB = rating for weaker player  
+RA = rating for stronger player  
+
+![formula](image.png)
+	
 ### Entering results twice
 Make a habit of always entering the result twice.  
 As soon as a score sheet is finished, start entering the results, using the keyboard.  

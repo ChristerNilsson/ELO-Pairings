@@ -78,19 +78,6 @@ assert false, 2 > 12
 # assert [[2,1],[12,1],[3,4],[12,2]], _.sortBy(xxx, (x) -> x[1])
 # assert [[3,4],[12,1],[2,1],[12,2]], _.sortBy(xxx, (x) -> -x[1])
 
-# g.normera = (a,b,k) -> Math.round (b - k*a) / (k-1) # Räknar ut vad som ska adderas till elotalen
-# assert  -406, g.normera 1406,2406,2   # 1000,2000
-# assert -1900, g.normera 1950,2000,2   #   50,100
-# assert     0, g.normera 1000,2000,2   # 1000,2000
-# assert   200, g.normera 900,2000,2    # 1100,2200
-# assert -1200, g.normera 1600,2000,2   #  400,800
-# assert  -500, g.normera 1000,2000,3   #  500,1500
-# assert -1000, g.normera 1200,1800,4   #  200,800
-# assert -1067, g.normera 1400,2400,4   #  333,1333
-# assert  -800, g.normera 1600,2000,1.5 #  800,1200
-# assert   400, g.normera 1600,2000,1.2 # 2000,2400
-# assert  2400, g.normera 1600,2000,1.1 # 4000,4400
-
 g.calcMissing = ->
 	missing = 0
 	for p in g.tournament.persons

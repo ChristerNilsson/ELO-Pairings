@@ -13,9 +13,7 @@ import { Active } from './page_active.js'
 export class Tournament 
 	constructor : () ->
 		@title = ''
-		#@rounds = 0
 		@round = 0
-		@sp = 0.0 # 0.01
 		@tpp = 30
 		@ppp = 60
 
@@ -25,10 +23,7 @@ export class Tournament
 		@pairs = [] # varierar med varje rond
 
 		@robin = range g.N
-		# @fetchURL()
 		@mat = []
-
-		@bonus = {'w2': 1, 'b2': 1+2*@sp, 'w1': 0.5-@sp, 'b1': 0.5+@sp, 'w0': 0, 'b0': 0}
 
 	write : () ->
 
@@ -41,20 +36,10 @@ export class Tournament
 				pb = @persons[b]
 				if not pb.active then continue
 				if g.DIFF == 'ELO'  then diff = abs pa.elo - pb.elo
-				if g.DIFF == 'PERF' then diff = abs pa.elo - pb.elo
-				#	diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
+				if g.DIFF == 'PERF' then diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
 				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
-				# if g.COST == 'LINEAR'    then cost = 9999 - diff
 				cost = 9999 - diff ** g.EXPONENT
-
-				#print a, b, a not in pb.opp, pa.balans(), pb.balans()
-				# pa.id != pb.id and pa.id not in pb.opp and abs(pa.balans() + pb.balans()) <= g.COLORS
-
-				if g.ok pa,pb
-				#	print 'ok',a,b,cost
-					edges.push [pa.id, pb.id, cost]
-				#else
-					#print 'not ok',a,b,cost
+				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
 		edges
 	
 	findSolution : (edges) -> 
@@ -231,12 +216,11 @@ export class Tournament
 		@players = []
 		@title = urlParams.get('TOUR').replaceAll '_',' '
 		@datum = urlParams.get('DATE') or ""
-		#@rounds = parseInt urlParams.get 'ROUNDS'
 		@round = parseInt getParam 'ROUND',0
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
-		@sp = parseFloat getParam 'SP', 0.0 # ScorePoints
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
+		g.K = getParam 'K',20 # 40, 20 or 10 normally
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
@@ -374,7 +358,7 @@ export class Tournament
 
 	dumpCanvas : (title,average,canvas) ->
 		output = ["", title]
-		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} COST:#{g.COST} COLORS:#{g.COLORS} SP:#{@sp}"
+		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}"
 		output.push ""
 		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
 		output.push '     ' + header + '   Elo    AED'

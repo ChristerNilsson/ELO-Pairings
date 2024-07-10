@@ -2,7 +2,7 @@ import { print,assert } from './globals.js'
 
 # Lisp, kind of - more compact tree rep than XML and JSON
 
-BAR = '!' # was |
+BAR = '!'
 
 export parseExpr = (expr) ->
 	if expr.startsWith('(') and expr.endsWith(')') then expr = expr.slice 1, -1
@@ -27,4 +27,3 @@ assert ["1234","Christer"], parseExpr "(1234!Christer)"
 assert ["1234","Christer"], parseExpr "1234!Christer"
 assert ["1234","Christer",["12w0","23b½","14w"]], parseExpr "(1234!Christer!(12w0!23b½!14w))"
 assert ["1234","Christer",["12w0","23b½","14w"]], parseExpr "1234!Christer!(12w0!23b½!14w)"
-
