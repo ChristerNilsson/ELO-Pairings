@@ -74,7 +74,7 @@ export class Tables extends Page
 		index
 	
 	setActive : ->
-		@buttons.p.active = g.calcMissing()
+		@buttons.p.active = g.calcMissing() == 0
 		if g.pages[g.ACTIVE] then g.pages[g.ACTIVE].buttons.p.active = @buttons.p.active
 
 	handleResult : (key) =>

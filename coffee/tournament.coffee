@@ -1,10 +1,7 @@
 import { g, range, print, scalex, scaley } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
-
-# import { Edmonds } from './mattkrick.js' 
 import { Edmonds } from './blossom.js' 
-
 import { Tables } from './page_tables.js' 
 import { Names } from './page_names.js' 
 import { Standings } from './page_standings.js' 
@@ -27,14 +24,15 @@ export class Tournament
 
 	write : () ->
 
-	makeEdges : ->
+	makeEdges : (bye) -> # bye är ett id eller -1
+		print 'bye',bye
 		edges = []
-		for a in range g.N  # tag med frironden
+		for a in range g.N
 			pa = @persons[a]
-			if not pa.active then continue
-			for b in range a+1,g.N
+			if not pa.active or pa.id == bye then continue
+			for b in range a+1, g.N
 				pb = @persons[b]
-				if not pb.active then continue
+				if not pb.active or pb.id == bye then continue
 				if g.DIFF == 'ELO'  then diff = abs pa.elo - pb.elo
 				if g.DIFF == 'PERF' then diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
 				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
@@ -92,18 +90,29 @@ export class Tournament
 			summa += diff ** g.EXPONENT
 		summa
 
-	preMatch : ->
-		for p in @persons
-			if p.res.length < p.col.length then p.res += '0'
+	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
-		active = _.filter @persons.slice(0,@persons.length-1), (p) -> p.active
-		# @persons[g.N].active = active.length % 2 == 1
+		for p in @persons
+			if p.active then continue
+			p.opp.push g.PAUSE
+			p.col += ' '
+			p.res += '0'
+
+		temp = _.filter @persons, (p) -> p.active 
+		if temp.length % 2 == 1 # Spelaren med lägst elo och som inte har haft frirond, får frironden
+			temp = _.filter @persons, (p) -> p.active and p.bye == false
+			bye = _.last temp
+			bye.bye = true
+			bye.opp.push g.BYE
+			bye.col += ' '
+			if bye.name == 'Vida Radon' then print 'preMatch',bye
+			return bye.id
+		g.BYE
 
 	postMatch : ->
 		for p in @persons
 			if p.active then continue
-			p.opp.push -1
-			# p.res += '0'
+			p.opp.push g.PAUSE
 			p.col += ' '
 
 		for [a,b] in @pairs
@@ -111,8 +120,6 @@ export class Tournament
 			pb = @persons[b]
 			pa.opp.push pb.id
 			pb.opp.push pa.id
-
-		# print @persons
 
 		if @round == 0
 			for i in range @pairs.length
@@ -151,38 +158,27 @@ export class Tournament
 
 	lotta : () ->
 
-		g.calcMissing()
-
-		if @round > 0 
-			missing = 0
-			for p in @persons
-				if p.active and p.res.length < p.col.length then missing++
-			if missing > 0
-				print 'lottning ej genomförd!'
-				return
-
-		@preMatch()
+		if @round > 0 and g.calcMissing() > 0
+			print 'lottning ej genomförd!'
+			return
 
 		print "Lottning av rond #{@round}"
 		document.title = "Round #{@round+1}"
 
 		start = new Date()
-		net = @makeEdges @persons
-		#net = _.sortBy net, (e) -> -e[2]
+		bye =  @preMatch()
+		net = @makeEdges bye # -1 om bye saknas
 		print net
 		solution = @findSolution net
 
 		print 'cpu:',new Date() - start,'ms'
 		print 'solution', solution
 
-		missing = _.filter solution, (x) -> x==-1
-
-		inactive = _.filter @persons.slice(0,@persons.length-1), (p) -> not p.active
-
-		print 'lotta', missing.length, inactive.length
-		if missing.length != inactive.length
-			print 'Solution failed!'
-			return 
+		for index,id in solution
+			p = @persons[index]
+			if id == -1 and (p.bye == false or p.active)
+				print 'Solution failed!'
+				return 
 
 		@pairs = @unscramble solution
 		print 'pairs',@pairs
@@ -238,8 +234,6 @@ export class Tournament
 			print "Error: Number of players must be 1999 or less!"
 			return
 
-		# g.N-- # pga BYE
-
 		@persons = []
 		for i in range g.N
 			player = new Player i
@@ -267,9 +261,6 @@ export class Tournament
 		print (p.elo for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo
 
-		# if @round == 0 then @persons.push new Player g.N, 'BYE', 0 # Frirond ska ALLTID finnas, men kanske vara inaktiv
-
-		# @playersByName = _.sortBy @persons.slice(0, @persons.length-1), (player) -> player.name
 		@playersByName = _.sortBy @persons, (player) -> player.name
 		print 'playersByName', (p.name for p in @playersByName)
 
@@ -380,6 +371,7 @@ export class Tournament
 		@dumpCanvas title,@distans(rounds),canvas
 
 	makeMatrix : ->
+		return
 		matrix = []
 		for r in range @round
 			res = []

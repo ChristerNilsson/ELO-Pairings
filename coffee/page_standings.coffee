@@ -29,6 +29,9 @@ export class Standings extends Page
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -p.performance(@t.round)
 
 		print (p.performance(@t.round) for p in @playersByPerformance)
+		# print 'före invert'
+		# g.inv = g.invert (p.id for p in @playersByPerformance)
+		# print 'efter invert',g.inv
 
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
@@ -44,26 +47,31 @@ export class Standings extends Page
 			s += ' ' + g.txtT (perf - p.elo).toFixed(1),  6, window.RIGHT
 			s += ' ' + g.txtT perf.toFixed(1),        6, window.RIGHT
 
-			for r in range g.tournament.round #- 1
+			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)
-				if p.opp[r] == -1 then @txt "P", x, @y+1, window.CENTER, 'black'
-				else if p.opp[r] == g.N then @txt "BYE", x, @y+1, window.CENTER, 'black'
-				else @lightbulb p.col[r], x, @y_bulb, p.res.slice(r,r+1), 1 + p.opp[r]
+				# if p.opp[r] == -1 then @txt "P", x, @y+1, window.CENTER, 'black'
+				# else if p.opp[r] == g.N then @txt "BYE", x, @y+1, window.CENTER, 'black'
+				# print 'yyy',"<#{p.opp[r]}>"
+				@lightbulb p.id, p.col[r], x, @y_bulb, p.res.slice(r,r+1), p.opp[r]
 			s
 		@lista.paintYellowRow = false
 		spread @buttons, 10, @y, @h
 
-	mouseMoved : ->
+	mouseMoved : =>
 		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
 		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
 		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
+			#iy = g.inv[iy]
 			a = iy
 			pa = @playersByPerformance[a]
 			b = pa.opp[r]
-			pb = @playersByPerformance[b]
-			PD = pa.scoringProbability r
-			chg = pa.calcRound r
-			g.help = "#{pa.elo} #{pa.name} vs #{pb.elo} #{pb.name}:#{g.prBoth(pa.res[r])}=> chg = #{chg.toFixed(1)}"
+			if b == g.BYE   then g.help = "#{pa.elo} #{pa.name} has a bye => chg = #{g.K/2}"
+			if b == g.PAUSE then g.help = "#{pa.elo} #{pa.name} has a pause => chg = 0"
+			if b >= 0				
+				pb = @t.persons[b]
+				PD = pa.scoringProbability r
+				chg = pa.calcRound r
+				g.help = "#{pa.elo} #{pa.name} vs #{pb.elo} #{pb.name}:#{g.prBoth(pa.res[r])}=> chg = #{chg.toFixed(1)}"
 		else
 			g.help = ""
 
@@ -80,16 +88,23 @@ export class Standings extends Page
 		textAlign LEFT
 		text g.help, 10, 58
 
-	lightbulb : (color, x, y, result, opponent) ->
-		if result == "" then return
-		push()
-		result = '012'.indexOf result
-		fill 'red gray green'.split(' ')[result]
-		rectMode window.CENTER
+	show : (s,x,y,bg,fg) ->
+		fill bg
 		rect x, y, 1.6 * g.ZOOM[g.state], 0.9 * g.ZOOM[g.state]
-		fill {b:'black', ' ':'yellow', w:'white'}[color]
-		@txt opponent,x,y+1,window.CENTER
-		pop()			
+		fill fg
+		@txt s, x, y+1, window.CENTER
+
+	lightbulb : (id, color, x, y, result, opponent) ->
+		# print "lightbulb id:#{id} color:#{color} x:#{x} y#{y} result:#{result} opponent:#{opponent}"
+		push()
+		rectMode window.CENTER
+		s = 1 + opponent
+		if opponent == g.PAUSE then @show " P ",x,y,"gray",'yellow'
+		if opponent == g.BYE   then @show "BYE",x,y,"green",'yellow'
+		if opponent >= 0
+			result = '012'.indexOf result
+			@show 1+opponent, x, y, 'red gray green'.split(' ')[result], {b:'black', ' ':'yellow', w:'white'}[color]
+		pop()
 
 	make : (res,header) ->
 		if @t.pairs.length == 0 then res.push "This ROUND can't be paired! (Too many rounds)"

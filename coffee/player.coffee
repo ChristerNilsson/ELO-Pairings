@@ -1,7 +1,7 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Player
-	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="") -> @active = true
+	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true, @bye = false) -> 
 
 	toString : -> "#{@id} #{@name} elo:#{@elo} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} perf:#{@performance(g.tournament.round).toFixed(0)}"
 
@@ -11,21 +11,18 @@ export class Player
 
 	scoringProbability : (diff) -> 1 / (1 + pow 10, diff/400)
 
-	calcRound : (r) -> # Hur hantera frirond?
-		if @opp[r] == -1 then return 0
-		b = @elo
-		c = g.tournament.persons[@opp[r]].elo
-		diff = b - c
-		if @res[r] == '2' then return       g.K * @scoringProbability diff
-		if @res[r] == '1' then return 0.5 * g.K * @scoringProbability diff
-		if @res[r] == '0' then return      -g.K * @scoringProbability -diff
+	calcRound : (r) ->
+		if @opp[r] == g.BYE then return g.K * (1.0 - @scoringProbability 0)
+		if @opp[r] == g.PAUSE then return 0
+		a = @elo
+		b = g.tournament.persons[@opp[r]].elo
+		diff = b - a
+		if @res[r] == '2' then return g.K * (1.0 - @scoringProbability diff)
+		if @res[r] == '1' then return g.K * (0.5 - @scoringProbability diff)
+		if @res[r] == '0' then return g.K * (0.0 - @scoringProbability diff)
 		0
 
-	performance : (rounds) -> 
-		asum = 0
-		for r in range rounds
-			asum += @calcRound r
-		@elo + asum
+	performance : (rounds) -> @elo + g.sum (@calcRound r for r in range rounds)
 
 	avgEloDiff : ->
 		res = []

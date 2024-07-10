@@ -19,6 +19,9 @@ g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
 g.DIFF = 'PERF' # ID or ELO or PERF. PERF ett krav för att spelarna ska kunna "klättra"
 g.COLORS = 1 # 1 (or 2)
 
+g.BYE = -1
+g.PAUSE = -2
+
 g.TABLES    = 0
 g.NAMES     = 1
 g.STANDINGS = 2
@@ -58,7 +61,7 @@ g.invert = (arr) ->
 	res = []
 	for i in range arr.length
 		res[arr[i]] = i
-	return res
+	res
 assert [0,1,2,3], g.invert [0,1,2,3]
 assert [3,2,0,1], g.invert [2,3,1,0]
 assert [2,3,1,0], g.invert g.invert [2,3,1,0]
@@ -81,9 +84,9 @@ assert false, 2 > 12
 g.calcMissing = ->
 	missing = 0
 	for p in g.tournament.persons
-		if p.active and p.res.length < p.col.length then missing++
-	g.message = "#{missing//2} results missing"
-	missing == 0
+		if p.active and p.res.length < p.col.length and not p.bye then missing++
+	g.message = "#{missing} results missing"
+	missing
 
 g.sum = (s) ->
 	res = 0
