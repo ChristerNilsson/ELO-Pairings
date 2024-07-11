@@ -12,6 +12,8 @@ export class Player
 	scoringProbability : (diff) -> 1 / (1 + pow 10, diff/400)
 
 	calcRound : (r) ->
+		g.K = g.K0 * g.k ** r
+		# print 'g.K',g.K
 		if @opp[r] == g.BYE then return g.K * (1.0 - @scoringProbability 0)
 		if @opp[r] == g.PAUSE then return 0
 		a = @elo
@@ -27,7 +29,7 @@ export class Player
 	avgEloDiff : ->
 		res = []
 		for id in @opp.slice 0, @opp.length - 1
-			if id != -1 then res.push abs @elo - g.tournament.persons[id].elo
+			if id >= 0 then res.push abs @elo - g.tournament.persons[id].elo
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
 	balans : -> # färgbalans

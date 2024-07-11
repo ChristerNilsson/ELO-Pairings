@@ -1,5 +1,33 @@
 # Advanced
 
+## Simulated Annealing
+
+Start med ett stort K-värde.  
+Nästa blir en faktor * detta K-värde  
+T ex 100, 0.7 => 100 70 49 34 24 17 12 8 6 4 osv.  
+Vinst innebär att elot ökat med halva K-värdet om man möter en spelare med samma elo.  
+Detta innebär att turneringen blir mer lik Swiss.  
+Dvs stora svängningar i början, som avklingar med varje rond.  
+Detta kan vara användbart om elotalen har dålig kvalitet.  
+Utgår man från stabila elotal är det tveksamt om SA tillför något.  
+Vill spelare möta spelare man normalt inte möter, kan det dock vara en intressant metod att få lite variation.  
+Det innebär att man möter fler sämre och fler bättre spelare i början av turneringen.  
+Efter åtta-tio ronder ligger man förhoppningsvis nära sitt korrekta elotal.  
+
+## URL Limits
+
+URL:ens längd stöter ofta på gränsen 16K  
+Chrome ska klara 2M tecken, enligt uppgift, så begränsningen ligger i servern.  
+Apache/nginx: LimitRequestLine kan användas för att höja gränsen. Default: 8K eller 16K.  
+
+Localstorage löser inte publiceringsproblemet.  
+Zippning löser inte problemet. Man vill kunna redigera urlen och skicka in den igen. Ozippad.  
+
+Lokal server löser inte publiceringsproblemet.  (python -m http.server 8000)  
+Dock saknar pythons http.server begränsning av urlen.  
+Filer som behövs: Python, index.html  
+Prestanda 1560 personer tar 19 sekunder att lotta, per rond.
+
 # Observera
 
 Detta kan innebära att möjlighet att publicera större turneringar på vissa plattformar, t ex Youtube, inte går.

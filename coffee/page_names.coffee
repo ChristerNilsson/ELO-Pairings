@@ -22,15 +22,19 @@ export class Names extends Page
 	mousePressed : (event) -> @lista.mousePressed event
 	keyPressed   : (event) -> @buttons[key].click()
 
-	make : (res,header,players) ->
-		#print 'make.@t.round',@t.round
+	make : (res,header,playersByName) ->
 		res.push "NAMES" + header
 		res.push ""
 		r = @t.round
-		for [player,index],i in players			
-			#print 'player,index',player,index
+		for player,i in playersByName
+			print player,i
 			if i % @ppp == 0 then res.push "Table Name"
-			res.push "#{str(1 + index//2).padStart(3)} #{g.RINGS[player.col[r][0]]} #{player.name}"
+			if player.active and not player.bye 
+				res.push "#{str(1 + player.chair).padStart(3)} #{g.RINGS[player.col[r][0]]} #{player.name}"
+			else if not player.active
+				res.push "   P  #{player.name}"
+			else 
+				res.push "  BYE #{player.name}"
 			if i % @ppp == @ppp-1 then res.push "\f"
 		res.push "\f"
 

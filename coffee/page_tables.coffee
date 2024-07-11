@@ -20,8 +20,6 @@ export class Tables extends Page
 
 		@buttons.t.active = false
 
-		# @setLista()
-
 	setLista : =>
 		# print 'Lista', g.tournament.pairs.length
 		header = ""
@@ -92,11 +90,14 @@ export class Tables extends Page
 		@setActive()
 
 	randomResult : ->
-		for i in range @t.pairs.length
-			[a,b] = @t.pairs[i]
+		for [a,b] in @t.pairs
+			# [a,b] = @t.pairs[i]
 			pa = @t.persons[a]
 			pb = @t.persons[b]
 			res = @elo_probabilities pa.elo, pb.elo
+			print "RR a:#{a} pa.opp:#{pa.opp} pa.res:#{pa.res}| pa.col:#{pa.col}|"
+			print "RR b:#{b} pb.opp:#{pb.opp} pb.res:#{pb.res}| pb.col:#{pb.col}|"
+
 			if pa.res.length < pa.col.length then pa.res += "012"[res] 
 			if pb.res.length < pb.col.length then pb.res += "210"[res]
 		@setActive()

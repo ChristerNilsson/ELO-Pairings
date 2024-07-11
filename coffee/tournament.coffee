@@ -216,7 +216,8 @@ export class Tournament
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
-		g.K = getParam 'K',20 # 40, 20 or 10 normally
+		g.K0 = parseInt getParam 'K0', 40 # 40, 20 or 10 normally
+		g.k  = parseFloat getParam 'k',1.0
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
@@ -227,11 +228,9 @@ export class Tournament
 
 		g.N = players.length
 
-		if g.N < 4
-			print "Error: Number of players must be 4 or more!"
-			return
-		if g.N > 999
-			print "Error: Number of players must be 1999 or less!"
+		if 4 <= g.N < 1000
+		else
+			print "Error: Number of players must be between 4 and 999!"
 			return
 
 		@persons = []
@@ -308,22 +307,13 @@ export class Tournament
 
 	makeStandardFile : () ->
 		res = []
-		players = []
-		for i in range @pairs.length
-			[a,b] = @pairs[i]
-			pa = @persons[a]
-			pb = @persons[b]
-			players.push [pa,2*i]
-			players.push [pb,2*i+1]
-		players = _.sortBy players, (p) -> p[0].name
-
-		timestamp = new Date().toLocaleString('se-SE') #.slice 0,16
+		timestamp = new Date().toLocaleString 'se-SE'
 		print timestamp
 		header_after = " for " + @title + " after Round #{@round}    #{timestamp}"
 		header_in    = " for " + @title + " in Round #{@round+1}    #{timestamp}"
 
 		if @round < 999 then g.pages[g.STANDINGS].make res, header_after
-		if @round >= 0  then g.pages[g.NAMES].make     res, header_in,players
+		if @round >= 0  then g.pages[g.NAMES].make     res, header_in,@playersByName
 		if @round < 999 then g.pages[g.TABLES].make    res, header_in
 
 		res.join "\n"	
@@ -332,6 +322,7 @@ export class Tournament
 		result = []
 		for i in range(rounds.length) 
 			for [a,b] in rounds[i]
+				if a < 0 or b < 0 then continue
 				pa = @persons[a]
 				pb = @persons[b]
 				if pa.active and pb.active 
@@ -349,7 +340,7 @@ export class Tournament
 
 	dumpCanvas : (title,average,canvas) ->
 		output = ["", title]
-		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}"
+		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K0:#{g.K0} k:#{g.k}"
 		output.push ""
 		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
 		output.push '     ' + header + '   Elo    AED'
@@ -365,6 +356,8 @@ export class Tournament
 		canvas = @makeCanvas()
 		for i in range rounds.length
 			for [a,b] in rounds[i]
+				print 'drawMatrix',a,b
+				if a < 0 or b < 0 then continue
 				if @persons[a].active and @persons[b].active
 					canvas[a][b] = g.ALFABET[i]
 					canvas[b][a] = g.ALFABET[i]

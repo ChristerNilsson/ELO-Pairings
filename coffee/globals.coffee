@@ -27,7 +27,8 @@ g.NAMES     = 1
 g.STANDINGS = 2
 g.ACTIVE    = 3
 
-g.K = 40 # 40=juniors 20=normal 10=masters
+g.K0 = 40 # 40=juniors 20=normal 10=masters
+g.k = 1.0 # 0.7
 
 g.pages = []
 
@@ -82,6 +83,7 @@ assert false, 2 > 12
 # assert [[3,4],[12,1],[2,1],[12,2]], _.sortBy(xxx, (x) -> -x[1])
 
 g.calcMissing = ->
+	return 0
 	missing = 0
 	for p in g.tournament.persons
 		if p.active and p.res.length < p.col.length and not p.bye then missing++
