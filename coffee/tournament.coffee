@@ -26,16 +26,16 @@ export class Tournament
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		edges = []
-		r = g.tournament.round
+		r = @round
 		for a in range g.N
 			pa = @persons[a]
 			if not pa.active or pa.id == iBye then continue
 			for b in range a+1, g.N
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
-				if g.DIFF == 'ELO0'  then diff = abs pa.elo0 - pb.elo0
+				# if g.DIFF == 'ELO0'  then diff = abs pa.elo0 - pb.elo0
 				if g.DIFF == 'ELO' then diff = abs pa.elo(r) - pb.elo(r)
-				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
+				if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
 				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
 		edges
@@ -76,19 +76,23 @@ export class Tournament
 		pa = @persons[a]
 		pb = @persons[b]
 		if g.DIFF == 'ELO'
-			r = g.tournament.round
+			r = @round
 			da = pa.elo(r)
 			db = pb.elo(r)
-		if g.DIFF == 'ELO0'
-			da = pa.elo0
-			db = pb.elo0
-		if g.DIFF == 'ID'
-			da = pa.id
-			db = pb.id
+		if g.DIFF == 'POS'
+			da = pa.pos[r]
+			db = pb.pos[r]
 		diff = Math.abs da - db
 		diff ** g.EXPONENT
+		# print diff
+		# print 'solutionCost', a,b,diff
+		# diff
+
 	
-	solutionCosts : (pairs) -> g.sum (@solutionCost pair for pair in pairs)
+	solutionCosts : (pairs) -> 
+		# print 'solutionCosts',pairs
+		# print (@solutionCost(pair) for pair in pairs)
+		g.sumNumbers (@solutionCost(pair) for pair in pairs)
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
@@ -164,11 +168,24 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
+		@personsSorted = _.clone @persons
+		@personsSorted.sort (pa,pb) => # sorteras ALLTID på senaste elo
+			da = pa.elo @round
+			db = pb.elo @round
+			db - da
+
+		for i in range @personsSorted.length
+			@personsSorted[i].pos[@round] = i
+
+		print 'sorted',@personsSorted
+
 		print "Lottning av rond #{@round} ====================================================="
 		document.title = "Round #{@round+1}"
 
+		print 'pos',(p.id for p in @personsSorted)
+
 		edges = @makeEdges @preMatch() # -1 om bye saknas
-		edges.sort (a,b) -> b[2] - a[2]
+		# edges.sort (a,b) -> b[2] - a[2] # behöver egentligen ej sorteras. blossoms klarar sig ändå.
 		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
 
 		solution = @findSolution edges
@@ -183,6 +200,7 @@ export class Tournament
 		@pairs = @unscramble solution
 		if @round > 0
 			print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
+		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
 		@postMatch()
@@ -196,7 +214,7 @@ export class Tournament
 		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
-		if @round > 0 and g.N < 25 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
 
 		@round += 1
 

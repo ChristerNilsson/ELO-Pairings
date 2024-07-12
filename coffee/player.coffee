@@ -1,7 +1,9 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Player
-	constructor : (@id, @name="", @elo0="1400", @opp=[], @col="", @res="", @active = true) -> @cache = {}
+	constructor : (@id, @name="", @elo0="1400", @opp=[], @col="", @res="", @active = true) -> 
+		@cache = {}
+		@pos = [] # one for each round
 
 	toString : -> "#{@id} #{@name} elo0:#{@elo0} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} elo:#{@elo(g.tournament.round).toFixed(0)}"
 

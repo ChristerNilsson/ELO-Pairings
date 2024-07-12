@@ -4,20 +4,30 @@ import { Names } from './page_names.js'
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
 
+export g = {}
+
+###########################################
+
+g.K0 = 40 # 40=juniors 20=normal 10=masters
+g.k = 1.0 # 0.7
+
+# parameters that affects matching
+g.EXPONENT = 1.001 # 1 or 1.01 (or 2)
+g.DIFF = 'ELO' # ELO använder senaste elo
+#g.DIFF = 'POS' # POS använder position i Standings
+g.COLORS = 1 # www not ok
+#g.COLORS = 2 # www ok
+
+
+###########################################
+
 export print = console.log
 export range = _.range
 export scalex = (x) -> x * g.ZOOM[g.state] / 20
 export scaley = (y) -> y * g.ZOOM[g.state]
 
-export g = {}
-
 g.seed = 0
 export random = -> (((Math.sin(g.seed++)/2+0.5)*10000)%100)/100
-
-# parameters that somewhat affects matching
-g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
-g.DIFF = 'ELO' # ID or ELO0 or ELO. ELO ett krav för att spelarna ska kunna "klättra"
-g.COLORS = 1 # 1 (or 2)
 
 g.BYE = -1
 g.PAUSE = -2
@@ -27,8 +37,6 @@ g.NAMES     = 1
 g.STANDINGS = 2
 g.ACTIVE    = 3
 
-g.K0 = 40 # 40=juniors 20=normal 10=masters
-g.k = 1.0 # 0.7
 
 g.pages = []
 
@@ -99,6 +107,14 @@ g.sum = (s) ->
 		res += parseFloat item
 	res
 assert 6, g.sum '012012'
+
+g.sumNumbers = (arr) ->
+	# print 'sumNumbers',arr
+	res = 0
+	for item in arr
+		res += item
+	res
+assert 15, g.sumNumbers [1,2,3,4,5]
 
 g.txtT = (value, w, align=window.CENTER) -> 
 	if value.length > w then value = value.substring 0,w
