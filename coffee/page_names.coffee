@@ -32,15 +32,14 @@ export class Names extends Page
 		res.push ""
 		r = @t.round
 		for player,i in playersByName
-			# print player,i
-			if i % @ppp == 0 then res.push "Table Name"
-			if player.active and not g.BYE == _.last player.opp
+			if i % @t.ppp == 0 then res.push "Table Name"
+			if player.active and g.BYE != player.opp[r]
 				res.push "#{str(1 + player.chair // 2).padStart(3)} #{g.RINGS[player.col[r][0]]} #{player.name}"
 			else if not player.active
 				res.push "   P  #{player.name}"
 			else 
 				res.push "  BYE #{player.name}"
-			if i % @ppp == @ppp-1 then res.push "\f"
+			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"
 
 	draw : ->

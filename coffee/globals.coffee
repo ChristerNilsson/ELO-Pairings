@@ -13,11 +13,10 @@ g.k = 1.0 # 0.7
 
 # parameters that affects matching
 g.EXPONENT = 1.001 # 1 or 1.01 (or 2)
-g.DIFF = 'ELO' # ELO använder senaste elo
-#g.DIFF = 'POS' # POS använder position i Standings
+g.DIFF = 'ELO' # ELO använder senaste elo i Standings
+#g.DIFF = 'POS' # POS använder senaste position i Standings
 g.COLORS = 1 # www not ok
 #g.COLORS = 2 # www ok
-
 
 ###########################################
 
