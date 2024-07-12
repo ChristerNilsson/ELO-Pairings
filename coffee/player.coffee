@@ -1,7 +1,7 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Player
-	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true, @bye = false) -> 
+	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true) -> 
 
 	toString : -> "#{@id} #{@name} elo:#{@elo} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} perf:#{@performance(g.tournament.round).toFixed(0)}"
 
@@ -11,9 +11,11 @@ export class Player
 
 	scoringProbability : (diff) -> 1 / (1 + pow 10, diff/400)
 
+	#bye : -> _.some @opp, (item) -> item == g.BYE
+	bye : -> g.BYE in @opp
+
 	calcRound : (r) ->
 		g.K = g.K0 * g.k ** r
-		# print 'g.K',g.K
 		if @opp[r] == g.BYE then return g.K * (1.0 - @scoringProbability 0)
 		if @opp[r] == g.PAUSE then return 0
 		a = @elo

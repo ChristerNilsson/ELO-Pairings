@@ -11,7 +11,7 @@ export class Tables extends Page
 		@buttons.ArrowLeft  = new Button '', '', () => g.setState g.STANDINGS
 		@buttons.ArrowRight = new Button '', '', () => g.setState g.NAMES
 
-		@buttons.p      = new Button 'Pair','P = Perform pairing now',   () => @t.lotta()
+		@buttons.p      = new Button 'Pair',   'P = Perform pairing now',() => @t.lotta()
 		@buttons.K0     = new Button '0',      '0 = White Loss',         () => @handleResult '0'
 		@buttons[' ']   = new Button '½',      'space = Draw',           () => @handleResult ' '
 		@buttons.K1     = new Button '1',      '1 = White Win',          () => @handleResult '1'
@@ -95,11 +95,13 @@ export class Tables extends Page
 			pa = @t.persons[a]
 			pb = @t.persons[b]
 			res = @elo_probabilities pa.elo, pb.elo
-			print "RR a:#{a} pa.opp:#{pa.opp} pa.res:#{pa.res}| pa.col:#{pa.col}|"
-			print "RR b:#{b} pb.opp:#{pb.opp} pb.res:#{pb.res}| pb.col:#{pb.col}|"
 
 			if pa.res.length < pa.col.length then pa.res += "012"[res] 
 			if pb.res.length < pb.col.length then pb.res += "210"[res]
+
+			print "RR pa.res:#{pa.res}| pa.col:#{pa.col}| a:#{a} pa.opp:#{pa.opp}"
+			print "RR pb.res:#{pb.res}| pb.col:#{pb.col}| b:#{b} pb.opp:#{pb.opp}"
+
 		@setActive()
 
 	handleDelete : ->

@@ -14,7 +14,7 @@ export class Names extends Page
 	setLista : ->
 		@lista = new Lista @t.playersByName, "Table Name", @buttons, (p) =>
 			r = @t.round - 1
-			if p.active and not p.bye 
+			if p.active and g.BYE != _.last p.opp
 				s = "#{str(1 + p.chair // 2).padStart(3)} #{g.RINGS[p.col[r][0]]} "
 			else if not p.active
 				s = "   P  "
@@ -34,7 +34,7 @@ export class Names extends Page
 		for player,i in playersByName
 			print player,i
 			if i % @ppp == 0 then res.push "Table Name"
-			if player.active and not player.bye 
+			if player.active and not g.BYE == _.last player.opp
 				res.push "#{str(1 + player.chair // 2).padStart(3)} #{g.RINGS[player.col[r][0]]} #{player.name}"
 			else if not player.active
 				res.push "   P  #{player.name}"

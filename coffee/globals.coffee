@@ -83,11 +83,12 @@ assert false, 2 > 12
 # assert [[3,4],[12,1],[2,1],[12,2]], _.sortBy(xxx, (x) -> -x[1])
 
 g.calcMissing = ->
-	return 0
 	missing = 0
 	for p in g.tournament.persons
-		if p.active and p.res.length < p.col.length and not p.bye then missing++
-	g.message = "#{missing} results missing"
+		if not p.active then continue
+		if g.BYE == _.last p.opp then continue
+		if p.res.length < p.col.length then missing++
+	g.message = "#{missing//2} results missing"
 	missing
 
 g.sum = (s) ->

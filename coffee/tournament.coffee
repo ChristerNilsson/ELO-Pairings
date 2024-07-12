@@ -24,20 +24,20 @@ export class Tournament
 
 	write : () ->
 
-	makeEdges : (bye) -> # bye är ett id eller -1
-		print 'bye',bye
+	makeEdges : (iBye) -> # iBye är ett id eller -1
 		edges = []
 		for a in range g.N
 			pa = @persons[a]
-			if not pa.active or pa.id == bye then continue
+			if not pa.active or pa.id == iBye then continue
 			for b in range a+1, g.N
 				pb = @persons[b]
-				if not pb.active or pb.id == bye then continue
+				if not pb.active or pb.id == iBye then continue
 				if g.DIFF == 'ELO'  then diff = abs pa.elo - pb.elo
 				if g.DIFF == 'PERF' then diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
 				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
 				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
+				# else print 'omöjlig edge', [pa.id, pb.id, cost]
 		edges
 	
 	findSolution : (edges) -> 
@@ -92,21 +92,23 @@ export class Tournament
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
+		# or g.BYE == _.last p.opp
+
 		for p in @persons
-			if p.active then continue
-			p.opp.push g.PAUSE
-			p.col += ' '
-			p.res += '0'
+			if not p.active  then p.res += '0'
+			# if p.active or g.BYE != _.last p.opp then continue
+			# if p.active then continue
+			# p.opp.push g.PAUSE
+			# p.col += ' '
 
 		temp = _.filter @persons, (p) -> p.active 
 		if temp.length % 2 == 1 # Spelaren med lägst elo och som inte har haft frirond, får frironden
-			temp = _.filter @persons, (p) -> p.active and p.bye == false
-			bye = _.last temp
-			bye.bye = true
-			bye.opp.push g.BYE
-			bye.col += ' '
-			if bye.name == 'Vida Radon' then print 'preMatch',bye
-			return bye.id
+			temp = _.filter @persons, (p) -> p.active and p.bye() == false
+			pBye = _.last temp
+			pBye.opp.push g.BYE
+			pBye.col += ' '
+			pBye.res += '2'
+			return pBye.id
 		g.BYE
 
 	postMatch : ->
@@ -166,8 +168,7 @@ export class Tournament
 		document.title = "Round #{@round+1}"
 
 		start = new Date()
-		bye =  @preMatch()
-		net = @makeEdges bye # -1 om bye saknas
+		net = @makeEdges @preMatch() # -1 om bye saknas
 		print net
 		solution = @findSolution net
 
@@ -176,7 +177,7 @@ export class Tournament
 
 		for index,id in solution
 			p = @persons[index]
-			if id == -1 and (p.bye == false or p.active)
+			if id == -1 and ((g.BYE == _.last(p.opp)) or p.active)
 				print 'Solution failed!'
 				return 
 
@@ -356,7 +357,7 @@ export class Tournament
 		canvas = @makeCanvas()
 		for i in range rounds.length
 			for [a,b] in rounds[i]
-				print 'drawMatrix',a,b
+				# print 'drawMatrix',a,b
 				if a < 0 or b < 0 then continue
 				if @persons[a].active and @persons[b].active
 					canvas[a][b] = g.ALFABET[i]
