@@ -6,7 +6,7 @@ export class Page
  
 	constructor : ->
 
-		@HELP = "Available keys: Up Down Left Right PgUp PgDn Home End a i n o p r s t 1 Space 0 Delete"
+		@HELP = "A = Active"
 		@buttons = {}
 
 		@buttons.s = new Button 'Standings', 'S = Standings', () => g.setState g.STANDINGS

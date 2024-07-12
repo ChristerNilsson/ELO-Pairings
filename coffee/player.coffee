@@ -1,37 +1,36 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Player
-	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true) -> 
+	constructor : (@id, @name="", @elo0="1400", @opp=[], @col="", @res="", @active = true) -> @cache = {}
 
-	toString : -> "#{@id} #{@name} elo:#{@elo} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} perf:#{@performance(g.tournament.round).toFixed(0)}"
+	toString : -> "#{@id} #{@name} elo0:#{@elo0} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} elo:#{@elo(g.tournament.round).toFixed(0)}"
 
 	toggle : -> 
 		@active = not @active
 		g.tournament.paused = (p.id for p in g.tournament.persons when not p.active)
 
-	scoringProbability : (diff) -> 1 / (1 + pow 10, diff/400)
-
-	#bye : -> _.some @opp, (item) -> item == g.BYE
 	bye : -> g.BYE in @opp
 
 	calcRound : (r) ->
 		g.K = g.K0 * g.k ** r
-		if @opp[r] == g.BYE then return g.K * (1.0 - @scoringProbability 0)
+		if @opp[r] == g.BYE then return g.K * (1.0 - g.scoringProbability 0)
 		if @opp[r] == g.PAUSE then return 0
-		a = @elo
-		b = g.tournament.persons[@opp[r]].elo
+		a = @elo r
+		b = g.tournament.persons[@opp[r]].elo r
 		diff = b - a
-		if @res[r] == '2' then return g.K * (1.0 - @scoringProbability diff)
-		if @res[r] == '1' then return g.K * (0.5 - @scoringProbability diff)
-		if @res[r] == '0' then return g.K * (0.0 - @scoringProbability diff)
+		if @res[r] == '2' then return g.K * (1.0 - g.scoringProbability diff)
+		if @res[r] == '1' then return g.K * (0.5 - g.scoringProbability diff)
+		if @res[r] == '0' then return g.K * (0.0 - g.scoringProbability diff)
 		0
 
-	performance : (rounds) -> @elo + g.sum (@calcRound r for r in range rounds)
+	elo : (rounds) ->
+		if rounds of @cache then return @cache[rounds]
+		@cache[rounds] = @elo0 + g.sum (@calcRound r for r in range rounds) # latest elos
 
 	avgEloDiff : ->
 		res = []
 		for id in @opp.slice 0, @opp.length - 1
-			if id >= 0 then res.push abs @elo - g.tournament.persons[id].elo
+			if id >= 0 then res.push abs @elo0 - g.tournament.persons[id].elo0
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
 	balans : -> # färgbalans
@@ -42,7 +41,7 @@ export class Player
 		result
 
 	read : (player) -> 
-		@elo = parseInt player[0]
+		@elo0 = parseInt player[0]
 		@name = player[1]
 		@opp = []
 		@col = ""
@@ -58,7 +57,7 @@ export class Player
 
 	write : -> # (1234!Christer!(12w0!23b1!142)) Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
-		res.push @elo
+		res.push @elo0
 		res.push @name.replaceAll ' ','_'
 		r = @opp.length - 1
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range(r)) 

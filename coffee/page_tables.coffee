@@ -38,12 +38,12 @@ export class Tables extends Page
 
 			nr = index + 1
 			s = ""
-			s +=       g.txtT (pos+1).toString(),3, window.RIGHT
-			s += ' ' + g.txtT pa.elo.toString(), 4, window.RIGHT
-			s += ' ' + g.txtT pa.name,          25, window.LEFT
-			s += ' ' + g.txtT both,              7, window.CENTER
-			s += ' ' + g.txtT pb.name,          25, window.LEFT
-			s += ' ' + g.txtT pb.elo.toString(), 4, window.RIGHT
+			s +=       g.txtT (pos+1).toString(), 3, window.RIGHT
+			s += ' ' + g.txtT pa.elo0.toString(), 4, window.RIGHT
+			s += ' ' + g.txtT pa.name,           25, window.LEFT
+			s += ' ' + g.txtT both,               7, window.CENTER
+			s += ' ' + g.txtT pb.name,           25, window.LEFT
+			s += ' ' + g.txtT pb.elo0.toString(), 4, window.RIGHT
 			s
 
 		@lista.errors = []
@@ -91,16 +91,15 @@ export class Tables extends Page
 
 	randomResult : ->
 		for [a,b] in @t.pairs
-			# [a,b] = @t.pairs[i]
 			pa = @t.persons[a]
 			pb = @t.persons[b]
-			res = @elo_probabilities pa.elo, pb.elo
+			res = @elo_probabilities pa.elo0, pb.elo0
 
 			if pa.res.length < pa.col.length then pa.res += "012"[res] 
 			if pb.res.length < pb.col.length then pb.res += "210"[res]
 
-			print "RR pa.res:#{pa.res}| pa.col:#{pa.col}| a:#{a} pa.opp:#{pa.opp}"
-			print "RR pb.res:#{pb.res}| pb.col:#{pb.col}| b:#{b} pb.opp:#{pb.opp}"
+			# print "RR pa.res:#{pa.res}| pa.col:#{pa.col}| a:#{a} pa.opp:#{pa.opp}"
+			# print "RR pb.res:#{pb.res}| pb.col:#{pb.col}| b:#{b} pb.opp:#{pb.opp}"
 
 		@setActive()
 
@@ -128,5 +127,5 @@ export class Tables extends Page
 			pa = @t.persons[a]
 			pb = @t.persons[b]
 			res.push ""
-			res.push _.pad(i+1,6) + pa.elo + ' ' + g.txtT(pa.name, 25, window.LEFT) + ' ' + _.pad("|____| - |____|",20) + ' ' + pb.elo + ' ' + g.txtT(pb.name, 25, window.LEFT)
+			res.push _.pad(i+1,6) + pa.elo0 + ' ' + g.txtT(pa.name, 25, window.LEFT) + ' ' + _.pad("|____| - |____|",20) + ' ' + pb.elo0 + ' ' + g.txtT(pb.name, 25, window.LEFT)
 			if i % @t.tpp == @t.tpp-1 then res.push "\f"

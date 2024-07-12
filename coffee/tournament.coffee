@@ -26,18 +26,18 @@ export class Tournament
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		edges = []
+		r = g.tournament.round
 		for a in range g.N
 			pa = @persons[a]
 			if not pa.active or pa.id == iBye then continue
 			for b in range a+1, g.N
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
-				if g.DIFF == 'ELO'  then diff = abs pa.elo - pb.elo
-				if g.DIFF == 'PERF' then diff = abs pa.performance(g.tournament.round) - pb.performance(g.tournament.round)
+				if g.DIFF == 'ELO0'  then diff = abs pa.elo0 - pb.elo0
+				if g.DIFF == 'ELO' then diff = abs pa.elo(r) - pb.elo(r)
 				if g.DIFF == 'ID'   then diff = abs pa.id - pb.id
 				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
-				# else print 'omöjlig edge', [pa.id, pb.id, cost]
 		edges
 	
 	findSolution : (edges) -> 
@@ -71,24 +71,24 @@ export class Tournament
 				solution[i] = -1
 		result
 
-	solutionCost : (pairs) ->
-		summa = 0
-		for [a,b] in pairs
-			pa = @persons[a]
-			pb = @persons[b]
-			if g.DIFF == 'PERF'
-				da = pa.performance(g.tournament.round)
-				db = pb.performance(g.tournament.round)
-			if g.DIFF == 'ELO'
-				da = pa.elo
-				db = pb.elo
-			if g.DIFF == 'ID'
-				da = pa.id
-				db = pb.id
-			diff = Math.abs da - db
-			print a,b,da,db,diff
-			summa += diff ** g.EXPONENT
-		summa
+	solutionCost : (pair) ->
+		[a,b] = pair
+		pa = @persons[a]
+		pb = @persons[b]
+		if g.DIFF == 'ELO'
+			r = g.tournament.round
+			da = pa.elo(r)
+			db = pb.elo(r)
+		if g.DIFF == 'ELO0'
+			da = pa.elo0
+			db = pb.elo0
+		if g.DIFF == 'ID'
+			da = pa.id
+			db = pb.id
+		diff = Math.abs da - db
+		diff ** g.EXPONENT
+	
+	solutionCosts : (pairs) -> g.sum (@solutionCost pair for pair in pairs)
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
@@ -164,15 +164,14 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
-		print "Lottning av rond #{@round}"
+		print "Lottning av rond #{@round} ====================================================="
 		document.title = "Round #{@round+1}"
 
-		start = new Date()
-		net = @makeEdges @preMatch() # -1 om bye saknas
-		print net
-		solution = @findSolution net
+		edges = @makeEdges @preMatch() # -1 om bye saknas
+		edges.sort (a,b) -> b[2] - a[2]
+		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
 
-		print 'cpu:',new Date() - start,'ms'
+		solution = @findSolution edges
 		print 'solution', solution
 
 		for index,id in solution
@@ -182,8 +181,9 @@ export class Tournament
 				return 
 
 		@pairs = @unscramble solution
-		print 'pairs',@pairs
-		print 'solutionCost', @solutionCost @pairs
+		if @round > 0
+			print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
+		print 'solutionCosts', @solutionCosts @pairs
 
 		@postMatch()
 
@@ -196,12 +196,11 @@ export class Tournament
 		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
-		if @round > 0 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
-		# if @round > 0 then downloadFile @makeMatrix(), "#{@title} R#{@round} Matrix.txt" # (time outar, filen sparas inte)
+		if @round > 0 and g.N < 25 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
 
 		@round += 1
 
-		print 'lotta round', @round
+		# print 'lotta round', @round
 		g.state = g.TABLES
 
 	fetchURL : (url = location.search) ->
@@ -249,16 +248,16 @@ export class Tournament
 		print 'fetchURL.persons', @persons
 		
 		@persons.sort (a,b) -> 
-			if a.elo != b.elo then return b.elo - a.elo
+			if a.elo0 != b.elo0 then return b.elo0 - a.elo0
 			if a.name > b.name then 1 else -1
 		# @persons = @persons.reverse()
 
-		XMAX = @persons[0].elo
-		XMIN = _.last(@persons).elo
+		XMAX = @persons[0].elo0
+		XMIN = _.last(@persons).elo0
 		for i in range g.N
 			@persons[i].id = i
 
-		print (p.elo for p in @persons)
+		print (p.elo0 for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo
 
 		@playersByName = _.sortBy @persons, (player) -> player.name
@@ -309,7 +308,7 @@ export class Tournament
 	makeStandardFile : () ->
 		res = []
 		timestamp = new Date().toLocaleString 'se-SE'
-		print timestamp
+		# print timestamp
 		header_after = " for " + @title + " after Round #{@round}    #{timestamp}"
 		header_in    = " for " + @title + " in Round #{@round+1}    #{timestamp}"
 
@@ -327,7 +326,7 @@ export class Tournament
 				pa = @persons[a]
 				pb = @persons[b]
 				if pa.active and pb.active 
-					result.push abs(pa.elo-pb.elo) 
+					result.push abs(pa.elo0 - pb.elo0) 
 		(g.sum(result)/result.length).toFixed 2
 
 	makeCanvas : ->
@@ -345,7 +344,7 @@ export class Tournament
 		output.push ""
 		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
 		output.push '     ' + header + '   Elo    AED'
-		ordning = (p.elo for p in @persons)
+		ordning = (p.elo0 for p in @persons)
 		for i in range canvas.length
 			row = canvas[i]
 			nr = str(i + 1).padStart(3)
@@ -365,7 +364,6 @@ export class Tournament
 		@dumpCanvas title,@distans(rounds),canvas
 
 	makeMatrix : ->
-		# return
 		matrix = []
 		for r in range @round
 			res = []

@@ -16,7 +16,7 @@ export random = -> (((Math.sin(g.seed++)/2+0.5)*10000)%100)/100
 
 # parameters that somewhat affects matching
 g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
-g.DIFF = 'PERF' # ID or ELO or PERF. PERF ett krav för att spelarna ska kunna "klättra"
+g.DIFF = 'ELO' # ID or ELO0 or ELO. ELO ett krav för att spelarna ska kunna "klättra"
 g.COLORS = 1 # 1 (or 2)
 
 g.BYE = -1
@@ -33,6 +33,8 @@ g.k = 1.0 # 0.7
 g.pages = []
 
 g.message = ""
+
+g.scoringProbability = (diff) -> 1 / (1 + pow 10, diff/400)
 
 g.showType = (a) -> if typeof a == 'string' then "'#{a}'" else a
 export assert = (a,b) -> if not _.isEqual a,b then print "Assert failure: #{JSON.stringify a} != #{JSON.stringify b}"
