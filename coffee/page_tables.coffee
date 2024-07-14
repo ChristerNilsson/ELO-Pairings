@@ -1,7 +1,14 @@
-import { g,print,range,scalex,scaley,random } from './globals.js' 
+import { g,print,range,scalex,scaley } from './globals.js' 
 import { Page } from './page.js' 
 import { Button,spread } from './button.js'  
 import { Lista } from './lista.js' 
+
+compare = (pa,pb) ->
+	a = pa.name[0]
+	b = pb.name[0]
+	if a > b  then return 0
+	if a == b then return 1
+	if a < b  then return 2
 
 export class Tables extends Page
 
@@ -61,15 +68,15 @@ export class Tables extends Page
 			button.draw()
 		@lista.draw()
 
-	elo_probabilities : (R_W, R_B, draw=0.2) ->
-		E_W = 1 / (1 + 10 ** ((R_B - R_W) / 400))
-		win = E_W - draw / 2
-		loss = (1 - E_W) - draw / 2
-		x = random()
-		index = 2
-		if x < loss + draw then index = 1
-		if x < loss then index = 0
-		index
+	# elo_probabilities : (R_W, R_B, draw=0.2) ->
+	# 	E_W = 1 / (1 + 10 ** ((R_B - R_W) / 400))
+	# 	win = E_W - draw / 2
+	# 	loss = (1 - E_W) - draw / 2
+	# 	x = random()
+	# 	index = 2
+	# 	if x < loss + draw then index = 1
+	# 	if x < loss then index = 0
+	# 	index
 	
 	setActive : ->
 		@buttons.p.active = g.calcMissing() == 0
@@ -90,13 +97,15 @@ export class Tables extends Page
 		@setActive()
 
 	randomResult : ->
-		for [a,b] in @t.pairs
+		for [a,b],i in @t.pairs
+			# [a,b] = @t.pairs[i]
 			pa = @t.persons[a]
 			pb = @t.persons[b]
-			res = @elo_probabilities pa.elo0, pb.elo0
+#			res = @elo_probabilities pa.elo0, pb.elo0
+			res = compare pa,pb
 
-			if pa.res.length < pa.col.length then pa.res += "012"[res] 
-			if pb.res.length < pb.col.length then pb.res += "210"[res]
+			if pa.res.length < pa.col.length then pa.res += res #"012"[res] 
+			if pb.res.length < pb.col.length then pb.res += 2 - res #"210"[res]
 
 			# print "RR pa.res:#{pa.res}| pa.col:#{pa.col}| a:#{a} pa.opp:#{pa.opp}"
 			# print "RR pb.res:#{pb.res}| pb.col:#{pb.col}| b:#{b} pb.opp:#{pb.opp}"

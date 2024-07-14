@@ -198,6 +198,8 @@ export class Tournament
 				return 
 
 		@pairs = @unscramble solution
+		if @round == 0
+			print 'pairs', @pairs
 		if @round > 0
 			print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
 		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
@@ -235,7 +237,7 @@ export class Tournament
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
 		g.K0 = parseInt getParam 'K0', 40 # 40, 20 or 10 normally
-		g.k  = parseFloat getParam 'k',1.0
+		g.k  = parseFloat getParam 'k',1
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
