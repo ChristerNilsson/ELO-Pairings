@@ -14,19 +14,19 @@ export class Standings extends Page
 
 	setLista : ->
 
-		rheader = _.map range(1,@t.round+1), (i) -> "#{i%10} "
-		rheader = rheader.join ' '
+		rheader = _.map range(1,@t.round+1), (i) -> " #{i%10} "
+		rheader = rheader.join ''
 		header = ""
 		header +=       g.txtT "Pos",          3,window.RIGHT
 		header += ' ' + g.txtT "Id",           3,window.RIGHT
 		header += ' ' + g.txtT "Elo0",         4,window.RIGHT
 		header += ' ' + g.txtT "Name",        25,window.LEFT
-		header += ' ' + g.txtT rheader, 3*@round,window.LEFT 
+		header += '' + g.txtT rheader, 3*@round,window.LEFT 
 		header += ' ' + g.txtT "Chg",          7,window.RIGHT
 		header += ' ' + g.txtT "Elo",          6,window.RIGHT
 
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
-		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -p.elo(@t.round)
+		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round) - p.elo0)
 
 		print (p.elo(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 
@@ -66,9 +66,22 @@ export class Standings extends Page
 			if b == g.PAUSE then g.help = "#{pa.elo0} #{pa.name} has a pause => chg = 0"
 			if b >= 0				
 				pb = @t.persons[b]
-				PD = g.scoringProbability pa.elo0 - pb.elo0
+				diff = pa.elo(r) - pb.elo(r)
+				PD = g.scoringProbability diff
 				chg = pa.calcRound r
-				g.help = "#{pa.elo0} #{pa.name} vs #{pb.elo0} #{pb.name}:#{g.prBoth(pa.res[r])}diff:#{pa.elo0-pb.elo0} K:#{(g.K0*g.k**r).toFixed(1)} PD:#{PD.toFixed(3)} => chg:#{chg.toFixed(1)}"
+
+				s = ""
+				s +=       g.txtT '',                      3, window.RIGHT
+				s += ' ' + g.txtT (1+pb.id).toString(),    3, window.RIGHT
+				s += ' ' + g.txtT pb.elo0.toString(),      4, window.RIGHT
+				s += ' ' + g.txtT pb.name,                25, window.LEFT
+				s += ' ' + g.txtT '',       3 * (@t.round-1), window.LEFT
+				s += ' ' + g.txtT chg.toFixed(1),          6, window.RIGHT
+				s += ' ' + g.txtT pb.elo(r).toFixed(1),    6, window.RIGHT
+				s += ' ' + g.txtT g.prBth(pa.res[r]),      3, window.LEFT
+				s += ' ' + g.txtT diff.toFixed(1),         6, window.RIGHT
+				s += ' ' + g.txtT PD.toFixed(3),           5, window.RIGHT
+				g.help = s
 		else
 			g.help = ""
 
@@ -83,7 +96,7 @@ export class Standings extends Page
 		for key,button of @buttons
 			button.draw()
 		textAlign LEFT
-		text g.help, 10, 58
+		text g.help, 10, 3*g.ZOOM[g.state]
 
 	show : (s,x,y,bg,fg) ->
 		fill bg

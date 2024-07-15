@@ -1,14 +1,17 @@
 # Elo Pairings
 
-* All players meet players with similar Elo rating
-* All Elo ratings are also updated after each round
+* Players meet players with similar Elo rating
+* Elo ratings are updated after each round
+* Standings are sorted on Elo Change
+* Similar to handicap systems in [Golf](https://en.wikipedia.org/wiki/Handicap_(golf)), [Sailing](https://en.wikipedia.org/wiki/Handicap_(sailing)#:~:text=The%20handicap%20number%20assigned%20to,be%20behind%20the%20theoretical%20yacht.) and [Go](https://en.wikipedia.org/wiki/Handicapping_in_Go)
 
-# Philosophy
+# Historical Chess handicaps
 
-* Players should always meet players of similar strength
-* Elo rating is used instead of adding game scores (1,0.5 and 0)
-* Similar Elo rating has higher priority then similar score
-* The Elo rating is used as the primary measurement and reflects the coming official Elo update.
+* Material, the stronger player plays without one piece
+* Moves, the weaker player gets one or more extra moves in the opening
+* Opening, the stronger player makes one or more weak moves
+	* e.g. a4 or h4
+* Clock, the weaker player gets extra time
 
 # Color handling
 

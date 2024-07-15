@@ -126,4 +126,5 @@ g.txtT = (value, w, align=window.CENTER) ->
 		res = lt + value + rt
 	res
 
+g.prBth = (score) -> "#{'0½1'[score]}-#{'1½0'[score]}"
 g.prBoth = (score) -> " #{'0½1'[score]} - #{'1½0'[score]} "
