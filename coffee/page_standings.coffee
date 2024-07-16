@@ -27,6 +27,7 @@ export class Standings extends Page
 
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round) - p.elo0)
+		# @playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round))
 
 		print (p.elo(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 

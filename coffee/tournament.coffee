@@ -236,7 +236,7 @@ export class Tournament
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
-		g.K0 = parseInt getParam 'K0', 40 # 40, 20 or 10 normally
+		g.K0 = parseInt getParam 'K0', 10 # 40, 20 or 10 normally
 		g.k  = parseFloat getParam 'k',1
 
 		players = urlParams.get 'PLAYERS'
