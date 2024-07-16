@@ -8,8 +8,9 @@ export g = {}
 
 ###########################################
 
-g.K0 = 40 # 40=juniors 20=normal 10=masters
-g.k = 1.0 # 0.7
+g.K = 2
+# g.K0 = 40 # 40=juniors 20=normal 10=masters
+# g.k = 1.0 # 0.7
 
 # parameters that affects matching
 g.EXPONENT = 1.01 # 1 or 1.01 (or 2)

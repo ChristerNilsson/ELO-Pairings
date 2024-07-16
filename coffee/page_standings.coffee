@@ -19,11 +19,11 @@ export class Standings extends Page
 		header = ""
 		header +=       g.txtT "Pos",          3,window.RIGHT
 		header += ' ' + g.txtT "Id",           3,window.RIGHT
-		header += ' ' + g.txtT "Elo0",         4,window.RIGHT
+		header += ' ' + g.txtT "Elo",          4,window.RIGHT
 		header += ' ' + g.txtT "Name",        25,window.LEFT
 		header += '' + g.txtT rheader, 3*@round,window.LEFT 
-		header += ' ' + g.txtT "Chg",          7,window.RIGHT
-		header += ' ' + g.txtT "Elo",          6,window.RIGHT
+		header += ' ' + g.txtT "Change",       8,window.RIGHT
+		# header += ' ' + g.txtT "Elo",          6,window.RIGHT
 
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round) - p.elo0)
@@ -42,8 +42,8 @@ export class Standings extends Page
 			s += ' ' + g.txtT p.elo0.toString(),      4, window.RIGHT
 			s += ' ' + g.txtT p.name,                25, window.LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1), window.CENTER
-			s += ' ' + g.txtT (elo - p.elo0).toFixed(1), 6, window.RIGHT
-			s += ' ' + g.txtT elo.toFixed(1),         6, window.RIGHT
+			s += ' ' + g.txtT (elo - p.elo0).toFixed(3), 7, window.RIGHT
+			# s += ' ' + g.txtT elo.toFixed(1),         6, window.RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)
@@ -59,7 +59,7 @@ export class Standings extends Page
 		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
 		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
 		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
-			g.K = g.K0 * g.k ** r
+			# g.K = 2 # g.K0 * g.k ** r
 			a = iy
 			pa = @playersByPerformance[a]
 			b = pa.opp[r]
@@ -67,8 +67,9 @@ export class Standings extends Page
 			if b == g.PAUSE then g.help = "#{pa.elo0} #{pa.name} has a pause => chg = 0"
 			if b >= 0				
 				pb = @t.persons[b]
-				diff = pa.elo(r) - pb.elo(r)
-				PD = g.scoringProbability diff
+				# diff = pa.elo(r) - pb.elo(r)
+				diff = pa.elo0 - pb.elo0
+				PD = g.K * g.scoringProbability diff
 				chg = pa.calcRound r
 
 				s = ""
@@ -77,11 +78,12 @@ export class Standings extends Page
 				s += ' ' + g.txtT pb.elo0.toString(),      4, window.RIGHT
 				s += ' ' + g.txtT pb.name,                25, window.LEFT
 				s += ' ' + g.txtT '',       3 * (@t.round-1), window.LEFT
-				s += ' ' + g.txtT chg.toFixed(1),          6, window.RIGHT
-				s += ' ' + g.txtT pb.elo(r).toFixed(1),    6, window.RIGHT
+				s += ' ' + g.txtT chg.toFixed(3),          7, window.RIGHT
+#				s += ' ' + g.txtT pb.elo(r).toFixed(1),    6, window.RIGHT
+				# s += ' ' + g.txtT pb.elo0.toFixed(1),    6, window.RIGHT
 				s += ' ' + g.txtT g.prBth(pa.res[r]),      3, window.LEFT
-				s += ' ' + g.txtT diff.toFixed(1),         6, window.RIGHT
-				s += ' ' + g.txtT PD.toFixed(3),           5, window.RIGHT
+				s += ' ' + g.txtT diff,                    6, window.RIGHT
+				# s += ' ' + g.txtT PD.toFixed(3),           5, window.RIGHT
 				g.help = s
 		else
 			g.help = ""

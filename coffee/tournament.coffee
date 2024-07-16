@@ -34,7 +34,8 @@ export class Tournament
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
 				# if g.DIFF == 'ELO0'  then diff = abs pa.elo0 - pb.elo0
-				if g.DIFF == 'ELO' then diff = abs pa.elo(r) - pb.elo(r)
+				#if g.DIFF == 'ELO' then diff = abs pa.elo(r) - pb.elo(r)
+				if g.DIFF == 'ELO' then diff = abs pa.elo0 - pb.elo0
 				if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
 				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
@@ -77,8 +78,8 @@ export class Tournament
 		pb = @persons[b]
 		if g.DIFF == 'ELO'
 			r = @round
-			da = pa.elo(r)
-			db = pb.elo(r)
+			da = pa.elo0 #(r)
+			db = pb.elo0 #(r)
 		if g.DIFF == 'POS'
 			da = pa.pos[r]
 			db = pb.pos[r]
@@ -170,8 +171,8 @@ export class Tournament
 
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => # sorteras ALLTID på senaste elo
-			da = pa.elo @round
-			db = pb.elo @round
+			da = pa.elo0 # @round
+			db = pb.elo0 # @round
 			db - da
 
 		for i in range @personsSorted.length
@@ -201,7 +202,8 @@ export class Tournament
 		if @round == 0
 			print 'pairs', @pairs
 		if @round > 0
-			print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
+			# print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
+			print 'pairs', ([a, b, @persons[a].elo0, @persons[b].elo0, Math.abs(@persons[a].elo0 - @persons[b].elo0.toFixed(1)] for [a,b] in @pairs)
 		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
@@ -236,8 +238,8 @@ export class Tournament
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
 		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP',60 # Players Per Page
-		g.K0 = parseInt getParam 'K0', 10 # 40, 20 or 10 normally
-		g.k  = parseFloat getParam 'k',1
+		# g.K0 = parseInt getParam 'K0', 10 # 40, 20 or 10 normally
+		# g.k  = parseFloat getParam 'k',1
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
