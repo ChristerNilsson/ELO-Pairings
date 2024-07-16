@@ -5,8 +5,6 @@ export class Player
 		@cache = {}
 		@pos = [] # one for each round
 
-	# toString : -> "#{@id} #{@name} elo0:#{@elo0} #{@col} res:#{@res} opp:[#{@opp}] score:#{@score().toFixed(1)} elo:#{@elo(g.tournament.round).toFixed(0)}"
-
 	toggle : -> 
 		@active = not @active
 		g.tournament.paused = (p.id for p in g.tournament.persons when not p.active)
@@ -16,17 +14,15 @@ export class Player
 	calcRound : (r) ->
 		if @opp[r] == g.BYE then return g.K * (1.0 - g.scoringProbability 0)
 		if @opp[r] == g.PAUSE then return 0
+		if r >= @res.length then return 0
 		a = @elo0
 		b = g.tournament.persons[@opp[r]].elo0
 		diff = b - a
 		g.K * (@res[r]/2 - g.scoringProbability diff)
-		# if @res[r] == '1' then return g.K * (0.5 - g.scoringProbability diff)
-		# if @res[r] == '0' then return g.K * (0.0 - g.scoringProbability diff)
-		# 0
 
-	elo : (rounds) ->
+	change : (rounds) ->
 		if rounds of @cache then return @cache[rounds]
-		@cache[rounds] = @elo0 + g.sum (@calcRound r for r in range rounds) # latest elos
+		@cache[rounds] = g.sum (@calcRound r for r in range rounds)
 
 	avgEloDiff : ->
 		res = []

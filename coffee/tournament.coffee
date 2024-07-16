@@ -163,6 +163,21 @@ export class Tournament
 		document.body.removeChild a
 		URL.revokeObjectURL url
 
+	scoringProbability : (diff) -> 1 / (1 + 10 ** (diff / 400))
+
+	# updateElo : (pa,pb) =>
+	# 	diff = pb.elo0 - pa.elo0
+	# 	if @round == 0
+	# 		amount = 0
+	# 	else
+	# 		amount = pa.res[@round-1] / 2 - @scoringProbability(diff)
+	# 	print 'updateElo', @round, pa.res, pb.elo0, pa.elo0, diff, amount
+	# 	aold = pa.elo
+	# 	bold = pb.elo
+	# 	pa.elo +=  amount # g.K * amount
+	# 	pb.elo += -amount #-g.K * amount
+	# 	print pa.name, aold, '->',pa.elo, pb.name, bold, '->',pb.elo, diff, g.K * amount
+
 	lotta : () ->
 
 		if @round > 0 and g.calcMissing() > 0
@@ -170,9 +185,9 @@ export class Tournament
 			return
 
 		@personsSorted = _.clone @persons
-		@personsSorted.sort (pa,pb) => # sorteras ALLTID på senaste elo
-			da = pa.elo0 # @round
-			db = pb.elo0 # @round
+		@personsSorted.sort (pa,pb) => 
+			da = pa.elo0
+			db = pb.elo0
 			db - da
 
 		for i in range @personsSorted.length
@@ -280,6 +295,7 @@ export class Tournament
 		XMIN = _.last(@persons).elo0
 		for i in range g.N
 			@persons[i].id = i
+			@persons[i].elo = parseInt @persons[i].elo0
 
 		print (p.elo0 for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo

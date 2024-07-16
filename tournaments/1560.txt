@@ -1,6 +1,6 @@
-127.0.0.1:5500
-
 localhost:8000
+
+127.0.0.1:5500
 ?TOUR=Tyresö_Open_2024
 &DATE=2024-05-03
 &PLAYERS=

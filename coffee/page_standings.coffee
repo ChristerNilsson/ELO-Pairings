@@ -23,27 +23,23 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Name",        25,window.LEFT
 		header += '' + g.txtT rheader, 3*@round,window.LEFT 
 		header += ' ' + g.txtT "Change",       8,window.RIGHT
-		# header += ' ' + g.txtT "Elo",          6,window.RIGHT
 
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
-		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round) - p.elo0)
-		# @playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.elo(@t.round))
+		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round))
 
-		print (p.elo(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
+		print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
 			textAlign LEFT
 			fill 'black' 
-			elo = p.elo @t.round-1
 			s = ""
 			s +=       g.txtT (1+pos).toString(),     3, window.RIGHT
 			s += ' ' + g.txtT (1+p.id).toString(),    3, window.RIGHT
 			s += ' ' + g.txtT p.elo0.toString(),      4, window.RIGHT
 			s += ' ' + g.txtT p.name,                25, window.LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1), window.CENTER
-			s += ' ' + g.txtT (elo - p.elo0).toFixed(3), 7, window.RIGHT
-			# s += ' ' + g.txtT elo.toFixed(1),         6, window.RIGHT
+			s += ' ' + g.txtT (p.change(@t.round)).toFixed(5), 8, window.RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)
@@ -59,7 +55,6 @@ export class Standings extends Page
 		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
 		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
 		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
-			# g.K = 2 # g.K0 * g.k ** r
 			a = iy
 			pa = @playersByPerformance[a]
 			b = pa.opp[r]
@@ -67,7 +62,6 @@ export class Standings extends Page
 			if b == g.PAUSE then g.help = "#{pa.elo0} #{pa.name} has a pause => chg = 0"
 			if b >= 0				
 				pb = @t.persons[b]
-				# diff = pa.elo(r) - pb.elo(r)
 				diff = pa.elo0 - pb.elo0
 				PD = g.K * g.scoringProbability diff
 				chg = pa.calcRound r
@@ -81,7 +75,7 @@ export class Standings extends Page
 				s += ' ' + g.txtT chg.toFixed(3),          7, window.RIGHT
 #				s += ' ' + g.txtT pb.elo(r).toFixed(1),    6, window.RIGHT
 				# s += ' ' + g.txtT pb.elo0.toFixed(1),    6, window.RIGHT
-				s += ' ' + g.txtT g.prBth(pa.res[r]),      3, window.LEFT
+				# s += ' ' + g.txtT g.prBth(pa.res[r]),      3, window.LEFT
 				s += ' ' + g.txtT diff,                    6, window.RIGHT
 				# s += ' ' + g.txtT PD.toFixed(3),           5, window.RIGHT
 				g.help = s
@@ -137,7 +131,7 @@ export class Standings extends Page
 		if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12,window.LEFT
 		
 		for person,i in @playersByPerformance
-			elo = person.elo @t.round
+			# elo = person.elo # @t.round
 			if i % @t.ppp == 0 then res.push header
 			s = ""
 			s +=       g.txtT (1+i).toString(),          3, window.RIGHT
@@ -151,8 +145,8 @@ export class Standings extends Page
 				if person.opp[r] >= 0
 					s += g.txtT "#{1+person.opp[r]}#{g.RINGS[person.col[r][0]]}#{"0½1"[person.res[r]]}", 6, window.RIGHT			
 
-			s += ' ' + g.txtT (elo - person.elo0).toFixed(1),  6, window.RIGHT
-			s += ' ' + g.txtT elo.toFixed(2),  7, window.RIGHT
+			s += ' ' + g.txtT (person.change(@t.round)).toFixed(1),  6, window.RIGHT
+			# s += ' ' + g.txtT elo.toFixed(2),  7, window.RIGHT
 			# s += ' ' + g.txtT person.elo(@t.round).toFixed(1),  8, window.RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
