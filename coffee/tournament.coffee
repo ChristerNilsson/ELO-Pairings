@@ -185,12 +185,14 @@ export class Tournament
 
 		print 'pos',(p.id for p in @personsSorted)
 
+		start = new Date()
 		edges = @makeEdges @preMatch() # -1 om bye saknas
 		# edges.sort (a,b) -> b[2] - a[2] # behöver egentligen ej sorteras. blossoms klarar sig ändå.
 		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
 
 		solution = @findSolution edges
 		print 'solution', solution
+		print 'cpu', (new Date() - start)
 
 		for index,id in solution
 			p = @persons[index]
@@ -203,7 +205,7 @@ export class Tournament
 			print 'pairs', @pairs
 		if @round > 0
 			# print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
-			print 'pairs', ([a, b, @persons[a].elo0, @persons[b].elo0, Math.abs(@persons[a].elo0 - @persons[b].elo0.toFixed(1)] for [a,b] in @pairs)
+			print 'pairs', ([a, b, @persons[a].elo0, @persons[b].elo0, Math.abs(@persons[a].elo0 - @persons[b].elo0).toFixed(1)] for [a,b] in @pairs)
 		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
