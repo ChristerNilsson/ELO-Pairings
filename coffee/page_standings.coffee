@@ -126,12 +126,10 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Name", 25, window.LEFT
 		for r in range @t.round
 			header += g.txtT "#{r+1}",  6,window.RIGHT
-		header += ' ' + g.txtT "Chg",   7,window.RIGHT
-		header += ' ' + g.txtT "Elo",   7,window.RIGHT
+		header += ' ' + g.txtT "Quality", 10,window.RIGHT
 		if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12,window.LEFT
 		
 		for person,i in @playersByPerformance
-			# elo = person.elo # @t.round
 			if i % @t.ppp == 0 then res.push header
 			s = ""
 			s +=       g.txtT (1+i).toString(),          3, window.RIGHT
@@ -145,9 +143,7 @@ export class Standings extends Page
 				if person.opp[r] >= 0
 					s += g.txtT "#{1+person.opp[r]}#{g.RINGS[person.col[r][0]]}#{"0½1"[person.res[r]]}", 6, window.RIGHT			
 
-			s += ' ' + g.txtT (person.change(@t.round)).toFixed(1),  6, window.RIGHT
-			# s += ' ' + g.txtT elo.toFixed(2),  7, window.RIGHT
-			# s += ' ' + g.txtT person.elo(@t.round).toFixed(1),  8, window.RIGHT
+			s += ' ' + g.txtT (person.change(@t.round+1)).toFixed(5),  9, window.RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"
