@@ -1,4 +1,4 @@
-import { Tournament } from './tournament.js' 
+# import { Tournament } from './tournament.js' 
 import { Tables } from './page_tables.js' 
 import { Names } from './page_names.js' 
 import { Standings } from './page_standings.js' 

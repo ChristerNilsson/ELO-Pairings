@@ -73,11 +73,7 @@ export class Standings extends Page
 				s += ' ' + g.txtT pb.name,                25, window.LEFT
 				s += ' ' + g.txtT '',       3 * (@t.round-1), window.LEFT
 				s += ' ' + g.txtT chg.toFixed(3),          7, window.RIGHT
-#				s += ' ' + g.txtT pb.elo(r).toFixed(1),    6, window.RIGHT
-				# s += ' ' + g.txtT pb.elo0.toFixed(1),    6, window.RIGHT
-				# s += ' ' + g.txtT g.prBth(pa.res[r]),      3, window.LEFT
 				s += ' ' + g.txtT diff,                    6, window.RIGHT
-				# s += ' ' + g.txtT PD.toFixed(3),           5, window.RIGHT
 				g.help = s
 		else
 			g.help = ""
