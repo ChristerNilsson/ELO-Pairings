@@ -1,4 +1,4 @@
-import { g,print,range,scalex,scaley } from './globals.js' 
+import { g,print,range,scalex,scaley,DecimalRemover } from './globals.js' 
 import { Page } from './page.js' 
 import { Button,spread } from './button.js'  
 import { Lista } from './lista.js' 
@@ -21,11 +21,15 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Id",           3,window.RIGHT
 		header += ' ' + g.txtT "Elo",          4,window.RIGHT
 		header += ' ' + g.txtT "Name",        25,window.LEFT
-		header += '' + g.txtT rheader, 3*@round,window.LEFT 
-		header += ' ' + g.txtT "Change",       8,window.RIGHT
+		header += ''  + g.txtT rheader, 3*@round,window.LEFT 
+		header += ' ' + g.txtT "Quality",      8,window.RIGHT
 
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
-		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round))
+		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round+1))
+
+		temp = (p.change(@t.round+1) for p in @t.persons)
+		print 'temp',@t.round, temp
+		@rd = new DecimalRemover temp
 
 		print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 
@@ -39,7 +43,7 @@ export class Standings extends Page
 			s += ' ' + g.txtT p.elo0.toString(),      4, window.RIGHT
 			s += ' ' + g.txtT p.name,                25, window.LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1), window.CENTER
-			s += ' ' + g.txtT (p.change(@t.round)).toFixed(5), 8, window.RIGHT
+			s += ' ' + g.txtT @rd.format(p.change(@t.round)), 8, window.RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)

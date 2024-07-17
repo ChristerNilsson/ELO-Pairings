@@ -1,4 +1,4 @@
-import { g, range, print, scalex, scaley, assert } from './globals.js' 
+import { g, range, print, scalex, scaley, assert, DecimalRemover } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
 import { Edmonds } from './blossom.js' 
@@ -6,22 +6,6 @@ import { Tables } from './page_tables.js'
 import { Names } from './page_names.js' 
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
-
-minimal_decimal_representation = (numbers) ->
-	get_decimal_representation = (num, decimals) -> num.toFixed decimals
-	all_unique_with_decimals = (numbers, decimals) ->
-		representations = (get_decimal_representation(num, decimals) for num in numbers)
-		(new Set(representations)).length == numbers.length
-
-	print numbers
-	max_decimals = 10  # Maximum number of decimals to check for uniqueness
-	n = numbers.length
-	for decimals in range max_decimals + 1
-		if all_unique_with_decimals(numbers, decimals) then break
-
-	(get_decimal_representation(num, decimals) for num in numbers)
-
-assert [], minimal_decimal_representation [1.234567, 1.234568, 1.234569, 2.34567, 2.34568]
 
 export class Tournament 
 	constructor : () ->
@@ -194,9 +178,6 @@ export class Tournament
 	# 	pb.elo += -amount #-g.K * amount
 	# 	print pa.name, aold, '->',pa.elo, pb.name, bold, '->',pb.elo, diff, g.K * amount
 
-
-
-
 	improveChanges : () ->
 		changes = (p.change(@round) for p in @persons)
 		print 'changes',changes
@@ -206,6 +187,8 @@ export class Tournament
 		if @round > 0 and g.calcMissing() > 0
 			print 'lottning ej genomförd!'
 			return
+
+		g.pages[g.STANDINGS].rd = new DecimalRemover (p.change(@round) for p in @persons)
 
 		@improveChanges()
 

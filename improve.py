@@ -1,47 +1,33 @@
 from random import random
 
-# numbers = []
-# for i in range(100):
-# 	numbers.append(10*random())
-# numbers.append(numbers[47])
-# print(numbers[47])
+numbers = []
+for i in range(100):
+	numbers.append(20*random() - 15)
+numbers.append(numbers[47])
 
-numbers = [
-8.004059575772324,
-8.161021117204086,
-8.228517971910573,
-8.295799790869529,
-8.30825361405301,
-8.489203471704666,
-8.508153977939841,
-8.581027058569523,
-8.733020771739369,
-8.839856187062596,
-8.980199617356977
-]
+numbers = list(set(numbers))
 numbers = sorted(numbers)
+numbers = [[nr,0] for nr in numbers]
 
-decs = {}
-
-def f(nrs,decimals,levels=0) :
-	print("  "*levels, nrs,decimals)
-	if len(nrs) == 1:
-		decs[nrs[0]] = decimals - 1
-		return
+def f(pairs, levels=0) :
+	result = []
+	if len(pairs) == 1:
+		pairs[0][1] -= 1
+		return pairs
 	hash = {}
-	for nr in nrs:
+	for pair in pairs:
+		nr, decimals = pair
 		key = round(nr,decimals)
 		if key not in hash: hash[key] = []
-		hash[key].append(nr)
+		hash[key].append([nr,decimals+1])
 	for key in hash:
-		f(hash[key],decimals + 1,levels+1)
+		result += f(hash[key], levels+1)
+	return result
 
+a = f(f(numbers))
 
-numbers = sorted(list(set(numbers)))
-f(numbers,0)
-
-for nr in numbers:
-	if decs[nr] == 0:
-		print(nr,int(nr))
+for [nr,decs] in a:
+	if decs == 0:
+		print(int(nr),nr)
 	else:
-		print(nr,round(nr, decs[nr]))
+		print(round(nr, decs),nr)
