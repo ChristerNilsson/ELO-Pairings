@@ -30,7 +30,7 @@ export class Active extends Page
 	setLista : ->
 		@lista = new Lista @t.playersByName, "Pause Name", @buttons, (p) ->
 			s = if p.active then '      ' else 'pause '
-			s + g.txtT p.name, 25, window.LEFT
+			s + g.txtT p.name, 25,  LEFT
 		spread @buttons, 10, @y, @h
 
 	draw : ->

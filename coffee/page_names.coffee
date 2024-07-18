@@ -20,7 +20,7 @@ export class Names extends Page
 				s = "   P  "
 			else 
 				s = "  BYE "
-			s + g.txtT p.name, 25, window.LEFT
+			s + g.txtT p.name, 25,  LEFT
 		spread @buttons, 10, @y, @h
 
 	mouseWheel   : (event )-> @lista.mouseWheel event

@@ -37,14 +37,14 @@ export class Page
 		y = 0.6
 		textAlign LEFT,CENTER
 		s = ''
-		s += g.txtT "#{g.tournament.title} #{g.tournament.datum}", 30, window.LEFT
-		s += g.txtT "#{g.message}" , 30, window.CENTER
-		s += ' ' + g.txtT 'Round ' + round, 12, window.RIGHT
+		s += g.txtT "#{g.tournament.title} #{g.tournament.datum}", 30,  LEFT
+		s += g.txtT "#{g.message}" , 30,  CENTER
+		s += ' ' + g.txtT 'Round ' + round, 12,  RIGHT
 		text s,10,scaley(y)
 
 	txt : (value, x, y, align=null, color=null) ->
 		push()
-		if align then textAlign align,window.CENTER
+		if align then textAlign align, CENTER
 		if color then fill color
 		text value,x,y
 		pop()

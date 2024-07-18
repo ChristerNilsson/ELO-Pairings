@@ -12,7 +12,7 @@ export class Lista
 	draw : -> # ritar de rader som syns i fönstret enbart
 		s = @columnTitles
 		fill 'white'
-		textAlign window.LEFT
+		textAlign  LEFT
 		text s,10,scaley(4)
 
 		fill 'black'

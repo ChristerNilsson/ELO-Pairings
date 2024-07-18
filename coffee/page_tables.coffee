@@ -30,12 +30,12 @@ export class Tables extends Page
 	setLista : =>
 		# print 'Lista', g.tournament.pairs.length
 		header = ""
-		header +=       g.txtT 'Tbl',    3,window.RIGHT
-		header += ' ' + g.txtT 'Elo',    4,window.RIGHT
-		header += ' ' + g.txtT 'White', 25,window.LEFT
-		header += ' ' + g.txtT 'Result', 7,window.CENTER
-		header += ' ' + g.txtT 'Black', 25,window.LEFT
-		header += ' ' + g.txtT 'Elo',    4,window.RIGHT
+		header +=       g.txtT 'Tbl',    3, RIGHT
+		header += ' ' + g.txtT 'Elo',    4, RIGHT
+		header += ' ' + g.txtT 'White', 25, LEFT
+		header += ' ' + g.txtT 'Result', 7, CENTER
+		header += ' ' + g.txtT 'Black', 25, LEFT
+		header += ' ' + g.txtT 'Elo',    4, RIGHT
 
 		@lista = new Lista @t.pairs, header, @buttons, (pair,index,pos) =>
 			[a,b] = pair
@@ -45,12 +45,12 @@ export class Tables extends Page
 
 			nr = index + 1
 			s = ""
-			s +=       g.txtT (pos+1).toString(), 3, window.RIGHT
-			s += ' ' + g.txtT pa.elo0.toString(), 4, window.RIGHT
-			s += ' ' + g.txtT pa.name,           25, window.LEFT
-			s += ' ' + g.txtT both,               7, window.CENTER
-			s += ' ' + g.txtT pb.name,           25, window.LEFT
-			s += ' ' + g.txtT pb.elo0.toString(), 4, window.RIGHT
+			s +=       g.txtT (pos+1).toString(), 3,  RIGHT
+			s += ' ' + g.txtT pa.elo.toString(),  4,  RIGHT
+			s += ' ' + g.txtT pa.name,           25,  LEFT
+			s += ' ' + g.txtT both,               7,  CENTER
+			s += ' ' + g.txtT pb.name,           25,  LEFT
+			s += ' ' + g.txtT pb.elo.toString(),  4,  RIGHT
 			s
 
 		@lista.errors = []
@@ -101,7 +101,7 @@ export class Tables extends Page
 			# [a,b] = @t.pairs[i]
 			pa = @t.persons[a]
 			pb = @t.persons[b]
-#			res = @elo_probabilities pa.elo0, pb.elo0
+#			res = @elo_probabilities pa.elo, pb.elo
 			res = compare pa,pb
 
 			if pa.res.length < pa.col.length then pa.res += res #"012"[res] 
@@ -136,5 +136,5 @@ export class Tables extends Page
 			pa = @t.persons[a]
 			pb = @t.persons[b]
 			res.push ""
-			res.push _.pad(i+1,6) + pa.elo0 + ' ' + g.txtT(pa.name, 25, window.LEFT) + ' ' + _.pad("|____| - |____|",20) + ' ' + pb.elo0 + ' ' + g.txtT(pb.name, 25, window.LEFT)
+			res.push _.pad(i+1,6) + pa.elo + ' ' + g.txtT(pa.name, 25,  LEFT) + ' ' + _.pad("|____| - |____|",20) + ' ' + pb.elo + ' ' + g.txtT(pb.name, 25,  LEFT)
 			if i % @t.tpp == @t.tpp-1 then res.push "\f"

@@ -1,7 +1,7 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Player
-	constructor : (@id, @name="", @elo0="1400", @opp=[], @col="", @res="", @active = true) -> 
+	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true) -> 
 		@cache = {}
 		@pos = [] # one for each round
 
@@ -15,8 +15,8 @@ export class Player
 		if @opp[r] == g.BYE then return g.K * (1.0 - g.scoringProbability 0)
 		if @opp[r] == g.PAUSE then return 0
 		if r >= @res.length then return 0
-		a = @elo0
-		b = g.tournament.persons[@opp[r]].elo0
+		a = @elo
+		b = g.tournament.persons[@opp[r]].elo
 		diff = b - a
 		g.K * (@res[r]/2 - g.scoringProbability diff)
 
@@ -27,7 +27,7 @@ export class Player
 	avgEloDiff : ->
 		res = []
 		for id in @opp.slice 0, @opp.length - 1
-			if id >= 0 then res.push abs @elo0 - g.tournament.persons[id].elo0
+			if id >= 0 then res.push abs @elo - g.tournament.persons[id].elo
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
 	balans : -> # färgbalans
@@ -38,7 +38,7 @@ export class Player
 		result
 
 	read : (player) -> 
-		@elo0 = parseInt player[0]
+		@elo = parseInt player[0]
 		@name = player[1]
 		@opp = []
 		@col = ""
@@ -54,7 +54,7 @@ export class Player
 
 	write : -> # (1234!Christer!(12w0!23b1!142)) Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
-		res.push @elo0
+		res.push @elo
 		res.push @name.replaceAll ' ','_'
 		r = @opp.length - 1
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range(r)) 

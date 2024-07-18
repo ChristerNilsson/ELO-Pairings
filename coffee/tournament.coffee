@@ -1,4 +1,4 @@
-import { g, range, print, scalex, scaley, assert, DecimalRemover } from './globals.js' 
+import { g, range, print, scalex, scaley, assert } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
 import { Edmonds } from './blossom.js' 
@@ -33,9 +33,7 @@ export class Tournament
 			for b in range a+1, g.N
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
-				# if g.DIFF == 'ELO0'  then diff = abs pa.elo0 - pb.elo0
-				#if g.DIFF == 'ELO' then diff = abs pa.elo(r) - pb.elo(r)
-				if g.DIFF == 'ELO' then diff = abs pa.elo0 - pb.elo0
+				if g.DIFF == 'ELO' then diff = abs pa.elo - pb.elo
 				if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
 				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
@@ -78,8 +76,8 @@ export class Tournament
 		pb = @persons[b]
 		if g.DIFF == 'ELO'
 			r = @round
-			da = pa.elo0 #(r)
-			db = pb.elo0 #(r)
+			da = pa.elo
+			db = pb.elo
 		if g.DIFF == 'POS'
 			da = pa.pos[r]
 			db = pb.pos[r]
@@ -166,21 +164,21 @@ export class Tournament
 	scoringProbability : (diff) -> 1 / (1 + 10 ** (diff / 400))
 
 	# updateElo : (pa,pb) =>
-	# 	diff = pb.elo0 - pa.elo0
+	# 	diff = pb.elo - pa.elo
 	# 	if @round == 0
 	# 		amount = 0
 	# 	else
 	# 		amount = pa.res[@round-1] / 2 - @scoringProbability(diff)
-	# 	print 'updateElo', @round, pa.res, pb.elo0, pa.elo0, diff, amount
+	# 	print 'updateElo', @round, pa.res, pb.elo, pa.elo, diff, amount
 	# 	aold = pa.elo
 	# 	bold = pb.elo
 	# 	pa.elo +=  amount # g.K * amount
 	# 	pb.elo += -amount #-g.K * amount
 	# 	print pa.name, aold, '->',pa.elo, pb.name, bold, '->',pb.elo, diff, g.K * amount
 
-	improveChanges : () ->
-		changes = (p.change(@round) for p in @persons)
-		print 'changes',changes
+	# improveChanges : () ->
+	# 	changes = (p.change(@round) for p in @persons)
+	# 	print 'changes',changes
 
 	lotta : () ->
 
@@ -188,14 +186,13 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
-		g.pages[g.STANDINGS].rd = new DecimalRemover (p.change(@round) for p in @persons)
-
-		@improveChanges()
+		# g.pages[g.STANDINGS].rd = new DecimalRemover (p.change(@round) for p in @persons)
+		# @improveChanges()
 
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
-			da = pa.elo0
-			db = pb.elo0
+			da = pa.elo
+			db = pb.elo
 			db - da
 
 		for i in range @personsSorted.length
@@ -228,7 +225,7 @@ export class Tournament
 			print 'pairs', @pairs
 		if @round > 0
 			# print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
-			print 'pairs', ([a, b, @persons[a].elo0, @persons[b].elo0, Math.abs(@persons[a].elo0 - @persons[b].elo0).toFixed(1)] for [a,b] in @pairs)
+			print 'pairs', ([a, b, @persons[a].elo, @persons[b].elo, Math.abs(@persons[a].elo - @persons[b].elo).toFixed(1)] for [a,b] in @pairs)
 		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
@@ -261,10 +258,9 @@ export class Tournament
 		@datum = urlParams.get('DATE') or ""
 		@round = parseInt getParam 'ROUND',0
 		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
-		@tpp = parseInt getParam 'TPP',30 # Tables Per Page
-		@ppp = parseInt getParam 'PPP',60 # Players Per Page
-		# g.K0 = parseInt getParam 'K0', 10 # 40, 20 or 10 normally
-		# g.k  = parseFloat getParam 'k',1
+		@tpp = parseInt getParam 'TPP', 30 # Tables Per Page
+		@ppp = parseInt getParam 'PPP', 60 # Players Per Page
+		g.K  = parseInt getParam 'K', 2 # 40, 20 or 10 normally
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
@@ -275,8 +271,7 @@ export class Tournament
 
 		g.N = players.length
 
-		if 4 <= g.N < 1000
-		else
+		if not (4 <= g.N < 1000)
 			print "Error: Number of players must be between 4 and 999!"
 			return
 
@@ -295,17 +290,17 @@ export class Tournament
 		print 'fetchURL.persons', @persons
 		
 		@persons.sort (a,b) -> 
-			if a.elo0 != b.elo0 then return b.elo0 - a.elo0
+			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
 		# @persons = @persons.reverse()
 
-		XMAX = @persons[0].elo0
-		XMIN = _.last(@persons).elo0
+		XMAX = @persons[0].elo
+		XMIN = _.last(@persons).elo
 		for i in range g.N
 			@persons[i].id = i
-			@persons[i].elo = parseInt @persons[i].elo0
+			@persons[i].elo = parseInt @persons[i].elo
 
-		print (p.elo0 for p in @persons)
+		print (p.elo for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo
 
 		@playersByName = _.sortBy @persons, (player) -> player.name
@@ -374,7 +369,7 @@ export class Tournament
 				pa = @persons[a]
 				pb = @persons[b]
 				if pa.active and pb.active 
-					result.push abs(pa.elo0 - pb.elo0) 
+					result.push abs(pa.elo - pb.elo) 
 		(g.sum(result)/result.length).toFixed 2
 
 	makeCanvas : ->
@@ -388,11 +383,11 @@ export class Tournament
 
 	dumpCanvas : (title,average,canvas) ->
 		output = ["", title]
-		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K0:#{g.K0} k:#{g.k}"
+		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
 		output.push ""
 		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
 		output.push '     ' + header + '   Elo    AED'
-		ordning = (p.elo0 for p in @persons)
+		ordning = (p.elo for p in @persons)
 		for i in range canvas.length
 			row = canvas[i]
 			nr = str(i + 1).padStart(3)
