@@ -186,9 +186,6 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
-		# g.pages[g.STANDINGS].rd = new DecimalRemover (p.change(@round) for p in @persons)
-		# @improveChanges()
-
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
 			da = pa.elo

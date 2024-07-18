@@ -1,9 +1,11 @@
 # Elo Pairings
 
 * Players meet players with similar Elo rating
-* Elo ratings are updated after each round
-* Standings are sorted on Elo Change
-* Similar to handicap systems in [Golf](https://en.wikipedia.org/wiki/Handicap_(golf)), [Sailing](https://en.wikipedia.org/wiki/Handicap_(sailing)#:~:text=The%20handicap%20number%20assigned%20to,be%20behind%20the%20theoretical%20yacht.) and [Go](https://en.wikipedia.org/wiki/Handicapping_in_Go)
+* Standings are sorted on Quality
+* Similar to handicap systems in 
+	* [Golf](https://en.wikipedia.org/wiki/Handicap_(golf)), 
+	* [Sailing](https://en.wikipedia.org/wiki/Handicap_(sailing)#:~:text=The%20handicap%20number%20assigned%20to,be%20behind%20the%20theoretical%20yacht.) 
+	* [Go](https://en.wikipedia.org/wiki/Handicapping_in_Go)
 
 # Historical Chess handicaps
 
@@ -155,3 +157,6 @@ The erroneous line will be red and you have to delete the result before entering
 * Available in the browser
 * Pages can be zoomed
 
+## Logistics
+
+![](logistics.webp)

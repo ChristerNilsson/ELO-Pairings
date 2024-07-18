@@ -27,10 +27,6 @@ export class Standings extends Page
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round+1))
 
-		# temp = (p.change(@t.round+1) for p in @t.persons)
-		# print 'temp',@t.round, temp
-		# @rd = new DecimalRemover temp
-
 		print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
@@ -77,7 +73,7 @@ export class Standings extends Page
 				s += ' ' + g.txtT pb.name,                25,  LEFT
 				s += ' ' + g.txtT '',       3 * (@t.round-1),  LEFT
 				s += ' ' + g.txtT chg.toFixed(3),          7,  RIGHT
-				s += ' ' + g.txtT diff,                    6,  RIGHT
+				s += ' ' + g.txtT -diff,                   6,  RIGHT
 				g.help = s
 		else
 			g.help = ""
