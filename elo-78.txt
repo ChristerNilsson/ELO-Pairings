@@ -1,7 +1,6 @@
 8 rounds and 78 players.
 
-This matrix was paired by Swiss Tight Pairing using elo ratings only.
-No matter what results are from the games, this is the final pairing.
+This matrix was paired by Elo Pairing.
 
 Best case (1893 Hans Rånby): (14 + 4 + 3 + 4 + 7 + 8 + 13 + 15) / 8 = 8.5  (Swiss: 225.1)
 

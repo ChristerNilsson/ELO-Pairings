@@ -122,8 +122,8 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Name", 25,  LEFT
 		for r in range @t.round
 			header += g.txtT "#{r+1}",  6, RIGHT
-		header += ' ' + g.txtT "Quality", 10, RIGHT
-		if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12, LEFT
+		header += ' ' + g.txtT "Quality", 11, RIGHT
+		# if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12, LEFT
 		
 		for person,i in @playersByPerformance
 			if i % @t.ppp == 0 then res.push header
@@ -139,7 +139,7 @@ export class Standings extends Page
 				if person.opp[r] >= 0
 					s += g.txtT "#{1+person.opp[r]}#{g.RINGS[person.col[r][0]]}#{"0½1"[person.res[r]]}", 6,  RIGHT			
 
-			s += ' ' + g.txtT (person.change(@t.round+1)).toFixed(6),  9,  RIGHT
+			s += ' ' + g.txtT (person.change(@t.round+1)).toFixed(6),  10,  RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"
