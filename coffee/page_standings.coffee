@@ -27,7 +27,7 @@ export class Standings extends Page
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round+1))
 
-		print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
+		# print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
 
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 

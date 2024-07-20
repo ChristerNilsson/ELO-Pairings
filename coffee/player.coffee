@@ -58,7 +58,7 @@ export class Player
 		res = []
 		res.push @elo
 		res.push @name.replaceAll ' ','_'
-		r = @opp.length - 1
+		r = @opp.length # - 1
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range(r)) 
 		res.push wrap ocr.join SEPARATOR
 		res.join SEPARATOR

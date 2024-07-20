@@ -21,6 +21,7 @@ export class Tournament
 
 		@robin = range g.N
 		@mat = []
+		@virgin = true
 
 	write : () ->
 
@@ -149,6 +150,12 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
+		@dump 'lotta'
+
+		@virgin = false
+		timestamp = new Date().toLocaleString('se-SE').replaceAll ' ','_'
+		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
+
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
 			da = pa.elo
@@ -190,16 +197,28 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-		timestamp = new Date().toLocaleString('se-SE').replaceAll ' ','_'
-
-		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
-		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
-
 		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+
+		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
 		@round += 1
 
 		g.state = g.TABLES
+
+	dump : (title) ->
+		print "##### #{title} #####"
+		print 'TOUR',@title
+		print 'DATE',@datum
+		print 'ROUND',@round
+		print 'TPP',@tpp
+		print 'PPP',@ppp
+		print 'K',g.K
+		print 'PAUSED',@paused
+		print 'PLAYERS'
+		for p in @persons
+			print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
+
+		print '################'
 
 	fetchURL : (url = location.search) ->
 		if url == '' then window.location.href = "https://github.com/ChristerNilsson/ELO-Pairings/blob/main/README.md"
@@ -277,6 +296,8 @@ export class Tournament
 
 		print '@pairs',@pairs
 
+		@dump 'fetch'
+		
 		g.pages = [new Tables, new Names, new Standings, new Active]
 
 		g.pages[g.NAMES].setLista()

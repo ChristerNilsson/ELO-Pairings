@@ -8,7 +8,7 @@ export class Active extends Page
 	constructor : ->
 		super()
 
-		if g.tournament.round == 0
+		if g.tournament.virgin #round == 0
 			@buttons.t.active = false
 			@buttons.n.active = false
 			@buttons.s.active = false

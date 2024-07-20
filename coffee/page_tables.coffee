@@ -71,7 +71,7 @@ export class Tables extends Page
 	elo_probabilities : (diff) ->
 		if 2 * @t.round > abs diff then return 1 # draw
 		prob = g.scoringProbability diff
-		print prob, diff
+		# print prob, diff
 		if random() > prob then 2 else 0
 	
 	setActive : ->
