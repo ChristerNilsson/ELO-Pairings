@@ -102,7 +102,7 @@ export class Tournament
 			temp = _.filter @persons, (p) -> p.active and p.bye() == false
 			pBye = _.last temp
 			pBye.opp.push g.BYE
-			pBye.col += ' '
+			pBye.col += '_'
 			pBye.res += '2'
 			return pBye.id
 		g.BYE
@@ -111,7 +111,7 @@ export class Tournament
 		for p in @persons
 			if p.active then continue
 			p.opp.push g.PAUSE
-			p.col += ' '
+			p.col += '_'
 
 		for [a,b] in @pairs
 			pa = @persons[a]

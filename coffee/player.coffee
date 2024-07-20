@@ -46,13 +46,15 @@ export class Player
 		if player.length < 3 then return
 		ocrs = player[2]
 		for ocr in ocrs
-			if 'w' in ocr then col='w' else col='b'
+			if 'w' in ocr then col='w'
+			if 'b' in ocr then col='b'
+			if '_' in ocr then col='_'
 			arr = ocr.split col
 			@opp.push parseInt arr[0]
 			@col += col
 			if arr.length == 2 and arr[1].length == 1 then @res += arr[1]
 
-	write : -> # (1234!Christer!(12w0!23b1!142)) Elo:1234 Name:Christer opponent:23 color:b result:1
+	write : -> # (1234!Christer!(12w0!23b1!14w2)) Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
 		res.push @elo
 		res.push @name.replaceAll ' ','_'
