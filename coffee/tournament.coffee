@@ -43,13 +43,6 @@ export class Tournament
 		edmonds = new Edmonds edges
 		edmonds.maxWeightMatching edges
 
-	# flip : (p0,p1) -> # p0 byter färg, p0 anpassar sig
-	# 	col0 = _.last p0.col
-	# 	col1 = col0
-	# 	col0 = other col0
-	# 	p0.col += col0
-	# 	p1.col += col1
-
 	assignColors : (p0,p1) ->
 		b0 = p0.balans()
 		b1 = p1.balans()
@@ -65,7 +58,7 @@ export class Tournament
 		for i in range solution.length
 			if solution[i] != -1
 				j = solution[i]
-				result.push [i,j] #[@players[i].id,@players[j].id]
+				result.push [i,j]
 				solution[j] = -1
 				solution[i] = -1
 		result
@@ -88,14 +81,8 @@ export class Tournament
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
-		# or g.BYE == _.last p.opp
-
 		for p in @persons
-			if not p.active  then p.res += '0'
-			# if p.active or g.BYE != _.last p.opp then continue
-			# if p.active then continue
-			# p.opp.push g.PAUSE
-			# p.col += ' '
+			if not p.active then p.res += '0'
 
 		temp = _.filter @persons, (p) -> p.active 
 		if temp.length % 2 == 1 # Spelaren med lägst elo och som inte har haft frirond, får frironden
@@ -193,12 +180,8 @@ export class Tournament
 				return 
 
 		@pairs = @unscramble solution
-		if @round == 0
-			print 'pairs', @pairs
-		if @round > 0
-			# print 'pairs', ([a, b, @persons[a].elo(@round-1), @persons[b].elo(@round-1), Math.abs(@persons[a].elo(@round-1) - @persons[b].elo(@round-1)).toFixed(1)] for [a,b] in @pairs)
-			print 'pairs', ([a, b, @persons[a].elo, @persons[b].elo, Math.abs(@persons[a].elo - @persons[b].elo).toFixed(1)] for [a,b] in @pairs)
-		#print 'pairs', ([a, b, @persons[a].pos[@round], @persons[b].pos[@round], Math.abs(@persons[a].pos[@round] - @persons[b].pos[@round])] for [a,b] in @pairs)
+		if @round == 0 then print 'pairs', @pairs
+		if @round > 0  then print 'pairs', ([a, b, @persons[a].elo, @persons[b].elo, Math.abs(@persons[a].elo - @persons[b].elo).toFixed(1)] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
 		@postMatch()
@@ -216,7 +199,6 @@ export class Tournament
 
 		@round += 1
 
-		# print 'lotta round', @round
 		g.state = g.TABLES
 
 	fetchURL : (url = location.search) ->
@@ -250,7 +232,6 @@ export class Tournament
 		for i in range g.N
 			player = new Player i
 			player.read players[i]
-			# print 'fetchURL.player',player
 			@persons.push player
 
 		@paused = getParam 'PAUSED','()' # list of zero based ids
