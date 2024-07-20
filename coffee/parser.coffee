@@ -1,8 +1,6 @@
-import { print,assert } from './globals.js' 
+import { print,assert,SEPARATOR } from './globals.js' 
 
 # Lisp, kind of - more compact tree rep than XML and JSON
-
-BAR = '!'
 
 export parseExpr = (expr) ->
 	if expr.startsWith('(') and expr.endsWith(')') then expr = expr.slice 1, -1
@@ -16,7 +14,7 @@ splitByTopLevelPipe = (expr) ->
 	for char, i in expr
 		if char == '(' then level++
 		else if char == ')'then level--
-		if char == BAR and level == 0
+		if char == SEPARATOR and level == 0
 			parts.push part
 			part = ''
 		else part += char

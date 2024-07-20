@@ -68,11 +68,11 @@ export class Tables extends Page
 			button.draw()
 		@lista.draw()
 
-	elo_probabilities : (R_W, R_B, draw=0.1) ->
-		if random() < draw then return 1
-		prob = g.scoringProbability R_W - R_B
-		print prob, R_W, R_B
-		return if random() > prob then 2 else 0
+	elo_probabilities : (diff) ->
+		if 2 * @t.round > abs diff then return 1 # draw
+		prob = g.scoringProbability diff
+		print prob, diff
+		if random() > prob then 2 else 0
 	
 	setActive : ->
 		@buttons.p.active = g.calcMissing() == 0
@@ -96,7 +96,7 @@ export class Tables extends Page
 		for [a,b] in @t.pairs
 			pa = @t.persons[a]
 			pb = @t.persons[b]
-			res = @elo_probabilities pa.elo, pb.elo
+			res = @elo_probabilities pa.elo - pb.elo
 			if pa.res.length < pa.col.length 
 				pa.res += res
 				pb.res += 2 - res

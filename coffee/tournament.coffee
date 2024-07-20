@@ -1,4 +1,4 @@
-import { g, range, print, scalex, scaley, assert, wrap } from './globals.js' 
+import { g, range, print, scalex, scaley, assert, wrap, SEPARATOR } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
 import { Edmonds } from './blossom.js' 
@@ -302,7 +302,7 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-	makePaused : -> wrap @paused.join('!') # (12!34)
+	makePaused : -> wrap @paused.join SEPARATOR # (12!34)
 
 	makePlayers : ->
 		players = []

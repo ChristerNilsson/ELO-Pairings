@@ -8,16 +8,9 @@ export g = {}
 
 ###########################################
 
-# g.K = 2 # 20
-# g.K0 = 40 # 40=juniors 20=normal 10=masters
-# g.k = 1.0 # 0.7
-
-# parameters that affects matching
 g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
 g.DIFF = 'ELO' # ELO använder senaste elo i Standings
-#g.DIFF = 'POS' # POS använder senaste position i Standings
 g.COLORS = 1 # www not ok
-#g.COLORS = 2 # www ok
 
 ###########################################
 
@@ -33,6 +26,8 @@ export wrap = (s) -> "(#{s})"
 
 g.BYE = -1
 g.PAUSE = -2
+
+export SEPARATOR = '!'
 
 g.TABLES    = 0
 g.NAMES     = 1
