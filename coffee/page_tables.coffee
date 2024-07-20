@@ -68,15 +68,11 @@ export class Tables extends Page
 			button.draw()
 		@lista.draw()
 
-	# elo_probabilities : (R_W, R_B, draw=0.2) ->
-	# 	E_W = 1 / (1 + 10 ** ((R_B - R_W) / 400))
-	# 	win = E_W - draw / 2
-	# 	loss = (1 - E_W) - draw / 2
-	# 	x = random()
-	# 	index = 2
-	# 	if x < loss + draw then index = 1
-	# 	if x < loss then index = 0
-	# 	index
+	elo_probabilities : (R_W, R_B, draw=0.1) ->
+		if random() < draw then return 1
+		prob = g.scoringProbability R_W - R_B
+		print prob, R_W, R_B
+		return if random() > prob then 2 else 0
 	
 	setActive : ->
 		@buttons.p.active = g.calcMissing() == 0
@@ -97,19 +93,13 @@ export class Tables extends Page
 		@setActive()
 
 	randomResult : ->
-		for [a,b],i in @t.pairs
-			# [a,b] = @t.pairs[i]
+		for [a,b] in @t.pairs
 			pa = @t.persons[a]
 			pb = @t.persons[b]
-#			res = @elo_probabilities pa.elo, pb.elo
-			res = compare pa,pb
-
-			if pa.res.length < pa.col.length then pa.res += res #"012"[res] 
-			if pb.res.length < pb.col.length then pb.res += 2 - res #"210"[res]
-
-			# print "RR pa.res:#{pa.res}| pa.col:#{pa.col}| a:#{a} pa.opp:#{pa.opp}"
-			# print "RR pb.res:#{pb.res}| pb.col:#{pb.col}| b:#{b} pb.opp:#{pb.opp}"
-
+			res = @elo_probabilities pa.elo, pb.elo
+			if pa.res.length < pa.col.length 
+				pa.res += res
+				pb.res += 2 - res
 		@setActive()
 
 	handleDelete : ->

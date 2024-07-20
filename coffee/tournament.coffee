@@ -83,15 +83,8 @@ export class Tournament
 			db = pb.pos[r]
 		diff = Math.abs da - db
 		diff ** g.EXPONENT
-		# print diff
-		# print 'solutionCost', a,b,diff
-		# diff
-
 	
-	solutionCosts : (pairs) -> 
-		# print 'solutionCosts',pairs
-		# print (@solutionCost(pair) for pair in pairs)
-		g.sumNumbers (@solutionCost(pair) for pair in pairs)
+	solutionCosts : (pairs) -> g.sumNumbers (@solutionCost(pair) for pair in pairs)
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
@@ -163,23 +156,6 @@ export class Tournament
 
 	scoringProbability : (diff) -> 1 / (1 + 10 ** (diff / 400))
 
-	# updateElo : (pa,pb) =>
-	# 	diff = pb.elo - pa.elo
-	# 	if @round == 0
-	# 		amount = 0
-	# 	else
-	# 		amount = pa.res[@round-1] / 2 - @scoringProbability(diff)
-	# 	print 'updateElo', @round, pa.res, pb.elo, pa.elo, diff, amount
-	# 	aold = pa.elo
-	# 	bold = pb.elo
-	# 	pa.elo +=  amount # g.K * amount
-	# 	pb.elo += -amount #-g.K * amount
-	# 	print pa.name, aold, '->',pa.elo, pb.name, bold, '->',pb.elo, diff, g.K * amount
-
-	# improveChanges : () ->
-	# 	changes = (p.change(@round) for p in @persons)
-	# 	print 'changes',changes
-
 	lotta : () ->
 
 		if @round > 0 and g.calcMissing() > 0
@@ -204,7 +180,6 @@ export class Tournament
 
 		start = new Date()
 		edges = @makeEdges @preMatch() # -1 om bye saknas
-		# edges.sort (a,b) -> b[2] - a[2] # behöver egentligen ej sorteras. blossoms klarar sig ändå.
 		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
 
 		solution = @findSolution edges
@@ -254,7 +229,6 @@ export class Tournament
 		@title = urlParams.get('TOUR').replaceAll '_',' '
 		@datum = urlParams.get('DATE') or ""
 		@round = parseInt getParam 'ROUND',0
-		@first = getParam 'FIRST','bw' # Determines if first player has white or black in the first round
 		@tpp = parseInt getParam 'TPP', 30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP', 60 # Players Per Page
 		g.K  = parseInt getParam 'K', 20 # 40, 20 or 10 normally
@@ -328,21 +302,29 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-	makeURL : (timestamp) ->
-		res = []
-		res.push "https://christernilsson.github.io/ELO-Pairings"
-		#res.push "http://127.0.0.1:5500"
-		res.push "?TOUR=" + @title.replaceAll ' ','_'
-		res.push "&TIMESTAMP=" + timestamp
-		res.push "&ROUND=" + @round
-		res.push "&PLAYERS=" 
-		
+	makePaused : -> '(' + @paused.join('!') + ')' # (12!34)
+
+	makePlayers : ->
 		players = []
 		for p in @persons
 			s = p.write()
 			players.push '(' + s + ')'
-		players = players.join("\n")
-		res = res.concat players
+		players.join "\n"
+		# res = res.concat players
+
+	makeURL : (timestamp) ->
+		res = []
+		# res.push "https://christernilsson.github.io/ELO-Pairings"
+		res.push "http://127.0.0.1:5500"
+		res.push "?TOUR=" + @title.replaceAll ' ','_'
+		res.push "&DATE=" + @datum
+		res.push "&TIMESTAMP=" + timestamp
+		res.push "&ROUND=" + @round
+		res.push "&K=" + g.K
+		res.push "&TPP=" + @tpp
+		res.push "&PPP=" + @ppp
+		res.push "&PAUSED=" + @makePaused()
+		res.push "&PLAYERS=" + @makePlayers()
 		res.join '\n'
 
 	makeStandardFile : () ->
