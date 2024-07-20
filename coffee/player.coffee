@@ -1,4 +1,4 @@
-import { g,print,range,scalex,scaley } from './globals.js' 
+import { g,print,range,scalex,scaley,wrap } from './globals.js' 
 
 export class Player
 	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true) -> 
@@ -60,5 +60,5 @@ export class Player
 		res.push @name.replaceAll ' ','_'
 		r = @opp.length - 1
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range(r)) 
-		res.push '(' + ocr.join('!') + ')'
+		res.push wrap ocr.join '!'
 		res.join '!'

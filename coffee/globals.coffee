@@ -29,6 +29,8 @@ export scaley = (y) -> y * g.ZOOM[g.state]
 g.seed = 0
 export random = -> (((Math.sin(g.seed++)/2+0.5)*10000)%100)/100
 
+export wrap = (s) -> "(#{s})"
+
 g.BYE = -1
 g.PAUSE = -2
 

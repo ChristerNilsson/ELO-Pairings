@@ -1,4 +1,4 @@
-import { g, range, print, scalex, scaley, assert } from './globals.js' 
+import { g, range, print, scalex, scaley, assert, wrap } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
 import { Edmonds } from './blossom.js' 
@@ -43,12 +43,12 @@ export class Tournament
 		edmonds = new Edmonds edges
 		edmonds.maxWeightMatching edges
 
-	flip : (p0,p1) -> # p0 byter färg, p0 anpassar sig
-		col0 = _.last p0.col
-		col1 = col0
-		col0 = other col0
-		p0.col += col0
-		p1.col += col1
+	# flip : (p0,p1) -> # p0 byter färg, p0 anpassar sig
+	# 	col0 = _.last p0.col
+	# 	col1 = col0
+	# 	col0 = other col0
+	# 	p0.col += col0
+	# 	p1.col += col1
 
 	assignColors : (p0,p1) ->
 		b0 = p0.balans()
@@ -236,7 +236,7 @@ export class Tournament
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
 		players = players.replaceAll '_',' '
-		players = '(' + players + ')'
+		players = wrap players 
 		players = parseExpr players
 		print 'fetchURL.players',players
 
@@ -302,13 +302,13 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-	makePaused : -> '(' + @paused.join('!') + ')' # (12!34)
+	makePaused : -> wrap @paused.join('!') # (12!34)
 
 	makePlayers : ->
 		players = []
 		for p in @persons
 			s = p.write()
-			players.push '(' + s + ')'
+			players.push wrap s
 		players.join "\n"
 		# res = res.concat players
 
