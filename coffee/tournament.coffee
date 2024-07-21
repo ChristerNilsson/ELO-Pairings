@@ -198,6 +198,9 @@ export class Tournament
 		g.pages[g.STANDINGS].setLista()
 
 		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+		@downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
+
+		@makeBubbles()
 
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
@@ -395,3 +398,12 @@ export class Tournament
 				res.push [p.id,p.opp[r]]				
 			matrix.push res
 		@drawMatrix @title, matrix
+
+	makeBubbles : ->
+		res = []
+		for pa in @persons
+			for r in range @round
+				if pa.opp[r] >= 0 
+					pb = @persons[pa.opp[r]]
+					res.push "#{pa.elo}\t#{pb.elo}"
+		res.join '\n'

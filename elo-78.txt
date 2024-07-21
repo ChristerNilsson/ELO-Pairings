@@ -5,7 +5,7 @@ This matrix was paired by Elo Pairing.
 Best case (1893 Hans Rånby): (14 + 4 + 3 + 4 + 7 + 8 + 13 + 15) / 8 = 8.5  (Swiss: 225.1)
 
 Tyresö Open 2024
-Sparseness: 44.85  (Average Elo Difference) DIFF:ELO COST:QUADRATIC COLORS:2 SP:0.1
+Sparseness: 44.85  (Average Elo Difference)
 
      1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8   Elo    AED
   1  * 1 2 3 4 5 6 8 7 · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·  2416  155.0

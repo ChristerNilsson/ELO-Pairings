@@ -3,9 +3,9 @@
 [Try it!](https://christernilsson.github.io/ELO-Pairings/?TOUR=Klass_1&DATE=2024-05-28&PLAYERS=(1825!JOHANSSON_Lennart_B.)(1697!BJÖRKDAHL_Göran)(1684!SILINS_Peteris)(1681!STOLOV_Leonid)(1644!PETTERSSON_Lars-Åke)(1598!AIKIO_Onni)(1598!ISRAEL_Dan)(1583!PERSSON_Kjell)(1561!LILJESTRÖM_Tor)(1559!LEHVONEN_Jouko)(1539!ANDERSSON_Lars_Owe)(1535!ÅBERG_Lars-Erik)(1532!ANTONSSON_Görgen)(1400!STRÖMBÄCK_Henrik)) 
 
 * Players meet players with similar Elo rating
-	* This eliminates slaugther games
-* Standings are sorted on Quality = ELO improvement
-	* Even lower rated can win
+	* This reduces the ELO gap
+* Improving your ELO is your ultimate struggle
+	* It is not about beating [*patzers*](https://www.collinsdictionary.com/dictionary/english/patzer#google_vignette)
 
 ## Motivation
 
@@ -23,53 +23,54 @@ The Swiss Matrix is quite spread out, which indicates many games with large elo 
 * Lower right corner: the weakest players
 * Upper right and lower left corner: slaughter corners. Strong meets weak
 
+## Swiss vs ELO Pairings
+
+[Bubble Chart](https://christernilsson.github.io/2024/027-BubbleChart)
+
 # How to use the program
 
 ## Pages
 
 The are four pages:
-* Standings (The final listing ordered by Elo rating)
+* Standings (The final listing ordered by Elo change)
 * Tables    (shows where to sit and also used for entering results)
 * Names     (shows where to sit alphabetically)
 * Activity  (Pause and activate players)
 
-Navigate between them by clicking with the mouse, using the letters **S**, **T**, **N**, **A** or **Left** and **Right** Arrow.
+Navigate between the pages by clicking with the mouse, using the letters **S**, **T**, **N**, **A** or **Left** and **Right** Arrow.
 
 ## Keys
 
-The following keys are available:  
-**Up**, **Down**, **Home**, **End**, **PageUp**, **PageDown**  
+These scrolling keys are available:  
+**Up**, **Down**, **PageUp**, **PageDown**, **Home**, **End**   
 You can also use the mouseWheel to scroll.  
 
 ## Zoom
 
 * In and Out
 
-## Always print the Table Sheets for entering results.
+## Printing the Table Sheets for entering results is recommended
 
-This is your secondary backup!  
-You can handle a tournament without a printer, but it is not recommended for larger tournaments  
+The downloaded URL file is you primary backup.  
+The sheets with all results are your secondary backup.  
+You can handle a tournament without a printer, but it is not recommended for larger tournaments.  
 After pairing, go to the Downloads section of your browser (**ctrl+j**) and open the top file.  
 It contains Standings, Names and Tables.  
 Print the file, and put up the alphabetical Name sheets, well separated, in the *same* positions every round.  
 
-## Entering Results
+## Entering results
 
-* Use **1**, **space** or **0** to enter each result
-* Enter the result *twice* to double check
+* As soon as a score sheet is completed, start entering the results, using the keyboard
+* Use **1**, **space** or **0** to enter the results
 * An erroneous result has to be deleted with the **Delete** key
 
-## Entering results twice
+## Enter results twice
 
-Make a habit of always entering the result twice  
-As soon as a score sheet is finished, start entering the results, using the keyboard  
-By entering the same results twice, you will reduce the risk of mis-entering  
-The erroneous line will be red and you have to delete the result before entering the correct one  
+Entering the same sheet twice, reduces mis-entering.  
+Delete the red line before entering the correct result.  
 
 ## Standings
 
-* Get detailed information about a game by hovering the mouse
-	* You will see the elo and name of the opponent, as well as *quality* and elo difference
 * Columns
 	* **Pos** - the leader is number 1
 	* **Id** - the player identification
@@ -86,12 +87,14 @@ The erroneous line will be red and you have to delete the result before entering
 		* A compensation, based on the elo difference will be taken from the stronger and given to the weaker player
 		* Players with K=10 (masters) may half the quality to find the correct elo change
 		* Players with K=40 (beginners) may double the quality to find the correct elo change
+* Get detailed information about a game by hovering the mouse
+	* You will see the elo and name of the opponent, as well as *quality* and elo difference
 
 ## Downloads
 
 * After each pairing, two files will be saved
-	1. A copy of Standings, Names and Tables
-	2. An URL containing all data. This is a backup
+	1. A copy of Standings, Names and Tables, for printing.
+	2. An URL containing all data. This is your primary backup
 
 ## Saving the tournament
 	* The updated URL contains all information to display the result page
@@ -130,7 +133,7 @@ The problem with these variants is, they are all unnatural.
 
 ## Instructions for organizers
 * Edit the **URL**
-* Add the elos and names of the players
+* Add the elos and names of the players, eventually in alphabetical order
 * Fields
 	* **TOUR** the header of the tournament. Optional
 	* **DATE** the Date. Optional
@@ -159,7 +162,7 @@ RB = rating for player B
 
 ## ELO Calculation
 
-[Calculator](https://christernilsson.github.io/2023-008-Kalkyl/?content=K%20%3D%2020%20%23%20development%20coefficent%0A%0ASD%20%3D%20400%20%23%20Standard%20Deviation%0A%0Adiff%20%3D%201800%20-%201800%20%23%20RA%20-%20RB%0A%0A%5BLOSS,%20DRAW,%20WIN%5D%20%3D%20%5B0,%200.5,%201%5D%0A%0APA%20%3D%20(diff)%20-%3E%201%20/%20(1%20+%2010%20**%20(-diff%20/%20SD))%0A%0Af%20%3D%20(diff,score)%20-%3E%20K%20*%20(score%20-%20PA%20diff)%0A%0APA%20diff%0A%0Af(diff,LOSS)%0Af(diff,DRAW)%0Af(diff,WIN)%0A&config=%7B%22angleMode%22:0,%22language%22:0,%22displayMode%22:0,%22digits%22:2%7D)
+[Calculator](https://christernilsson.github.io/2023-008-Kalkyl/?content=K%20%3D%2020%20%23%20development%20coefficent%0A%0ASD%20%3D%20400%20%23%20Standard%20Deviation%0A%0Adiff%20%3D%201800%20-%201800%20%23%20RA%20-%20RB%0A%0A%5BLOSS,%20DRAW,%20WIN%5D%20%3D%20%5B0,%200.5,%201%5D%0A%0APA%20%3D%20(diff)%20-%3E%201%20/%20(1%20+%2010%20**%20(-diff%20/%20SD))%0A%0Af%20%3D%20(diff,score)%20-%3E%20K%20*%20(score%20-%20PA%20diff)%0A%0Af%20diff,LOSS%0Af%20diff,DRAW%0Af%20diff,WIN%0A%0A%23-----%20asserts%20-----%0A0.5%20%3D%3D%20PA%200%20%0A0.6400649998028851%20%3D%3D%20PA%20100%0A-12.801299996057702%20%3D%3D%20f%20100,%20LOSS%0A-7.198700003942299%20%3D%3D%20f%20-100,%20LOSS%0A&config=%7B%22angleMode%22:0,%22language%22:0,%22displayMode%22:0,%22digits%22:3%7D)
 
 ## Developer links
 
@@ -169,9 +172,9 @@ RB = rating for player B
 
 ## Color handling (same as in Swiss)
 
+* Number of blacks minus number of whites is always one of -1, 0 or 1
 * **•o•o•o** or **o•o•o•** is the ideal
 * **•o•oo•** happens for most players
 * **••** never happens
 * **o••** may happen 
 * Same color only possible after *even* number of rounds. 
-* Number of blacks minus number of whites is always one of -1, 0 or 1
