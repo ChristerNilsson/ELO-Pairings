@@ -180,13 +180,20 @@ export class Tournament
 		print 'solution', solution
 		print 'cpu', (new Date() - start)
 
-		for index,id in solution
-			p = @persons[index]
-			if id == -1 and ((g.BYE == _.last(p.opp)) or p.active)
-				print 'Solution failed!'
-				return 
+		# for index,id in solution
+		# 	p = @persons[index]
+		# 	if id == -1 and ((g.BYE == _.last(p.opp)) or p.active)
+		# 		print 'Solution failed!'
+		# 		return 
 
 		@pairs = @unscramble solution
+
+		print @persons.length,@paused.length,@pairs.length
+		if @pairs.length < (@persons.length - @paused.length) // 2 
+			alert 'Pairing impossible. Too many rounds or paused players'
+			print 'Pairing impossible'
+			return 
+
 		if @round == 0 then print 'pairs', @pairs
 		if @round > 0  then print 'pairs', ([a, b, @persons[a].elo, @persons[b].elo, Math.abs(@persons[a].elo - @persons[b].elo).toFixed(1)] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
@@ -198,10 +205,7 @@ export class Tournament
 		g.pages[g.STANDINGS].setLista()
 
 		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
-		@downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
-
-		@makeBubbles()
-
+		# @downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
 		@round += 1

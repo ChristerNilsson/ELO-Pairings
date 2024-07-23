@@ -19,11 +19,11 @@ The axes contains the elos of the players.
 The numbers in the matrices are round numbers.  
 The Swiss Matrix is quite spread out, which indicates many games with large elo gaps.  
 
-* Upper left corner: the strongest players
-* Lower right corner: the weakest players
-* Upper right and lower left corner: slaughter corners. Strong meets weak
-
 ## Swiss vs ELO Pairings
+
+* Upper right corner: the strongest players.
+* Lower left corner: the weakest players.
+* Upper left and lower right corner: slaughter corners. Strong meets weak.
 
 [Bubble Chart](https://christernilsson.github.io/2024/027-BubbleChart)
 
@@ -178,3 +178,8 @@ RB = rating for player B
 * **••** never happens
 * **o••** may happen 
 * Same color only possible after *even* number of rounds. 
+
+## Number of Rounds Limit
+
+14 active players could pair 8 rounds (57%).  
+78 active players could pair 46 rounds (59%).  
