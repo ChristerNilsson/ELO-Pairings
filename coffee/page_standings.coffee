@@ -69,7 +69,7 @@ export class Standings extends Page
 				if g.FACTOR == 0
 					diff = pa.elo - pb.elo
 					s += ' ' + g.txtT chg.toFixed(3), 7,  RIGHT
-					s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(-diff).toFixed(3)}"
+					s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(diff).toFixed(3)}"
 				else
 					s += ' ' + g.txtT chg.toFixed(1), 7,  RIGHT
 					if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"

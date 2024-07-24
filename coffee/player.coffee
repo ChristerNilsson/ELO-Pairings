@@ -17,7 +17,7 @@ export class Player
 		if r >= @res.length then return 0
 		a = @elo
 		b = g.tournament.persons[@opp[r]].elo
-		diff = b - a
+		diff = a - b
 		g.K * (@res[r]/2 - g.F diff)
 
 	calcRound1 : (r) -> 

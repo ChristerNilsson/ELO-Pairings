@@ -38,7 +38,7 @@ g.pages = []
 
 g.message = ""
 
-g.F = (diff) -> 1 / (1 + pow 10, diff/400)
+g.F = (diff) -> 1 / (1 + pow 10, -diff/400)
 
 g.showType = (a) -> if typeof a == 'string' then "'#{a}'" else a
 export assert = (a,b) -> if not _.isEqual a,b then print "Assert failure: #{JSON.stringify a} != #{JSON.stringify b}"
