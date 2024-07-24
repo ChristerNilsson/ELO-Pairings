@@ -142,6 +142,7 @@ The problem with these variants is, they are all unnatural.
 	* **PPP** Players Per Page. Default 60. Optional
 	* **PAUSED** id:s of paused players. Optional
 	* **PLAYERS** elos and names, separated with an exclamation sign. Mandatory
+	* **FACTOR** 0 = uses normal distribution (default), otherwise the [FACTOR](factor.md) method
 
 ## Elo calculation
 

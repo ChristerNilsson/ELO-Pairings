@@ -142,8 +142,6 @@ export class Tournament
 		document.body.removeChild a
 		URL.revokeObjectURL url
 
-	scoringProbability : (diff) -> 1 / (1 + 10 ** (diff / 400))
-
 	lotta : () ->
 
 		if @round > 0 and g.calcMissing() > 0
@@ -180,12 +178,6 @@ export class Tournament
 		print 'solution', solution
 		print 'cpu', (new Date() - start)
 
-		# for index,id in solution
-		# 	p = @persons[index]
-		# 	if id == -1 and ((g.BYE == _.last(p.opp)) or p.active)
-		# 		print 'Solution failed!'
-		# 		return 
-
 		@pairs = @unscramble solution
 
 		print @persons.length,@paused.length,@pairs.length
@@ -221,9 +213,9 @@ export class Tournament
 		print 'PPP',@ppp
 		print 'K',g.K
 		print 'PAUSED',@paused
-		print 'PLAYERS'
-		for p in @persons
-			print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
+		# print 'PLAYERS'
+		# for p in @persons
+		# 	print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
 
 		print '################'
 
@@ -240,6 +232,7 @@ export class Tournament
 		@tpp = parseInt getParam 'TPP', 30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP', 60 # Players Per Page
 		g.K  = parseInt getParam 'K', 20 # 40, 20 or 10 normally
+		g.FACTOR = parseFloat getParam 'FACTOR', 0
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
@@ -270,13 +263,16 @@ export class Tournament
 		@persons.sort (a,b) -> 
 			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
-		# @persons = @persons.reverse()
 
-		XMAX = @persons[0].elo
-		XMIN = _.last(@persons).elo
 		for i in range g.N
 			@persons[i].id = i
 			@persons[i].elo = parseInt @persons[i].elo
+
+		if g.FACTOR >= 1.5
+			XMAX = @persons[0].elo
+			XMIN = _.last(@persons).elo
+			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
+			print 'g.OFFSET',g.OFFSET
 
 		print (p.elo for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo

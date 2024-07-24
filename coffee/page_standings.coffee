@@ -27,8 +27,6 @@ export class Standings extends Page
 		@playersByPerformance = _.clone @t.persons.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round+1))
 
-		# print (p.change(@t.round).toFixed(1) for p in @playersByPerformance).join ' '
-
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
 			@y_bulb = (5 + index) * g.ZOOM[g.state] 
 			textAlign LEFT
@@ -39,13 +37,11 @@ export class Standings extends Page
 			s += ' ' + g.txtT p.elo.toString(),       4,  RIGHT
 			s += ' ' + g.txtT p.name,                25,  LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1),  CENTER
-			s += ' ' + g.txtT p.change(@t.round).toFixed(3), 7, RIGHT
+			if g.FACTOR == 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(3), 7, RIGHT
+			if g.FACTOR != 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(1), 7, RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)
-				# if p.opp[r] == -1 then @txt "P", x, @y+1,  CENTER, 'black'
-				# else if p.opp[r] == g.N then @txt "BYE", x, @y+1,  CENTER, 'black'
-				# print 'yyy',"<#{p.opp[r]}>"
 				@lightbulb p.id, p.col[r], x, @y_bulb, p.res.slice(r,r+1), p.opp[r]
 			s
 		@lista.paintYellowRow = false
@@ -62,18 +58,23 @@ export class Standings extends Page
 			if b == g.PAUSE then g.help = "#{pa.elo} #{pa.name} has a pause => chg = 0"
 			if b >= 0				
 				pb = @t.persons[b]
-				diff = pa.elo - pb.elo
-				PD = g.K * g.scoringProbability diff
 				chg = pa.calcRound r
 
 				s = ""
 				s +=       g.txtT '',                      3,  RIGHT
 				s += ' ' + g.txtT (1+pb.id).toString(),    3,  RIGHT
-				s += ' ' + g.txtT pb.elo.toString(),      4,  RIGHT
+				s += ' ' + g.txtT pb.elo.toString(),       4,  RIGHT
 				s += ' ' + g.txtT pb.name,                25,  LEFT
 				s += ' ' + g.txtT '',       3 * (@t.round-1),  LEFT
-				s += ' ' + g.txtT chg.toFixed(3),          7,  RIGHT
-				s += ' ' + g.txtT -diff,                   6,  RIGHT
+				if g.FACTOR == 0
+					diff = pa.elo - pb.elo
+					s += ' ' + g.txtT chg.toFixed(3), 7,  RIGHT
+					s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(-diff).toFixed(3)}"
+				else
+					s += ' ' + g.txtT chg.toFixed(1), 7,  RIGHT
+					if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"
+					if pa.res[r] == '2' then s += " = #{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT}"
+					
 				g.help = s
 		else
 			g.help = ""
@@ -98,7 +99,6 @@ export class Standings extends Page
 		@txt s, x, y+1,  CENTER
 
 	lightbulb : (id, color, x, y, result, opponent) ->
-		# print "lightbulb id:#{id} color:#{color} x:#{x} y#{y} result:#{result} opponent:#{opponent}"
 		push()
 		rectMode  CENTER
 		s = 1 + opponent
@@ -123,7 +123,6 @@ export class Standings extends Page
 		for r in range @t.round
 			header += g.txtT "#{r+1}",  6, RIGHT
 		header += ' ' + g.txtT "Quality", 11, RIGHT
-		# if @t.round <= @expl then header += '  ' + g.txtT "Explanation", 12, LEFT
 		
 		for person,i in @playersByPerformance
 			if i % @t.ppp == 0 then res.push header
