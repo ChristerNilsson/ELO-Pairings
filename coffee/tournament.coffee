@@ -232,7 +232,7 @@ export class Tournament
 		@tpp = parseInt getParam 'TPP', 30 # Tables Per Page
 		@ppp = parseInt getParam 'PPP', 60 # Players Per Page
 		g.K  = parseInt getParam 'K', 20 # 40, 20 or 10 normally
-		g.FACTOR = parseFloat getParam 'FACTOR', 0
+		g.FACTOR = parseFloat getParam 'FACTOR', 2
 
 		players = urlParams.get 'PLAYERS'
 		players = players.replaceAll ')(', ')!('
@@ -268,11 +268,12 @@ export class Tournament
 			@persons[i].id = i
 			@persons[i].elo = parseInt @persons[i].elo
 
-		if g.FACTOR >= 1.5
+		if g.FACTOR >= 1.2
 			XMAX = @persons[0].elo
 			XMIN = _.last(@persons).elo
 			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
-			print 'g.OFFSET',g.OFFSET
+			g.OFFSET = Math.round g.OFFSET
+			print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
 
 		print (p.elo for p in @persons)
 		print 'sorted players', @persons # by id AND descending elo

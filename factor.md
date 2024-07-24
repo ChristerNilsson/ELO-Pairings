@@ -1,8 +1,10 @@
 ## The FACTOR method
 
+Where is Elo's origin?  
+
 * XMIN = minimum elo rating of all players
 * XMAX = maximum elo rating of all players
-* FACTOR is supposed to be > 1
+* FACTOR is supposed to be >= 1.2
 * OFFSET = (XMAX - XMIN) / (FACTOR - 1) - XMIN
 * The rating is translated by OFFSET
 * Example:
