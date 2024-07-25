@@ -8,7 +8,7 @@ import { Standings } from './page_standings.js'
 import { Active } from './page_active.js' 
 
 export class Tournament 
-	constructor : () ->
+	constructor : ->
 		@title = ''
 		@round = 0
 		@tpp = 30
@@ -23,7 +23,7 @@ export class Tournament
 		@mat = []
 		@virgin = true
 
-	write : () ->
+	write : ->
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		edges = []
@@ -142,7 +142,7 @@ export class Tournament
 		document.body.removeChild a
 		URL.revokeObjectURL url
 
-	lotta : () ->
+	lotta : ->
 
 		if @round > 0 and g.calcMissing() > 0
 			print 'lottning ej genomförd!'
@@ -213,6 +213,7 @@ export class Tournament
 		print 'PPP',@ppp
 		print 'K',g.K
 		print 'PAUSED',@paused
+		print 'FACTOR',g.FACTOR
 		# print 'PLAYERS'
 		# for p in @persons
 		# 	print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
@@ -268,7 +269,8 @@ export class Tournament
 			@persons[i].id = i
 			@persons[i].elo = parseInt @persons[i].elo
 
-		if g.FACTOR >= 1.2
+		if g.FACTOR > 0  
+			if g.FACTOR < 1.2 then g.FACTOR = 1.2
 			XMAX = @persons[0].elo
 			XMIN = _.last(@persons).elo
 			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
@@ -322,10 +324,11 @@ export class Tournament
 		res = []
 		# res.push "https://christernilsson.github.io/ELO-Pairings"
 		res.push "http://127.0.0.1:5500"
-		res.push "?TOUR=" + @title.replaceAll ' ','_'
+		res.push "?FACTOR=" + g.FACTOR
+		res.push "&ROUND=" + @round
+		res.push "&TOUR=" + @title.replaceAll ' ','_'
 		res.push "&DATE=" + @datum
 		res.push "&TIMESTAMP=" + timestamp
-		res.push "&ROUND=" + @round
 		res.push "&K=" + g.K
 		res.push "&TPP=" + @tpp
 		res.push "&PPP=" + @ppp
@@ -333,7 +336,7 @@ export class Tournament
 		res.push "&PLAYERS=" + @makePlayers()
 		res.join '\n'
 
-	makeStandardFile : () ->
+	makeStandardFile : ->
 		res = []
 		timestamp = new Date().toLocaleString 'se-SE'
 		# print timestamp
