@@ -28,6 +28,34 @@ Dock saknar pythons http.server begränsning av urlen.
 Filer som behövs: Python, index.html  
 Prestanda 1560 personer tar 19 sekunder att lotta, per rond.
 
+### Alternativ
+
+Använd en textruta istf URL.
+
+Fördelar:
+* Kommer förbi 16K-gränsen.
+* Enklare format. & och () behövs inte längre
+* Ingen specialhantering av åäöÅÄÖ, mellanslag osv.
+
+Nackdelar:
+
+* Går ej att distribuera turneringen som en URL
+
+Exempel:
+```
+FACTOR=2
+ROUND=10
+TOUR=Tyresö_Open_2024
+DATE=2024-05-03
+TIMESTAMP=2024-07-25_16:17:41
+K=20
+TPP=30
+PPP=60
+PAUSED=12!18
+PLAYERS=
+2416!Hampus_Sörensen!19w1!17b1!18w1!16b1!15w1!14b1!13w1!12b1!3w1!32b1
+```
+
 # Observera
 
 Detta kan innebära att möjlighet att publicera större turneringar på vissa plattformar, t ex Youtube, inte går.

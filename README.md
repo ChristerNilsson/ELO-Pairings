@@ -2,10 +2,15 @@
 
 [Try it!](https://christernilsson.github.io/ELO-Pairings/?TOUR=Klass_1&DATE=2024-05-28&PLAYERS=(1825!JOHANSSON_Lennart_B.)(1697!BJÖRKDAHL_Göran)(1684!SILINS_Peteris)(1681!STOLOV_Leonid)(1644!PETTERSSON_Lars-Åke)(1598!AIKIO_Onni)(1598!ISRAEL_Dan)(1583!PERSSON_Kjell)(1561!LILJESTRÖM_Tor)(1559!LEHVONEN_Jouko)(1539!ANDERSSON_Lars_Owe)(1535!ÅBERG_Lars-Erik)(1532!ANTONSSON_Görgen)(1400!STRÖMBÄCK_Henrik)) 
 
-* Players meet players with similar Elo rating
-	* This reduces the ELO gap
+* All games has a low gap
 * Improving your ELO is your ultimate struggle
-	* It is not about beating [*patzers*](https://www.collinsdictionary.com/dictionary/english/patzer#google_vignette)
+
+## Swiss throws away information 
+
+* A win against the strongest is worth exactly as much as a win against the weakest
+	* Every game should be weighted with the player strength
+* Big gaps gives very little new information
+	* Small gaps are more unpredictable and therefore more important
 
 ## Motivation
 
@@ -21,9 +26,9 @@ The Swiss Matrix is quite spread out, which indicates many games with large elo 
 
 ## Swiss vs ELO Pairings
 
-* Upper right corner: the strongest players.
-* Lower left corner: the weakest players.
-* Upper left and lower right corner: slaughter corners. Strong meets weak.
+* Upper right corner: the strongest players. Small gaps
+* Lower left corner: the weakest players. Small gaps
+* Upper left and lower right corner: Big gaps where strong meets weak
 
 [Bubble Chart](https://christernilsson.github.io/2024/027-BubbleChart)
 

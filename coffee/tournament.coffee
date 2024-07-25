@@ -244,8 +244,8 @@ export class Tournament
 
 		g.N = players.length
 
-		if not (4 <= g.N < 1000)
-			print "Error: Number of players must be between 4 and 999!"
+		if not (4 <= g.N < 10000)
+			print "Error: Number of players must be between 4 and 9999!"
 			return
 
 		@persons = []
