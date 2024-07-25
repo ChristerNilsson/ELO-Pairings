@@ -148,11 +148,11 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
-		@dump 'lotta'
+		# @dump 'lotta'
 
 		@virgin = false
 		timestamp = new Date().toLocaleString('se-SE').replaceAll ' ','_'
-		@downloadFile @makeURL(timestamp), "#{timestamp}-#{@round} URL.txt"
+		@downloadFile @makeTournament(timestamp), "#{timestamp}-#{@round} Tournament.txt"
 
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
@@ -220,31 +220,36 @@ export class Tournament
 
 		print '################'
 
-	fetchURL : (url = location.search) ->
-		if url == '' then window.location.href = "https://github.com/ChristerNilsson/ELO-Pairings/blob/main/README.md"
-		print 'fetchURL',url
-		getParam = (name,def) -> urlParams.get(name) || def
+	fetchData : () ->
 
-		urlParams = new URLSearchParams url
+		data = document.getElementById("definition").value
+		data = data.split('\n')
+
+		hash = {}
+		for line in data
+			arr = line.split '='
+			if arr.length == 2
+				hash[arr[0]] = arr[1]
+				if arr[0] = 'PLAYERS' then hash['PLAYERS'] = []
+			else if line.length > 0
+				hash['PLAYERS'].push line.split '!'
+			
+		print hash
+
 		@players = []
-		@title = urlParams.get('TOUR').replaceAll '_',' '
-		@datum = urlParams.get('DATE') or ""
-		@round = parseInt getParam 'ROUND',0
-		@tpp = parseInt getParam 'TPP', 30 # Tables Per Page
-		@ppp = parseInt getParam 'PPP', 60 # Players Per Page
-		g.K  = parseInt getParam 'K', 20 # 40, 20 or 10 normally
-		g.FACTOR = parseFloat getParam 'FACTOR', 2
+		@title = hash.TOUR
+		@datum = hash.DATE or ""
+		@round = parseInt hash.ROUND or 0
+		@tpp = parseInt hash.TPP or 30 # Tables Per Page
+		@ppp = parseInt hash.PPP or 60 # Players Per Page
+		g.K  = parseInt hash.K or 20 # 40, 20 or 10 normally
 
-		players = urlParams.get 'PLAYERS'
-		players = players.replaceAll ')(', ')!('
-		players = players.replaceAll '_',' '
-		players = wrap players 
-		players = parseExpr players
-		print 'fetchURL.players',players
+		g.FACTOR = parseFloat hash.FACTOR or 2
 
+		players = hash.PLAYERS
 		g.N = players.length
 
-		if not (4 <= g.N < 10000)
+		if not (4 <= g.N < 1000)
 			print "Error: Number of players must be between 4 and 9999!"
 			return
 
@@ -254,12 +259,15 @@ export class Tournament
 			player.read players[i]
 			@persons.push player
 
-		@paused = getParam 'PAUSED','()' # list of zero based ids
-		@paused = parseExpr @paused
-		for id in @paused
-			@persons[id].active = false
+		@paused = hash.PAUSED or "" # list of zero based ids
+		if @paused == ""
+			@paused = []
+		else
+			@paused = @paused.split '!'
+			for id in @paused
+				if id != "" then @persons[id].active = false
 
-		print 'fetchURL.persons', @persons
+		print 'fetchData.persons', @persons
 		
 		@persons.sort (a,b) -> 
 			if a.elo != b.elo then return b.elo - a.elo
@@ -310,30 +318,25 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-	makePaused : -> wrap @paused.join SEPARATOR # (12!34)
+	makePaused : -> @paused.join SEPARATOR # (12!34)
 
 	makePlayers : ->
-		players = []
-		for p in @persons
-			s = p.write()
-			players.push wrap s
+		players = (p.write() for p in @persons)
 		players.join "\n"
-		# res = res.concat players
 
-	makeURL : (timestamp) ->
+	makeTournament : (timestamp) ->
 		res = []
-		# res.push "https://christernilsson.github.io/ELO-Pairings"
-		res.push "http://127.0.0.1:5500"
-		res.push "?FACTOR=" + g.FACTOR
-		res.push "&ROUND=" + @round
-		res.push "&TOUR=" + @title.replaceAll ' ','_'
-		res.push "&DATE=" + @datum
-		res.push "&TIMESTAMP=" + timestamp
-		res.push "&K=" + g.K
-		res.push "&TPP=" + @tpp
-		res.push "&PPP=" + @ppp
-		res.push "&PAUSED=" + @makePaused()
-		res.push "&PLAYERS=" + @makePlayers()
+		res.push "FACTOR=" + g.FACTOR
+		res.push "ROUND=" + @round
+		res.push "TOUR=" + @title #.replaceAll ' ','_'
+		res.push "DATE=" + @datum
+		res.push "TIMESTAMP=" + timestamp
+		res.push "K=" + g.K
+		res.push "TPP=" + @tpp
+		res.push "PPP=" + @ppp
+		res.push "PAUSED=" + @makePaused()
+		res.push "PLAYERS="
+		res.push @makePlayers()
 		res.join '\n'
 
 	makeStandardFile : ->

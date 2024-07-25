@@ -56,13 +56,15 @@ export class Player
 		result
 
 	read : (player) -> 
+		print player
 		@elo = parseInt player[0]
 		@name = player[1]
 		@opp = []
 		@col = ""
 		@res = ""
 		if player.length < 3 then return
-		ocrs = player[2]
+		ocrs = player.slice 2
+		print 'ocrs',ocrs
 		for ocr in ocrs
 			if 'w' in ocr then col='w'
 			if 'b' in ocr then col='b'
@@ -72,11 +74,11 @@ export class Player
 			@col += col
 			if arr.length == 2 and arr[1].length == 1 then @res += arr[1]
 
-	write : -> # (1234!Christer!(12w0!23b1!14w2)) Elo:1234 Name:Christer opponent:23 color:b result:1
+	write : -> # 1234!Christer!12w0!23b1!14w2   Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
 		res.push @elo
-		res.push @name.replaceAll ' ','_'
+		res.push @name #.replaceAll ' ','_'
 		r = @opp.length # - 1
-		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range(r)) 
-		res.push wrap ocr.join SEPARATOR
+		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range r)
+		res.push ocr.join SEPARATOR
 		res.join SEPARATOR

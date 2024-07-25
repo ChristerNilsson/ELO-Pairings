@@ -1,5 +1,3 @@
-# todo Bör man sortera på senaste elo vid lottningen? Detta skulle kunnas innebära att man når toppen snabbare. (eller botten)
-
 import { parseExpr } from './parser.js'
 import { g,print,range } from './globals.js' 
 import { Button,spread } from './button.js' 
@@ -10,7 +8,6 @@ import { Names } from './page_names.js'
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
 
-# g.LPP = 14
 g.RINGS = {'b':'•', ' ':' ', 'w':'o'}
 g.ASCII = '0123456789abcdefg'
 g.ALFABET = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' # 62 ronder maximalt
@@ -44,7 +41,29 @@ window.setup = ->
 	g.pages = [new Tables, new Names, new Standings, new Active]
 	print g.pages
 
-	g.tournament.fetchURL()
+	buttonOk = document.getElementById "ok"
+	buttonOk.addEventListener 'click', () -> g.tournament.fetchData()
+
+# 	definition.text = 	
+# """
+# TOUR=Senior Stockholm
+# DATE=2024-05-28
+# PLAYERS=
+# 1825!JOHANSSON Lennart
+# 1697!BJÖRKDAHL Göran
+# 1684!SILINS Peteris
+# 1681!STOLOV Leonid
+# 1644!PETTERSSON Lars-Åke
+# 1598!ISRAEL Dan
+# 1598!AIKIO Onni
+# 1583!PERSSON Kjell
+# 1561!LILJESTRÖM Tor
+# 1559!LEHVONEN Jouko
+# 1539!ANDERSSON Lars Owe
+# 1535!ÅBERG Lars-Erik
+# 1532!ANTONSSON Görgen
+# 1400!STRÖMBÄCK Henrik
+# """
 
 	window.windowResized()
 
