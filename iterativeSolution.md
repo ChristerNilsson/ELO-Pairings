@@ -3,7 +3,7 @@
 Eftersom blossoms är kvadratisk kan exekveringstiderna växa ganska snabbt.  
 
 Genom att gruppera länkarna på samma elo-skillnad, slipper man söka i en jättematris direkt.  
-T ex n=1000 medför att antal länkar närmar sig 500K.
+T ex n=1000 medför att antal länkar närmar sig 500K.  
 
 Algoritm:
 ```

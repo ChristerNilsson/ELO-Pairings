@@ -1,4 +1,4 @@
-import { g, range, print, scalex, scaley, assert, wrap, SEPARATOR } from './globals.js' 
+import { g, range, print, scalex, scaley, assert, SEPARATOR } from './globals.js' 
 import { parseExpr } from './parser.js'
 import { Player } from './player.js'
 import { Edmonds } from './blossom.js' 
@@ -26,7 +26,6 @@ export class Tournament
 	write : ->
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
-		# edges = []
 		hash = {} # på avståndet
 		r = @round
 		for a in range g.N
@@ -35,14 +34,13 @@ export class Tournament
 			for b in range a+1, g.N
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
-				if g.DIFF == 'ELO' then diff = abs pa.elo - pb.elo
-				if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
+				diff = abs pa.elo - pb.elo
+				# if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
 				cost = 9999 - diff ** g.EXPONENT				
 				if g.ok pa,pb 
 					if diff not of hash then hash[diff] = []
 					hash[diff].push [pa.id, pb.id, cost]
 		hash
-		#edges
 	
 	findSolution : (edges) -> 
 		edmonds = new Edmonds edges
@@ -56,6 +54,19 @@ export class Tournament
 		else if p0.id < p1.id then x = 0 else x = 1
 		p0.col += 'wb'[x]
 		p1.col += 'bw'[x]
+
+	# assignColors : (p0,p1) ->
+	# 	mand = p0.mandatory() + p1.mandatory()
+	# 	temp = ''
+	# 	if mand == '  ' then temp = "wb"
+	# 	if mand == ' b' then temp = "wb"
+	# 	if mand == ' w' then temp = "bw"
+	# 	if mand == 'b ' then temp = "bw"
+	# 	if mand == 'w ' then temp = "wb"
+	# 	if mand == 'wb' then temp = "wb"
+	# 	if mand == 'bw' then temp = "bw"
+	# 	p0.col += temp[0]
+	# 	p1.col += temp[1]
 
 	unscramble : (solution) -> # [5,3,4,1,2,0] => [[0,5],[1,3],[2,4]]
 		solution = _.clone solution
@@ -72,13 +83,13 @@ export class Tournament
 		[a,b] = pair
 		pa = @persons[a]
 		pb = @persons[b]
-		if g.DIFF == 'ELO'
-			r = @round
-			da = pa.elo
-			db = pb.elo
-		if g.DIFF == 'POS'
-			da = pa.pos[r]
-			db = pb.pos[r]
+		# if g.DIFF == 'ELO'
+		# r = @round
+		da = pa.elo
+		db = pb.elo
+		# if g.DIFF == 'POS'
+		# 	da = pa.pos[r]
+		# 	db = pb.pos[r]
 		diff = Math.abs da - db
 		diff ** g.EXPONENT
 	
@@ -386,7 +397,7 @@ export class Tournament
 
 	dumpCanvas : (title,average,canvas) ->
 		output = ["", title]
-		output.push "Sparseness: #{average}  (Average Elo Difference) DIFF:#{g.DIFF} EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
+		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
 		output.push ""
 		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
 		output.push '     ' + header + '   Elo    AED'

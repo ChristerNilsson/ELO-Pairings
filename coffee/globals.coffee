@@ -9,8 +9,7 @@ export g = {}
 ###########################################
 
 g.EXPONENT = 1.01 # 1 or 1.01 (or 2)
-g.DIFF = 'ELO' # ELO använder senaste elo i Standings
-g.COLORS = 1 # www not ok
+g.COLORS = 1 # 2 ej tillåtet, då kan www eller bbb uppstå.
 
 ###########################################
 
@@ -44,6 +43,11 @@ g.showType = (a) -> if typeof a == 'string' then "'#{a}'" else a
 export assert = (a,b) -> if not _.isEqual a,b then print "Assert failure: #{JSON.stringify a} != #{JSON.stringify b}"
 
 g.ok = (a,b) -> a.id != b.id and a.id not in b.opp and abs(a.balans() + b.balans()) <= g.COLORS
+
+# g.ok = (a,b) -> 
+# 	mand = a.mandatory() + b.mandatory()
+# 	a.id != b.id and a.id not in b.opp and mand != "bb" and mand != "ww"
+
 g.other = (col) -> if col == 'b' then 'w' else 'b'
 
 g.myRound = (x,decs) -> x.toFixed decs

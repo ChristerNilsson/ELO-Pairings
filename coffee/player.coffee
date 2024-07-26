@@ -1,4 +1,4 @@
-import { g,print,range,scalex,scaley,wrap,SEPARATOR } from './globals.js' 
+import { g,print,range,scalex,scaley,SEPARATOR } from './globals.js' 
 
 export class Player
 	constructor : (@id, @name="", @elo="1400", @opp=[], @col="", @res="", @active = true) -> 
@@ -54,6 +54,16 @@ export class Player
 			if ch=='b' then result -= 1
 			if ch=='w' then result += 1
 		result
+
+	mandatory : -> # w if white, b if black else space
+		print 'balans',@balans()
+		if @balans >= 1 then return 'b'
+		if @balans <= -1 then return 'w'
+		n = @col.length
+		if n < 2 then return ' '
+		if "ww" == @col.slice n-2 then return 'b'
+		if "bb" == @col.slice n-2 then return 'w'
+		' '
 
 	read : (player) -> 
 		# print player
