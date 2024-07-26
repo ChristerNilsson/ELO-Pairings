@@ -172,11 +172,13 @@ export class Tournament
 
 		start = new Date()
 		edges = @makeEdges @preMatch() # -1 om bye saknas
+		print 'cpu1', (new Date() - start)
 		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
 
+		start = new Date()
 		solution = @findSolution edges
+		print 'cpu2', (new Date() - start)
 		print 'solution', solution
-		print 'cpu', (new Date() - start)
 
 		@pairs = @unscramble solution
 
@@ -328,7 +330,7 @@ export class Tournament
 		res = []
 		res.push "FACTOR=" + g.FACTOR
 		res.push "ROUND=" + @round
-		res.push "TOUR=" + @title #.replaceAll ' ','_'
+		res.push "TOUR=" + @title
 		res.push "DATE=" + @datum
 		res.push "TIMESTAMP=" + timestamp
 		res.push "K=" + g.K

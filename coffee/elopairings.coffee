@@ -41,29 +41,22 @@ window.setup = ->
 	g.pages = [new Tables, new Names, new Standings, new Active]
 	print g.pages
 
-	buttonOk = document.getElementById "ok"
-	buttonOk.addEventListener 'click', () -> g.tournament.fetchData()
+	buttonOk = document.getElementById "buttonOk"
+	definition = document.getElementById "definition"
+	buttonEdit = document.getElementById "buttonEdit"
+	buttonEdit.hidden = true
 
-# 	definition.text = 	
-# """
-# TOUR=Senior Stockholm
-# DATE=2024-05-28
-# PLAYERS=
-# 1825!JOHANSSON Lennart
-# 1697!BJÖRKDAHL Göran
-# 1684!SILINS Peteris
-# 1681!STOLOV Leonid
-# 1644!PETTERSSON Lars-Åke
-# 1598!ISRAEL Dan
-# 1598!AIKIO Onni
-# 1583!PERSSON Kjell
-# 1561!LILJESTRÖM Tor
-# 1559!LEHVONEN Jouko
-# 1539!ANDERSSON Lars Owe
-# 1535!ÅBERG Lars-Erik
-# 1532!ANTONSSON Görgen
-# 1400!STRÖMBÄCK Henrik
-# """
+	buttonEdit.addEventListener 'click', () -> 
+		# hämta aktuella data till textarea. Borde ske samtidigt med att filen skapas.
+		buttonOk.hidden = false
+		definition.hidden = false
+		buttonEdit.hidden = true
+
+	buttonOk.addEventListener 'click', () -> 
+		g.tournament.fetchData()
+		buttonOk.hidden = true
+		definition.hidden = true
+		buttonEdit.hidden = false
 
 	window.windowResized()
 

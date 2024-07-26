@@ -56,7 +56,7 @@ export class Player
 		result
 
 	read : (player) -> 
-		print player
+		# print player
 		@elo = parseInt player[0]
 		@name = player[1]
 		@opp = []
@@ -77,8 +77,8 @@ export class Player
 	write : -> # 1234!Christer!12w0!23b1!14w2   Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
 		res.push @elo
-		res.push @name #.replaceAll ' ','_'
-		r = @opp.length # - 1
+		res.push @name
+		r = @opp.length
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range r)
 		res.push ocr.join SEPARATOR
 		res.join SEPARATOR
