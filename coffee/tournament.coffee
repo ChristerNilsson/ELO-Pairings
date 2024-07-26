@@ -26,7 +26,8 @@ export class Tournament
 	write : ->
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
-		edges = []
+		# edges = []
+		hash = {} # på avståndet
 		r = @round
 		for a in range g.N
 			pa = @persons[a]
@@ -36,9 +37,12 @@ export class Tournament
 				if not pb.active or pb.id == iBye then continue
 				if g.DIFF == 'ELO' then diff = abs pa.elo - pb.elo
 				if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
-				cost = 9999 - diff ** g.EXPONENT
-				if g.ok pa,pb then edges.push [pa.id, pb.id, cost]
-		edges
+				cost = 9999 - diff ** g.EXPONENT				
+				if g.ok pa,pb 
+					if diff not of hash then hash[diff] = []
+					hash[diff].push [pa.id, pb.id, cost]
+		hash
+		#edges
 	
 	findSolution : (edges) -> 
 		edmonds = new Edmonds edges
@@ -170,15 +174,20 @@ export class Tournament
 
 		print 'pos',(p.id for p in @personsSorted)
 
-		start = new Date()
-		edges = @makeEdges @preMatch() # -1 om bye saknas
-		print 'cpu1', (new Date() - start)
-		print 'edges:', ("#{a}-#{b} #{(9999-c).toFixed(1)}" for [a,b,c] in edges)
+		start = new Date()		
+		hash = @makeEdges @preMatch() # -1 om bye saknas
+		print 'makeEdges', (new Date() - start)
 
-		start = new Date()
-		solution = @findSolution edges
-		print 'cpu2', (new Date() - start)
-		print 'solution', solution
+		start = new Date()		
+		edges = []
+		for key in _.keys hash
+			edges = edges.concat hash[key]
+			print 'edges',key,edges.length
+			solution = @findSolution edges
+			if solution.length == g.N and -1 not in solution  # tag hänsyn till BYE och PAUSED senare
+				print 'solution',solution
+				print 'cpu', (new Date() - start)
+				break
 
 		@pairs = @unscramble solution
 
@@ -199,6 +208,7 @@ export class Tournament
 		g.pages[g.STANDINGS].setLista()
 
 		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+
 		# @downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
