@@ -83,13 +83,8 @@ export class Tournament
 		[a,b] = pair
 		pa = @persons[a]
 		pb = @persons[b]
-		# if g.DIFF == 'ELO'
-		# r = @round
 		da = pa.elo
 		db = pb.elo
-		# if g.DIFF == 'POS'
-		# 	da = pa.pos[r]
-		# 	db = pb.pos[r]
 		diff = Math.abs da - db
 		diff ** g.EXPONENT
 	
@@ -243,9 +238,9 @@ export class Tournament
 
 		print '################'
 
-	fetchData : () ->
+	fetchData : (data) ->
 
-		data = document.getElementById("definition").value
+		# data = document.getElementById("definition").value
 		data = data.split('\n')
 
 		hash = {}

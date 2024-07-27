@@ -8,6 +8,8 @@ import { Names } from './page_names.js'
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
 
+export handleFile = (data) -> g.tournament.fetchData data	
+
 g.RINGS = {'b':'•', ' ':' ', 'w':'o'}
 g.ASCII = '0123456789abcdefg'
 g.ALFABET = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' # 62 ronder maximalt
@@ -17,6 +19,11 @@ datum = ''
 g.tournament = null
 g.errors = [] # id för motsägelsefulla resultat. Tas bort med Delete
 g.pages = []
+
+start = new Date()
+for i in range 1_000_000
+	x = i * i
+print '**',new Date()-start 	
 
 window.windowResized = -> 
 	resizeCanvas windowWidth, windowHeight - 4
@@ -41,22 +48,22 @@ window.setup = ->
 	g.pages = [new Tables, new Names, new Standings, new Active]
 	print g.pages
 
-	buttonOk = document.getElementById "buttonOk"
-	definition = document.getElementById "definition"
-	buttonEdit = document.getElementById "buttonEdit"
-	buttonEdit.hidden = true
+	# buttonOk = document.getElementById "buttonOk"
+	# definition = document.getElementById "definition"
+	# buttonEdit = document.getElementById "buttonEdit"
+	# buttonEdit.hidden = true
 
-	buttonEdit.addEventListener 'click', () -> 
-		# hämta aktuella data till textarea. Borde ske samtidigt med att filen skapas.
-		buttonOk.hidden = false
-		definition.hidden = false
-		buttonEdit.hidden = true
+	# buttonEdit.addEventListener 'click', () -> 
+	# 	# hämta aktuella data till textarea. Borde ske samtidigt med att filen skapas.
+	# 	buttonOk.hidden = false
+	# 	definition.hidden = false
+	# 	buttonEdit.hidden = true
 
-	buttonOk.addEventListener 'click', () -> 
-		g.tournament.fetchData()
-		buttonOk.hidden = true
-		definition.hidden = true
-		buttonEdit.hidden = false
+	# buttonOk.addEventListener 'click', () -> 
+	# 	g.tournament.fetchData()
+	# 	buttonOk.hidden = true
+	# 	definition.hidden = true
+	# 	buttonEdit.hidden = false
 
 	window.windowResized()
 
