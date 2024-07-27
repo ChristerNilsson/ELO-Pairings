@@ -1,4 +1,6 @@
-
+Den här tabellen är en modifierad approximation av den korrekta funktionen.  
+Man ska alltså interpolera är det tänkt.  
+Undvikes.  
 
 ```
  dp   p 1-p  -dp

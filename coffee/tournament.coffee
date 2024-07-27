@@ -26,7 +26,6 @@ export class Tournament
 	write : ->
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
-		# hash = {} # på avståndet
 		arr = []
 		r = @round
 		for a in range g.N
@@ -37,13 +36,8 @@ export class Tournament
 				if not pb.active or pb.id == iBye then continue
 				diff = abs pa.elo - pb.elo
 				cost = 9999 - diff ** g.EXPONENT
-				if g.ok pa,pb 
-					# if diff not of hash then hash[diff] = []
-					# hash[diff].push [pa.id, pb.id, cost]
-					arr.push [pa.id, pb.id, cost]
-		# hash
+				if g.ok pa,pb then arr.push [pa.id, pb.id, cost]
 		arr.sort (a,b) -> b[2] - a[2] # cost
-		print 'arr',arr
 		arr
 	
 	findSolution : (edges) -> 
@@ -190,10 +184,11 @@ export class Tournament
 
 		start = new Date()		
 		edges = []
-		# groups = arr.length // 1000
 		print 'arr.length',arr.length
 		n = 1000
-		for end in range n, arr.length+n, n #groups # key in _.keys hash
+		n = 500000
+
+		for end in range n, arr.length+n, n
 			start = new Date()		
 			edges = arr.slice 0,end
 
@@ -255,6 +250,7 @@ export class Tournament
 		print '################'
 
 	fetchData : (data) ->
+		print 'fetchData',data
 
 		data = data.split '\n'
 
@@ -267,8 +263,6 @@ export class Tournament
 			else if line.length > 0
 				hash['PLAYERS'].push line.split '!'
 			
-		print hash
-
 		@players = []
 		@title = hash.TOUR
 		@datum = hash.DATE or ""

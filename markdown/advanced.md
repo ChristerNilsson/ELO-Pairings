@@ -32,15 +32,19 @@ PLAYERS=
 * TIMESTAMP - finns även i filnamnet
 
 # Fält som kan läggas till
+* DATE
+* FACTOR - 0=elo change >=1.2 translation of elo origin. Default: 2
+* K - hastighet. 10, 20 eller 40 är det normala
 * TPP - Tables Per Page (30)
 * PPP - Players Per Page (60)
 
-# Färsk URL skapas vid varje lottning
+# Backup skapas vid varje lottning
+
 Den hamnar på Downloads
 
-# Använd bordsformulär för backup.
+# Använd bordsformulär för backup
+
 Bra att ha om resultaten måste matas in igen.
-Även sparade URL-er kan vara användbara.
 
 # Teckenhantering
 
