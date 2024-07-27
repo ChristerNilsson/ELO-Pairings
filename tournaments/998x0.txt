@@ -999,4 +999,3 @@ PLAYERS=
 2395!HASSEL Johan-Viktor
 2396!LIND Johan-Viktor
 2397!RÖNN Johan-Viktor
-2398!SÄLG Johan-Viktor

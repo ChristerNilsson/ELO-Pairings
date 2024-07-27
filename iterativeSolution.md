@@ -15,4 +15,5 @@ for group in groups
 ```
 
 Detta fungerar bra eftersom länkarna närmast diagonalen undersöks först.  
-Med n=1000 räcker 5000 länkar för att hitta tio ronder, vilket tar mindre än en sekund per rond.
+Med n=1000 räcker 6000 länkar för att hitta tio ronder, vilket tar mindre än en halv sekund per rond.
+

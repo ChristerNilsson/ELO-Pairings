@@ -26,7 +26,8 @@ export class Tournament
 	write : ->
 
 	makeEdges : (iBye) -> # iBye är ett id eller -1
-		hash = {} # på avståndet
+		# hash = {} # på avståndet
+		arr = []
 		r = @round
 		for a in range g.N
 			pa = @persons[a]
@@ -35,12 +36,15 @@ export class Tournament
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
 				diff = abs pa.elo - pb.elo
-				# if g.DIFF == 'POS' then diff = abs pa.pos[r] - pb.pos[r]
-				cost = 9999 - diff ** g.EXPONENT				
+				cost = 9999 - diff ** g.EXPONENT
 				if g.ok pa,pb 
-					if diff not of hash then hash[diff] = []
-					hash[diff].push [pa.id, pb.id, cost]
-		hash
+					# if diff not of hash then hash[diff] = []
+					# hash[diff].push [pa.id, pb.id, cost]
+					arr.push [pa.id, pb.id, cost]
+		# hash
+		arr.sort (a,b) -> b[2] - a[2] # cost
+		print 'arr',arr
+		arr
 	
 	findSolution : (edges) -> 
 		edmonds = new Edmonds edges
@@ -181,19 +185,31 @@ export class Tournament
 		print 'pos',(p.id for p in @personsSorted)
 
 		start = new Date()		
-		hash = @makeEdges @preMatch() # -1 om bye saknas
+		arr = @makeEdges @preMatch() # -1 om bye saknas
 		print 'makeEdges', (new Date() - start)
 
 		start = new Date()		
 		edges = []
-		for key in _.keys hash
-			edges = edges.concat hash[key]
-			print 'edges',key,edges.length
+		# groups = arr.length // 1000
+		print 'arr.length',arr.length
+		n = 1000
+		for end in range n, arr.length+n, n #groups # key in _.keys hash
+			start = new Date()		
+			edges = arr.slice 0,end
+
+			start = new Date()		
+
+			print 'edges',edges
+
 			solution = @findSolution edges
+			print 'cpu',end, (new Date() - start)
+
+			print 'solution.length',solution.length, -1 not in solution
+			print solution
 			if solution.length == g.N and -1 not in solution  # tag hänsyn till BYE och PAUSED senare
 				print 'solution',solution
-				print 'cpu', (new Date() - start)
 				break
+		if not (solution.length == g.N and -1 not in solution) then return
 
 		@pairs = @unscramble solution
 
@@ -240,11 +256,10 @@ export class Tournament
 
 	fetchData : (data) ->
 
-		# data = document.getElementById("definition").value
-		data = data.split('\n')
+		data = data.split '\n'
 
 		hash = {}
-		for line in data
+		for line in data			
 			arr = line.split '='
 			if arr.length == 2
 				hash[arr[0]] = arr[1]

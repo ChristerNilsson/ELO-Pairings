@@ -74,7 +74,7 @@ export class Player
 		@res = ""
 		if player.length < 3 then return
 		ocrs = player.slice 2
-		print 'ocrs',ocrs
+		# print 'ocrs',ocrs
 		for ocr in ocrs
 			if 'w' in ocr then col='w'
 			if 'b' in ocr then col='b'
