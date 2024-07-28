@@ -18,7 +18,7 @@ export class Button
 		if @inside mouseX,mouseY
 			text @help,10,scaley(@y+3.2*@h/2)
 		else if mouseY < 20
-			if @title == 'In' then text "Missing=#{g.calcMissing()} Players=#{g.N} Paused=#{@t.paused.length} Round=#{@t.round}",10,scaley(@y+3.2*@h/2) # else painted many times
+			if @title == 'In' then text "Missing results=#{g.calcMissing()} Players=#{g.N} Paused=#{@t.paused.length}",10,scaley(@y+3.2*@h/2) # else painted many times
 
 	inside : (x,y) -> scalex(@x) <= x <= scalex(@x + @w) and scaley(@y) <= y <= scaley(@y + @h)
 

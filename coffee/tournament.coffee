@@ -35,22 +35,23 @@ export class Tournament
 		@virgin = true
 
 	write : ->
-
+	
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		arr = []
-		r = @round
 		for a in range g.N
 			pa = @persons[a]
 			if not pa.active or pa.id == iBye then continue
-			for b in range a+1, g.N
+			for b in range g.N
+				if a == b then continue
 				pb = @persons[b]
 				if not pb.active or pb.id == iBye then continue
 				diff = abs pa.elo - pb.elo
 				cost = 9999 - diff ** g.EXPONENT
+				if pa.id < pb.id then continue
 				if g.ok pa,pb then arr.push [pa.id, pb.id, cost]
 		arr.sort (a,b) -> b[2] - a[2] # cost
 		arr
-	
+
 	findSolution : (edges) -> 
 		edmonds = new Edmonds edges
 		edmonds.maxWeightMatching edges
@@ -167,8 +168,6 @@ export class Tournament
 			print 'lottning ej genomförd!'
 			return
 
-		# @dump 'lotta'
-
 		@virgin = false
 		timestamp = new Date().toLocaleString('se-SE').replaceAll ' ','_'
 		@downloadFile @makeTournament(timestamp), "#{timestamp}-#{@round} Tournament.txt"
@@ -184,44 +183,31 @@ export class Tournament
 
 		print 'sorted',@personsSorted
 
+		print ""
 		print "Lottning av rond #{@round} ====================================================="
 		document.title = "Round #{@round+1}"
 
-		print 'pos',(p.id for p in @personsSorted)
-
-		start = new Date()		
 		arr = @makeEdges @preMatch() # -1 om bye saknas
-		print 'makeEdges', (new Date() - start)
-
 		start = new Date()		
-		edges = []
-		print 'arr.length',arr.length
 		n = 1000
-		# n = 500000
 
 		for end in range n, arr.length+n, n
-			start = new Date()		
 			edges = arr.slice 0,end
 
 			start = new Date()		
-
 			print 'edges',edges
-
 			solution = @findSolution edges
 			print 'cpu',end, (new Date() - start)
 
-			print 'solution.length',solution.length, -1 not in solution
-			print solution
-			if solution.length == g.N and -1 not in solution  # tag hänsyn till BYE och PAUSED senare
-				print 'solution',solution
-				break
-		if not (solution.length == g.N and -1 not in solution) then return
+			print 'solution', -1 not in solution, solution
+			if solution.length == g.N and -1 not in solution then break # tag hänsyn till BYE och PAUSED senare
+		if not (solution.length == g.N and -1 not in solution)
+			alert 'Pairing impossible. Too many rounds or paused players'
+			return
 
 		@pairs = @unscramble solution
 
-		print @persons.length,@paused.length,@pairs.length
 		if @pairs.length < (@persons.length - @paused.length) // 2 
-			alert 'Pairing impossible. Too many rounds or paused players'
 			print 'Pairing impossible'
 			return 
 
@@ -235,12 +221,11 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-		print @makeMatrix 80 # skriver till debug-fönstret, time outar inte.
-
 		# @downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
 
 		@round += 1
+		print @makeMatrix 80 # skriver till debug-fönstret, time outar inte.
 
 		g.state = g.TABLES
 
@@ -434,9 +419,10 @@ export class Tournament
 		result
 
 	dumpCanvas : (title,average,canvas,n) ->
-		output = ["", title]
+		output = []
+		if title != "" then output.push title
 		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
-		output.push ""
+		# output.push ""
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @persons)

@@ -39,6 +39,7 @@ export class Page
 		s = ''
 		s += g.txtT "#{@t.title} #{@t.datum}", 30, LEFT
 		s += g.txtT "#{g.message}", 30, CENTER
+		s += g.txtT "#{@t.round}", 24, CENTER
 		text s,10,scaley(y)
 
 	txt : (value, x, y, align=null, color=null) ->
