@@ -264,6 +264,7 @@ export class Tournament
 		hash.PAUSED = ""
 
 		for line,nr in data	
+			line = line.trim()
 			if line.length == 0 then continue		
 			arr = line.split '='			
 			if arr.length == 2 
