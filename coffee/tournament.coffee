@@ -7,6 +7,17 @@ import { Names } from './page_names.js'
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
 
+KEYWORDS = {}
+KEYWORDS.TITLE = 'text'
+KEYWORDS.DATE = 'text'
+KEYWORDS.ROUND = 'integer'
+KEYWORDS.PAUSED = '!-separated integers'
+KEYWORDS.TPP = 'integer (Tables Per Page, default: 30)'
+KEYWORDS.PPP = 'integer (Players Per Page, default: 60)'
+KEYWORDS.K = 'integer (default: 20)'
+KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
+# KEYWORDS.TIMESTAMP = 'text'
+
 export class Tournament 
 	constructor : ->
 		@title = ''
@@ -186,7 +197,7 @@ export class Tournament
 		edges = []
 		print 'arr.length',arr.length
 		n = 1000
-		n = 500000
+		# n = 500000
 
 		for end in range n, arr.length+n, n
 			start = new Date()		
@@ -224,7 +235,7 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-		if g.N < 80 then print @makeMatrix() # skriver till debug-fönstret, time outar inte.
+		print @makeMatrix 80 # skriver till debug-fönstret, time outar inte.
 
 		# @downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
 		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
@@ -235,7 +246,7 @@ export class Tournament
 
 	dump : (title) ->
 		print "##### #{title} #####"
-		print 'TOUR',@title
+		print 'TITLE',@title
 		print 'DATE',@datum
 		print 'ROUND',@round
 		print 'TPP',@tpp
@@ -255,29 +266,49 @@ export class Tournament
 		data = data.split '\n'
 
 		hash = {}
-		for line in data			
-			arr = line.split '='
-			if arr.length == 2
+
+		# default values
+		hash.PLAYERS = []
+		hash.TITLE = ''
+		hash.DATE = ''
+		hash.ROUND = 0
+		hash.TPP = 30
+		hash.PPP = 60
+		hash.K = 20
+		hash.FACTOR = 2
+		hash.PAUSED = ""
+
+		for line,nr in data	
+			if line.length == 0 then continue		
+			arr = line.split '='			
+			if arr.length == 2 
+				if arr[0] not of KEYWORDS 
+					helpText = ("    #{key}: #{value}" for key,value of KEYWORDS).join '\n'
+					keyword = "\"#{arr[0]}\""
+					alert "#{keyword} in line #{nr+1} is not one of\n#{helpText}"
+					return
 				hash[arr[0]] = arr[1]
-				if arr[0] = 'PLAYERS' then hash['PLAYERS'] = []
-			else if line.length > 0
-				hash['PLAYERS'].push line.split '!'
+			else 
+				if '!' not in line
+					alert "#{line}\n in line #{nr+1}\n must look like\n2999!CARLSEN Magnus"
+					return
+				hash.PLAYERS.push line.split '!'
 			
 		@players = []
-		@title = hash.TOUR
-		@datum = hash.DATE or ""
-		@round = parseInt hash.ROUND or 0
-		@tpp = parseInt hash.TPP or 30 # Tables Per Page
-		@ppp = parseInt hash.PPP or 60 # Players Per Page
-		g.K  = parseInt hash.K or 20 # 40, 20 or 10 normally
-
-		g.FACTOR = parseFloat hash.FACTOR or 2
+		@title = hash.TITLE
+		@datum = hash.DATE
+		@round = parseInt hash.ROUND
+		@tpp = parseInt hash.TPP # Tables Per Page
+		@ppp = parseInt hash.PPP # Players Per Page
+		g.K  = parseInt hash.K # 40, 20 or 10 normally
+		g.FACTOR = parseFloat hash.FACTOR
+		@paused = hash.PAUSED # list of zero based ids
 
 		players = hash.PLAYERS
 		g.N = players.length
 
 		if not (4 <= g.N < 1000)
-			print "Error: Number of players must be between 4 and 9999!"
+			alert "Number of players must be between 4 and 999!"
 			return
 
 		@persons = []
@@ -286,7 +317,6 @@ export class Tournament
 			player.read players[i]
 			@persons.push player
 
-		@paused = hash.PAUSED or "" # list of zero based ids
 		if @paused == ""
 			@paused = []
 		else
@@ -339,11 +369,16 @@ export class Tournament
 
 		@dump 'fetch'
 		
+		@virgin = true
+
 		g.pages = [new Tables, new Names, new Standings, new Active]
 
+		g.pages[g.ACTIVE].setLista()
 		g.pages[g.NAMES].setLista()
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
+
+		g.state = g.ACTIVE
 
 	makePaused : -> @paused.join SEPARATOR # (12!34)
 
@@ -355,21 +390,19 @@ export class Tournament
 		res = []
 		res.push "FACTOR=" + g.FACTOR
 		res.push "ROUND=" + @round
-		res.push "TOUR=" + @title
+		res.push "TITLE=" + @title
 		res.push "DATE=" + @datum
 		res.push "TIMESTAMP=" + timestamp
 		res.push "K=" + g.K
 		res.push "TPP=" + @tpp
 		res.push "PPP=" + @ppp
 		res.push "PAUSED=" + @makePaused()
-		res.push "PLAYERS="
 		res.push @makePlayers()
 		res.join '\n'
 
 	makeStandardFile : ->
 		res = []
 		timestamp = new Date().toLocaleString 'se-SE'
-		# print timestamp
 		header_after = " for " + @title + " after Round #{@round}    #{timestamp}"
 		header_in    = " for " + @title + " in Round #{@round+1}    #{timestamp}"
 
@@ -380,6 +413,7 @@ export class Tournament
 		res.join "\n"	
 
 	distans : (rounds) ->
+		if rounds.length == 0 then return "0"
 		result = []
 		for i in range(rounds.length) 
 			for [a,b] in rounds[i]
@@ -390,20 +424,20 @@ export class Tournament
 					result.push abs(pa.elo - pb.elo) 
 		(g.sum(result)/result.length).toFixed 2
 
-	makeCanvas : ->
+	makeCanvas : (n) ->
 		result = []
-		for i in range g.N
-			line = new Array g.N
+		for i in range n
+			line = new Array n
 			_.fill line, '·'
 			line[i] = '*'
 			result.push line
 		result
 
-	dumpCanvas : (title,average,canvas) ->
+	dumpCanvas : (title,average,canvas,n) ->
 		output = ["", title]
 		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
 		output.push ""
-		header = (str((i + 1) % 10) for i in range(g.N)).join(' ')
+		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @persons)
 		for i in range canvas.length
@@ -413,25 +447,21 @@ export class Tournament
 		output.push '     ' + header
 		output.join '\n'
 
-	drawMatrix : (title,rounds) ->
-		canvas = @makeCanvas()
+	drawMatrix : (title,rounds,n) ->
+		canvas = @makeCanvas n
 		for i in range rounds.length
 			for [a,b] in rounds[i]
-				# print 'drawMatrix',a,b
-				if a < 0 or b < 0 then continue
+				inside = 0 <= a < n and 0 <= b < n
+				if not inside then continue
 				if @persons[a].active and @persons[b].active
 					canvas[a][b] = g.ALFABET[i]
 					canvas[b][a] = g.ALFABET[i]
-		@dumpCanvas title,@distans(rounds),canvas
+		@dumpCanvas title,@distans(rounds),canvas,n
 
-	makeMatrix : ->
-		matrix = []
-		for r in range @round
-			res = []
-			for p in @persons
-				res.push [p.id,p.opp[r]]				
-			matrix.push res
-		@drawMatrix @title, matrix
+	makeMatrix : (n) ->
+		if n > g.N then n = g.N
+		matrix = (([p.id,p.opp[r]] for p in @persons) for r in range @round)
+		@drawMatrix @title, matrix, n
 
 	makeBubbles : ->
 		res = []

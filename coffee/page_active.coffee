@@ -8,11 +8,6 @@ export class Active extends Page
 	constructor : ->
 		super()
 
-		if g.tournament.virgin #round == 0
-			@buttons.t.active = false
-			@buttons.n.active = false
-			@buttons.s.active = false
-
 		@buttons.ArrowLeft  = new Button '', '', () => g.setState g.NAMES
 		@buttons.ArrowRight = new Button '', '', () => g.setState g.STANDINGS
 		@buttons.p          = new Button 'Pair','P = Perform pairing now', () => 
@@ -32,6 +27,10 @@ export class Active extends Page
 			s = if p.active then '      ' else 'pause '
 			s + g.txtT p.name, 25,  LEFT
 		spread @buttons, 10, @y, @h
+		if g.tournament.virgin #round == 0
+			@buttons.t.active = false
+			@buttons.n.active = false
+			@buttons.s.active = false
 
 	draw : ->
 		fill 'white'

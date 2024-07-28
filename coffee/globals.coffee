@@ -98,8 +98,8 @@ g.calcMissing = ->
 		if not p.active then continue
 		if g.BYE == _.last p.opp then continue
 		if p.res.length < p.col.length then missing++
-	g.message = "#{missing//2} results missing"
-	missing
+	# g.message = "#{missing//2} results missing"
+	missing//2
 
 g.sum = (s) ->
 	res = 0

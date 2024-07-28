@@ -21,9 +21,8 @@ g.errors = [] # id för motsägelsefulla resultat. Tas bort med Delete
 g.pages = []
 
 data = """
-TOUR=Senior Stockholm
+TITLE=Senior Stockholm
 DATE=2024-05-28
-PLAYERS=
 1825!JOHANSSON Lennart
 1697!BJÖRKDAHL Göran
 1684!SILINS Peteris

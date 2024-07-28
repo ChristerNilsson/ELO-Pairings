@@ -1,7 +1,9 @@
 import { g,print,range,scalex,scaley } from './globals.js' 
 
 export class Button
-	constructor : (@title, @help, @click) -> @active = true
+	constructor : (@title, @help, @click) -> 
+		@active = true
+		@t = g.tournament
 
 	draw : ->
 		textAlign CENTER,CENTER
@@ -13,7 +15,10 @@ export class Button
 		fill 'black'
 		text @title,scalex(@x+@w/2),scaley(@y+@h/2)
 		textAlign LEFT,CENTER
-		if @inside mouseX,mouseY then text @help,10,scaley(@y+3.2*@h/2)
+		if @inside mouseX,mouseY
+			text @help,10,scaley(@y+3.2*@h/2)
+		else if mouseY < 20
+			if @title == 'In' then text "Missing=#{g.calcMissing()} Players=#{g.N} Paused=#{@t.paused.length} Round=#{@t.round}",10,scaley(@y+3.2*@h/2) # else painted many times
 
 	inside : (x,y) -> scalex(@x) <= x <= scalex(@x + @w) and scaley(@y) <= y <= scaley(@y + @h)
 

@@ -9,21 +9,19 @@ Exempel:
 ```
 FACTOR=2
 ROUND=10
-TOUR=Tyresö Open 2024
+TITLE=Tyresö Open 2024
 DATE=2024-05-03
 TIMESTAMP=2024-07-25 16:17:41
 K=20
 TPP=30
 PPP=60
 PAUSED=12!18
-PLAYERS=
 2416!Hampus Sörensen!19w1!17b1!18w1!16b1!15w1!14b1!13w1!12b1!3w1!32b1
 ```
 
 # Obligatoriska fält
 
-* TOUR - turneringens namn
-* PLAYERS - spelarnas elo och namn, separerade med !
+* Spelarnas elo och namn, separerade med !
 
 # Fält som skapas automatiskt (default)
 
