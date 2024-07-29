@@ -23,20 +23,20 @@ g.pages = []
 data = """
 TITLE=Senior Stockholm
 DATE=2024-05-28
-1825!JOHANSSON Lennart
+1598!AIKIO Onni
+1539!ANDERSSON Lars Owe
+1532!ANTONSSON Görgen
 1697!BJÖRKDAHL Göran
+1598!ISRAEL Dan
+1825!JOHANSSON Lennart
+1559!LEHVONEN Jouko
+1561!LILJESTRÖM Tor
+1583!PERSSON Kjell
+1644!PETTERSSON Lars-Åke
 1684!SILINS Peteris
 1681!STOLOV Leonid
-1644!PETTERSSON Lars-Åke
-1598!ISRAEL Dan
-1598!AIKIO Onni
-1583!PERSSON Kjell
-1561!LILJESTRÖM Tor
-1559!LEHVONEN Jouko
-1539!ANDERSSON Lars Owe
-1535!ÅBERG Lars-Erik
-1532!ANTONSSON Görgen
 1400!STRÖMBÄCK Henrik
+1535!ÅBERG Lars-Erik
 """
 
 window.windowResized = -> 
@@ -62,7 +62,7 @@ window.setup = ->
 	g.pages = [new Tables, new Names, new Standings, new Active]
 	print g.pages
 
-	print data
+	# print data
 	g.tournament.fetchData "DEMO",data
 
 	window.windowResized()

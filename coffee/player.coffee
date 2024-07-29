@@ -7,7 +7,7 @@ export class Player
 
 	toggle : -> 
 		@active = not @active
-		g.tournament.paused = (p.id for p in g.tournament.persons when not p.active)
+		g.tournament.paused = (p.id for p in g.tournament.playersByID when not p.active)
 
 	bye : -> g.BYE in @opp
 
@@ -16,7 +16,7 @@ export class Player
 		if @opp[r] == g.PAUSE then return 0
 		if r >= @res.length then return 0
 		a = @elo
-		b = g.tournament.persons[@opp[r]].elo
+		b = g.tournament.playersByID[@opp[r]].elo
 		diff = a - b
 		g.K * (@res[r]/2 - g.F diff)
 
@@ -24,7 +24,7 @@ export class Player
 		if @opp[r] == g.BYE   then return @elo + g.OFFSET
 		if @opp[r] == g.PAUSE then return 0
 		if r >= @res.length then return 0
-		b = g.tournament.persons[@opp[r]].elo + g.OFFSET
+		b = g.tournament.playersByID[@opp[r]].elo + g.OFFSET
 		if @res[r] == '2' then return b   # WIN
 		if @res[r] == '1' then return b/2 # DRAW
 		0 # LOSS
@@ -45,7 +45,7 @@ export class Player
 	avgEloDiff : ->
 		res = []
 		for id in @opp.slice 0, @opp.length - 1
-			if id >= 0 then res.push abs @elo - g.tournament.persons[id].elo
+			if id >= 0 then res.push abs @elo - g.tournament.playersByID[id].elo
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
 	balans : -> # färgbalans

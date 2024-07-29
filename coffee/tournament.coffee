@@ -27,7 +27,8 @@ export class Tournament
 
 		# dessa tre listor pekar på samma objekt
 		@players = []
-		@persons = [] # stabil, sorterad på id och elo
+		@playersByID = [] # sorterad på id
+		@playersByELO = [] # sorterad på elo och name
 		@pairs = [] # varierar med varje rond
 
 		@robin = range g.N
@@ -36,20 +37,37 @@ export class Tournament
 
 	write : ->
 	
+	# makeEdges : (iBye) -> # iBye är ett id eller -1
+	# 	arr = []
+	# 	for a in range g.N
+	# 		pa = @persons[a]
+	# 		if not pa.active or pa.id == iBye then continue
+	# 		for b in range g.N
+	# 			if a == b then continue
+	# 			pb = @persons[b]
+	# 			if not pb.active or pb.id == iBye then continue
+	# 			diff = abs pa.elo - pb.elo
+	# 			cost = 9999 - diff ** g.EXPONENT
+	# 			if pa.id < pb.id then continue
+	# 			if g.ok pa,pb then arr.push [pa.id, pb.id, cost]
+	# 	arr.sort (a,b) -> b[2] - a[2] # cost
+	# 	arr
+
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		arr = []
-		for a in range g.N
-			pa = @persons[a]
-			if not pa.active or pa.id == iBye then continue
-			for b in range g.N
+		for pa in @playersByELO
+			a = pa.id
+			if not pa.active or a == iBye then continue
+			for pb in @playersByELO
+				b = pb.id
 				if a == b then continue
-				pb = @persons[b]
-				if not pb.active or pb.id == iBye then continue
+				if not pb.active or b == iBye then continue
 				diff = abs pa.elo - pb.elo
 				cost = 9999 - diff ** g.EXPONENT
-				if pa.id < pb.id then continue
-				if g.ok pa,pb then arr.push [pa.id, pb.id, cost]
+				if a < b then continue
+				if g.ok pa,pb then arr.push [a,b, cost]
 		arr.sort (a,b) -> b[2] - a[2] # cost
+		# print 'arr',arr
 		arr
 
 	findSolution : (edges) -> 
@@ -91,8 +109,8 @@ export class Tournament
 
 	solutionCost : (pair) ->
 		[a,b] = pair
-		pa = @persons[a]
-		pb = @persons[b]
+		pa = @playersByID[a]
+		pb = @playersByID[b]
 		da = pa.elo
 		db = pb.elo
 		diff = Math.abs da - db
@@ -102,12 +120,12 @@ export class Tournament
 
 	preMatch : -> # return id för spelaren som ska ha bye eller -1 om bye saknas
 
-		for p in @persons
+		for p in @playersByID
 			if not p.active then p.res += '0'
 
-		temp = _.filter @persons, (p) -> p.active 
+		temp = _.filter @playersByELO, (p) -> p.active 
 		if temp.length % 2 == 1 # Spelaren med lägst elo och som inte har haft frirond, får frironden
-			temp = _.filter @persons, (p) -> p.active and p.bye() == false
+			temp = _.filter @playersByELO, (p) -> p.active and p.bye() == false
 			pBye = _.last temp
 			pBye.opp.push g.BYE
 			pBye.col += '_'
@@ -116,22 +134,22 @@ export class Tournament
 		g.BYE
 
 	postMatch : ->
-		for p in @persons
+		for p in @playersByID
 			if p.active then continue
 			p.opp.push g.PAUSE
 			p.col += '_'
 
 		for [a,b] in @pairs
-			pa = @persons[a]
-			pb = @persons[b]
+			pa = @playersByID[a]
+			pb = @playersByID[b]
 			pa.opp.push pb.id
 			pb.opp.push pa.id
 
 		if @round == 0
 			for i in range @pairs.length
 				[a,b] = @pairs[i]
-				pa = @persons[a]
-				pb = @persons[b]
+				pa = @playersByID[a]
+				pb = @playersByID[b]
 				col1 = "bw"[i%2]
 				col0 = g.other col1
 				pa.col += col0
@@ -140,14 +158,14 @@ export class Tournament
 		else
 			for i in range @pairs.length
 				[a,b] = @pairs[i]
-				pa = @persons[a]
-				pb = @persons[b]
+				pa = @playersByID[a]
+				pb = @playersByID[b]
 				@assignColors pa,pb
 				if pa.col[@round]=='b' then @pairs[i].reverse()
 
 		for [a,b],i in @pairs
-			pa = @persons[a]
-			pb = @persons[b]
+			pa = @playersByID[a]
+			pb = @playersByID[b]
 			pa.chair = 2*i
 			pb.chair = 2*i + 1
 
@@ -171,16 +189,16 @@ export class Tournament
 		@virgin = false
 		if @round != 0 then @downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
 
-		@personsSorted = _.clone @persons
-		@personsSorted.sort (pa,pb) => 
-			da = pa.elo
-			db = pb.elo
-			db - da
+		# @personsSorted = _.clone @persons
+		# @personsSorted.sort (pa,pb) => 
+		# 	da = pa.elo
+		# 	db = pb.elo
+		# 	db - da
 
-		for i in range @personsSorted.length
-			@personsSorted[i].pos[@round] = i
+		# for i in range @personsSorted.length
+		# 	@personsSorted[i].pos[@round] = i
 
-		print 'sorted',@personsSorted
+		# print 'sorted',@personsSorted
 
 		print ""
 		print "Lottning av rond #{@round} ====================================================="
@@ -206,12 +224,12 @@ export class Tournament
 
 		@pairs = @unscramble solution
 
-		if @pairs.length < (@persons.length - @paused.length) // 2 
+		if @pairs.length < (@playersByID.length - @paused.length) // 2 
 			print 'Pairing impossible'
 			return 
 
 		if @round == 0 then print 'pairs', @pairs
-		if @round > 0  then print 'pairs', ([a, b, @persons[a].elo, @persons[b].elo, Math.abs(@persons[a].elo - @persons[b].elo).toFixed(1)] for [a,b] in @pairs)
+		if @round > 0  then print 'pairs', ([a, b, @playersByID[a].elo, @playersByID[b].elo, Math.abs(@playersByID[a].elo - @playersByID[b].elo).toFixed(1)] for [a,b] in @pairs)
 		print 'solutionCosts', @solutionCosts @pairs
 
 		@postMatch()
@@ -245,7 +263,7 @@ export class Tournament
 		print '################'
 
 	fetchData : (filename, data) ->
-		print 'fetchData',filename, data
+		# print 'fetchData',filename, data
 		@filename = filename.replaceAll ".txt",""
 
 		data = data.split '\n'
@@ -279,14 +297,14 @@ export class Tournament
 					alert "#{line}\n in line #{nr+1}\n must look like\n    2882!CARLSEN Magnus or\n    1601!NILSSON Christer!2w0"
 					return
 				arr = line.split '!'
-				print 'arr',arr
+				# print 'arr',arr
 				if not /^\d{4}$/.test arr[0]
 					alert "#{arr[0]}\n in line #{nr+1}\n must have four digits"
 					return
 				for i in range 2,arr.length
 					item = arr[i]
 					if not /^-?\d+(w|_|b)[0-2]$/.test item
-						alert "#{item}\n in line #{nr+1}\n must look like <number> <color> <result>\n  where color is one of w,b or _\n  and result is one of 0, 1 or 2"
+						alert "#{item}\n in line #{nr+1}\n must follow the format <number> <color> <result>\n  where color is one of w,b or _\n  and result is one of 0, 1 or 2"
 						return
 				hash.PLAYERS.push arr
 			
@@ -307,51 +325,51 @@ export class Tournament
 			alert "Number of players must be between 4 and 999!"
 			return
 
-		@persons = []
+		@playersByID = []
 		for i in range g.N
 			player = new Player i
 			player.read players[i]
-			@persons.push player
+			@playersByID.push player
 
 		if @paused == ""
 			@paused = []
 		else
 			@paused = @paused.split '!'
 			for id in @paused
-				if id != "" then @persons[id].active = false
+				if id != "" then @playersByID[id].active = false
 
-		print 'fetchData.persons', @persons
+		for i in range g.N
+			@playersByID[i].id = i
+			@playersByID[i].elo = parseInt @playersByID[i].elo
 		
-		@persons.sort (a,b) -> 
+		@playersByELO = _.clone @playersByID
+		@playersByELO.sort (a,b) -> 
 			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
 
-		for i in range g.N
-			@persons[i].id = i
-			@persons[i].elo = parseInt @persons[i].elo
-
 		if g.FACTOR > 0  
 			if g.FACTOR < 1.2 then g.FACTOR = 1.2
-			XMAX = @persons[0].elo
-			XMIN = _.last(@persons).elo
+			XMAX = @playersByELO[0].elo
+			XMIN = _.last(@playersByELO).elo
 			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
 			g.OFFSET = Math.round g.OFFSET
 			print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
 
-		print (p.elo for p in @persons)
-		print 'sorted players', @persons # by id AND descending elo
+		print 'playersByELO', @playersByELO
 
-		@playersByName = _.sortBy @persons, (player) -> player.name
-		print 'playersByName', (p.name for p in @playersByName)
+		print 'playersByID', @playersByID 
+
+		@playersByName = _.sortBy @playersByID, (player) -> player.name
+		print 'playersByName', @playersByName
 
 		# extract @pairs from the last round
 		@pairs = []
-		for p in @persons
+		for p in @playersByID
 			a = p.id
 			b = _.last p.opp
 			if a < b 
-				pa = @persons[a]
-				pb = @persons[b]
+				pa = @playersByID[a]
+				pb = @playersByID[b]
 				@pairs.push if 'w' == _.last p.col
 					pa.chair = 2 * @pairs.length
 					pb.chair = 2 * @pairs.length + 1
@@ -379,7 +397,7 @@ export class Tournament
 	makePaused : -> @paused.join SEPARATOR # (12!34)
 
 	makePlayers : ->
-		players = (p.write() for p in @persons)
+		players = (p.write() for p in @playersByID)
 		players.join "\n"
 
 	makeTournament : () ->
@@ -412,8 +430,8 @@ export class Tournament
 		for i in range(rounds.length) 
 			for [a,b] in rounds[i]
 				if a < 0 or b < 0 then continue
-				pa = @persons[a]
-				pb = @persons[b]
+				pa = @playersByID[a]
+				pb = @playersByID[b]
 				if pa.active and pb.active 
 					result.push abs(pa.elo - pb.elo) 
 		(g.sum(result)/result.length).toFixed 2
@@ -433,11 +451,11 @@ export class Tournament
 		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
-		ordning = (p.elo for p in @persons)
+		ordning = (p.elo for p in @playersByELO)
 		for i in range canvas.length
 			row = canvas[i]
 			nr = str(i + 1).padStart(3)
-			output.push "#{nr}  #{(str(item) for item in row).join(" ")}  #{ordning[i]} #{@persons[i].avgEloDiff().toFixed(1).padStart(6)}"
+			output.push "#{nr}  #{(str(item) for item in row).join(" ")}  #{ordning[i]} #{@playersByELO[i].avgEloDiff().toFixed(1).padStart(6)}"
 		output.push '     ' + header
 		output.join '\n'
 
@@ -447,21 +465,23 @@ export class Tournament
 			for [a,b] in rounds[i]
 				inside = 0 <= a < n and 0 <= b < n
 				if not inside then continue
-				if @persons[a].active and @persons[b].active
+				if @playersByID[a].active and @playersByID[b].active
 					canvas[a][b] = g.ALFABET[i]
 					canvas[b][a] = g.ALFABET[i]
 		@dumpCanvas title,@distans(rounds),canvas,n
 
 	makeMatrix : (n) ->
 		if n > g.N then n = g.N
-		matrix = (([p.id,p.opp[r]] for p in @persons) for r in range @round)
+		inv = g.invert (p.id for p in @playersByELO)
+		matrix = (([inv[p.id],inv[p.opp[r]]] for p in @playersByELO) for r in range @round)
+		print 'matrix',matrix
 		@drawMatrix @title, matrix, n
 
 	makeBubbles : ->
 		res = []
-		for pa in @persons
+		for pa in @playersByID
 			for r in range @round
 				if pa.opp[r] >= 0 
-					pb = @persons[pa.opp[r]]
+					pb = @playersByID[pa.opp[r]]
 					res.push "#{pa.elo}\t#{pb.elo}"
 		res.join '\n'

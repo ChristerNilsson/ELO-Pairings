@@ -25,7 +25,7 @@ export class Standings extends Page
 		header += ' ' + g.txtT "Quality",      8, RIGHT
 		header += ' ' + g.txtT "Score",        5, RIGHT
 
-		@playersByPerformance = _.clone @t.persons.slice 0,g.N
+		@playersByPerformance = _.clone @t.playersByID.slice 0,g.N
 		@playersByPerformance = _.sortBy @playersByPerformance, (p) => -(p.change(@t.round+1))
 
 		@lista = new Lista @playersByPerformance, header, @buttons, (p,index,pos) => # returnera strängen som ska skrivas ut. Dessutom ritas lightbulbs här.
@@ -53,13 +53,13 @@ export class Standings extends Page
 		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
 		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
 		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
-			a = iy
-			pa = @playersByPerformance[a]
+			# a = iy
+			pa = @playersByPerformance[iy]
 			b = pa.opp[r]
 			if b == g.BYE   then g.help = "#{pa.elo} #{pa.name} has a bye => chg = #{g.K/2}"
 			if b == g.PAUSE then g.help = "#{pa.elo} #{pa.name} has a pause => chg = 0"
 			if b >= 0				
-				pb = @t.persons[b]
+				pb = @t.playersByID[b]
 				chg = pa.calcRound r
 
 				s = ""
@@ -126,21 +126,21 @@ export class Standings extends Page
 			header += g.txtT "#{r+1}",  6, RIGHT
 		header += ' ' + g.txtT "Quality", 11, RIGHT
 		
-		for person,i in @playersByPerformance
+		for player,i in @playersByPerformance
 			if i % @t.ppp == 0 then res.push header
 			s = ""
 			s +=       g.txtT (1+i).toString(),          3,  RIGHT
-			s += ' ' + g.txtT (1+person.id).toString(),  3,  RIGHT
-			s += ' ' + g.txtT person.elo.toString(),    4,  RIGHT
-			s += ' ' + g.txtT person.name,              25,  LEFT
+			s += ' ' + g.txtT (1+player.id).toString(),  3,  RIGHT
+			s += ' ' + g.txtT player.elo.toString(),    4,  RIGHT
+			s += ' ' + g.txtT player.name,              25,  LEFT
 			s += ' '
 			for r in range @t.round
-				if person.opp[r] == -2 then s += '    P '
-				if person.opp[r] == -1 then s += '   BYE'
-				if person.opp[r] >= 0
-					s += g.txtT "#{1+person.opp[r]}#{g.RINGS[person.col[r][0]]}#{"0½1"[person.res[r]]}", 6,  RIGHT			
+				if player.opp[r] == -2 then s += '    P '
+				if player.opp[r] == -1 then s += '   BYE'
+				if player.opp[r] >= 0
+					s += g.txtT "#{1+player.opp[r]}#{g.RINGS[player.col[r][0]]}#{"0½1"[player.res[r]]}", 6,  RIGHT			
 
-			s += ' ' + g.txtT (person.change(@t.round+1)).toFixed(6),  10,  RIGHT
+			s += ' ' + g.txtT (player.change(@t.round+1)).toFixed(6),  10,  RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"

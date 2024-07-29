@@ -39,8 +39,8 @@ export class Tables extends Page
 
 		@lista = new Lista @t.pairs, header, @buttons, (pair,index,pos) =>
 			[a,b] = pair
-			pa = @t.persons[a]
-			pb = @t.persons[b]
+			pa = @t.playersByID[a]
+			pb = @t.playersByID[b]
 			both = if pa.res.length == pa.col.length then g.prBoth _.last(pa.res) else "   -   "
 
 			nr = index + 1
@@ -78,8 +78,8 @@ export class Tables extends Page
 
 	handleResult : (key) =>
 		[a,b] = @t.pairs[@lista.currentRow]
-		pa = @t.persons[a]
-		pb = @t.persons[b]
+		pa = @t.playersByID[a]
+		pb = @t.playersByID[b]
 		index = '0 1'.indexOf key
 		ch = "012"[index]
 		if pa.res.length == pa.col.length 
@@ -92,8 +92,8 @@ export class Tables extends Page
 
 	randomResult : ->
 		for [a,b] in @t.pairs
-			pa = @t.persons[a]
-			pb = @t.persons[b]
+			pa = @t.playersByID[a]
+			pb = @t.playersByID[b]
 			res = @elo_probabilities pa.elo - pb.elo
 			if pa.res.length < pa.col.length 
 				pa.res += res
@@ -103,13 +103,13 @@ export class Tables extends Page
 	handleDelete : ->
 		i = @lista.currentRow
 		[a,b] = @t.pairs[i]
-		pa = @t.persons[a]
-		pb = @t.persons[b]
+		pa = @t.playersByID[a]
+		pb = @t.playersByID[b]
 		@lista.errors = (e for e in @lista.errors when e != i)
 		if pa.res.length == pb.res.length
 			[a,b] = @t.pairs[i]
-			pa = @t.persons[a]
-			pb = @t.persons[b]
+			pa = @t.playersByID[a]
+			pb = @t.playersByID[b]
 			pa.res = pa.res.substring 0,pa.res.length-1
 			pb.res = pb.res.substring 0,pb.res.length-1
 		@lista.currentRow = (@lista.currentRow + 1) %% @t.pairs.length
@@ -121,8 +121,8 @@ export class Tables extends Page
 		for i in range @t.pairs.length
 			[a,b] = @t.pairs[i]
 			if i % @t.tpp == 0 then res.push "Table      #{g.RINGS.w}".padEnd(25) + _.pad("",28+10) + "#{g.RINGS.b}" #.padEnd(25)
-			pa = @t.persons[a]
-			pb = @t.persons[b]
+			pa = @t.playersByID[a]
+			pb = @t.playersByID[b]
 			res.push ""
 			res.push _.pad(i+1,6) + pa.elo + ' ' + g.txtT(pa.name, 25,  LEFT) + ' ' + _.pad("|____| - |____|",20) + ' ' + pb.elo + ' ' + g.txtT(pb.name, 25,  LEFT)
 			if i % @t.tpp == @t.tpp-1 then res.push "\f"

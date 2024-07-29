@@ -94,7 +94,7 @@ assert false, 2 > 12
 
 g.calcMissing = ->
 	missing = 0
-	for p in g.tournament.persons
+	for p in g.tournament.playersByID
 		if not p.active then continue
 		if g.BYE == _.last p.opp then continue
 		if p.res.length < p.col.length then missing++
