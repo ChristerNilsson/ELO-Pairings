@@ -63,7 +63,7 @@ window.setup = ->
 	print g.pages
 
 	print data
-	g.tournament.fetchData "",data
+	g.tournament.fetchData "DEMO",data
 
 	window.windowResized()
 

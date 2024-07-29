@@ -169,7 +169,7 @@ export class Tournament
 			return
 
 		@virgin = false
-		@downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
+		if @round != 0 then @downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
 
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
