@@ -87,8 +87,9 @@ export class Player
 	write : -> # 1234!Christer!12w0!23b1!14w2   Elo:1234 Name:Christer opponent:23 color:b result:1
 		res = []
 		res.push @elo
-		res.push @name
+		res.push @name		
 		r = @opp.length
+		if r == 0 then return res.join SEPARATOR
 		ocr = ("#{@opp[i]}#{@col[i]}#{if i < r then @res[i] else ''}" for i in range r)
 		res.push ocr.join SEPARATOR
 		res.join SEPARATOR

@@ -11,7 +11,6 @@ FACTOR=2
 ROUND=10
 TITLE=Tyresö Open 2024
 DATE=2024-05-03
-TIMESTAMP=2024-07-25 16:17:41
 K=20
 TPP=30
 PPP=60
@@ -27,7 +26,6 @@ PAUSED=12!18
 
 * ROUND - aktuell rond (0)
 * PAUSED - inaktiva spelare
-* TIMESTAMP - finns även i filnamnet
 
 # Fält som kan läggas till
 * DATE

@@ -169,8 +169,7 @@ export class Tournament
 			return
 
 		@virgin = false
-		timestamp = new Date().toLocaleString('se-SE').replaceAll ' ','_'
-		@downloadFile @makeTournament(timestamp), "#{timestamp}-#{@round} Tournament.txt"
+		@downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
 
 		@personsSorted = _.clone @persons
 		@personsSorted.sort (pa,pb) => 
@@ -221,8 +220,8 @@ export class Tournament
 		g.pages[g.TABLES].setLista()
 		g.pages[g.STANDINGS].setLista()
 
-		# @downloadFile @makeBubbles(), "#{timestamp}-#{@round} Bubbles.txt"
-		@downloadFile @makeStandardFile(), "#{timestamp}-#{@round}.txt"
+		# @downloadFile @makeBubbles(), "-#{@round} Bubbles.txt"
+		@downloadFile @makeStandardFile(), "#{@filename}-R#{@round}.prn"
 
 		@round += 1
 		print @makeMatrix 80 # skriver till debug-fönstret, time outar inte.
@@ -245,8 +244,9 @@ export class Tournament
 
 		print '################'
 
-	fetchData : (data) ->
-		print 'fetchData',data
+	fetchData : (filename, data) ->
+		print 'fetchData',filename, data
+		@filename = filename.replaceAll ".txt",""
 
 		data = data.split '\n'
 
@@ -276,9 +276,19 @@ export class Tournament
 				hash[arr[0]] = arr[1]
 			else 
 				if '!' not in line
-					alert "#{line}\n in line #{nr+1}\n must look like\n2999!CARLSEN Magnus"
+					alert "#{line}\n in line #{nr+1}\n must look like\n    2882!CARLSEN Magnus or\n    1601!NILSSON Christer!2w0"
 					return
-				hash.PLAYERS.push line.split '!'
+				arr = line.split '!'
+				print 'arr',arr
+				if not /^\d{4}$/.test arr[0]
+					alert "#{arr[0]}\n in line #{nr+1}\n must have four digits"
+					return
+				for i in range 2,arr.length
+					item = arr[i]
+					if not /^-?\d+(w|_|b)[0-2]$/.test item
+						alert "#{item}\n in line #{nr+1}\n must look like <number> <color> <result>\n  where color is one of w,b or _\n  and result is one of 0, 1 or 2"
+						return
+				hash.PLAYERS.push arr
 			
 		@players = []
 		@title = hash.TITLE
@@ -372,13 +382,12 @@ export class Tournament
 		players = (p.write() for p in @persons)
 		players.join "\n"
 
-	makeTournament : (timestamp) ->
+	makeTournament : () ->
 		res = []
 		res.push "FACTOR=" + g.FACTOR
 		res.push "ROUND=" + @round
 		res.push "TITLE=" + @title
 		res.push "DATE=" + @datum
-		res.push "TIMESTAMP=" + timestamp
 		res.push "K=" + g.K
 		res.push "TPP=" + @tpp
 		res.push "PPP=" + @ppp
@@ -388,9 +397,8 @@ export class Tournament
 
 	makeStandardFile : ->
 		res = []
-		timestamp = new Date().toLocaleString 'se-SE'
-		header_after = " for " + @title + " after Round #{@round}    #{timestamp}"
-		header_in    = " for " + @title + " in Round #{@round+1}    #{timestamp}"
+		header_after = " for " + @title + " after Round #{@round}"
+		header_in    = " for " + @title + " in Round #{@round+1}"
 
 		if @round < 999 then g.pages[g.STANDINGS].make res, header_after
 		if @round >= 0  then g.pages[g.NAMES].make     res, header_in,@playersByName
@@ -423,7 +431,6 @@ export class Tournament
 		output = []
 		if title != "" then output.push title
 		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
-		# output.push ""
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @persons)

@@ -8,7 +8,7 @@ import { Names } from './page_names.js'
 import { Standings } from './page_standings.js' 
 import { Active } from './page_active.js' 
 
-export handleFile = (data) -> g.tournament.fetchData data	
+export handleFile = (filename,data) -> g.tournament.fetchData filename,data	
 
 g.RINGS = {'b':'•', ' ':' ', 'w':'o'}
 g.ASCII = '0123456789abcdefg'
@@ -63,7 +63,7 @@ window.setup = ->
 	print g.pages
 
 	print data
-	g.tournament.fetchData data
+	g.tournament.fetchData "",data
 
 	window.windowResized()
 
