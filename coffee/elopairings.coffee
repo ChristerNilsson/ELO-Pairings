@@ -23,6 +23,7 @@ g.pages = []
 data = """
 TITLE=Senior Stockholm
 DATE=2024-05-28
+
 1598!AIKIO Onni
 1539!ANDERSSON Lars Owe
 1532!ANTONSSON Görgen

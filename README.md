@@ -1,16 +1,16 @@
-# Elo Pairings
+# ELO Pairings
+
+## Advantages with Elo Pairings
 
 [Try it!](https://christernilsson.github.io/ELO-Pairings)
 
-* All games has a low gap
-* Improving your ELO is your ultimate struggle
+* ELO Pairing makes players of similar strength meet
+* To make players comparable, each score is weighted with the elo of the opponent
 
-## Swiss throws away information 
+## Disadvantages with Swiss 
 
 * A win against the strongest is worth exactly as much as a win against the weakest
-	* Every game should be weighted with the player strength
-* Big gaps gives very little new information
-	* Small gaps are more unpredictable and therefore more important
+* Big elo gaps gives very little new information
 
 ## Motivation
 
@@ -34,8 +34,6 @@ The Swiss Matrix is quite spread out, which indicates many games with large elo 
 
 [Manual](markdown/manual.md)  
 
-[Handicap](markdown/handicap.md)  
-
 ## Links
 
 [14 players](tournaments/14.txt)  
@@ -48,18 +46,16 @@ The Swiss Matrix is quite spread out, which indicates many games with large elo 
 * Fields
 	* **TITLE** the title of the tournament. Optional
 	* **DATE** the Date. Optional
-	* **K**, the development coefficient, 40 for beginners, **20** for ordinary, 10 for expert players. Optional
 	* **TPP** Tables Per Page. Default 30. Optional
 	* **PPP** Players Per Page. Default 60. Optional
 	* **PAUSED** id:s of paused players. Optional
-	* **FACTOR** 0 = uses normal distribution (default), otherwise the [FACTOR](markdown/factor.md) method
 	* elos and names, separated with an exclamation sign. Mandatory
 
 [Calculation](markdown/calculation.md)
 
 ## Number of Rounds Limit
 
-14 active players could pair 8 rounds (57%).  
-78 active players could pair 46 rounds (59%).   
+14 active players can pair up to  8 rounds (57%).  
+78 active players can pair up to 46 rounds (59%).   
 
 If you need more rounds, consider a round robin Berger instead.

@@ -74,8 +74,10 @@ export class Standings extends Page
 					s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(diff).toFixed(3)}"
 				else
 					s += ' ' + g.txtT chg.toFixed(1), 7,  RIGHT
-					if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"
-					if pa.res[r] == '2' then s += " = #{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT}"
+					# if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"
+					# if pa.res[r] == '2' then s += " = #{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT}"
+					if pa.res[r] == '1' then s += " = 0.5 * #{g.txtT pb.elo, 7, RIGHT}"
+					if pa.res[r] == '2' then s += " = #{g.txtT pb.elo, 7, RIGHT}"
 					
 				g.help = s
 		else

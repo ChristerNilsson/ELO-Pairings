@@ -16,7 +16,6 @@ KEYWORDS.TPP = 'integer (Tables Per Page, default: 30)'
 KEYWORDS.PPP = 'integer (Players Per Page, default: 60)'
 KEYWORDS.K = 'integer (default: 20)'
 KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
-# KEYWORDS.TIMESTAMP = 'text'
 
 export class Tournament 
 	constructor : ->
@@ -37,22 +36,6 @@ export class Tournament
 
 	write : ->
 	
-	# makeEdges : (iBye) -> # iBye är ett id eller -1
-	# 	arr = []
-	# 	for a in range g.N
-	# 		pa = @persons[a]
-	# 		if not pa.active or pa.id == iBye then continue
-	# 		for b in range g.N
-	# 			if a == b then continue
-	# 			pb = @persons[b]
-	# 			if not pb.active or pb.id == iBye then continue
-	# 			diff = abs pa.elo - pb.elo
-	# 			cost = 9999 - diff ** g.EXPONENT
-	# 			if pa.id < pb.id then continue
-	# 			if g.ok pa,pb then arr.push [pa.id, pb.id, cost]
-	# 	arr.sort (a,b) -> b[2] - a[2] # cost
-	# 	arr
-
 	makeEdges : (iBye) -> # iBye är ett id eller -1
 		arr = []
 		for pa in @playersByELO
@@ -67,7 +50,6 @@ export class Tournament
 				if a < b then continue
 				if g.ok pa,pb then arr.push [a,b, cost]
 		arr.sort (a,b) -> b[2] - a[2] # cost
-		# print 'arr',arr
 		arr
 
 	findSolution : (edges) -> 
@@ -82,19 +64,6 @@ export class Tournament
 		else if p0.id < p1.id then x = 0 else x = 1
 		p0.col += 'wb'[x]
 		p1.col += 'bw'[x]
-
-	# assignColors : (p0,p1) ->
-	# 	mand = p0.mandatory() + p1.mandatory()
-	# 	temp = ''
-	# 	if mand == '  ' then temp = "wb"
-	# 	if mand == ' b' then temp = "wb"
-	# 	if mand == ' w' then temp = "bw"
-	# 	if mand == 'b ' then temp = "bw"
-	# 	if mand == 'w ' then temp = "wb"
-	# 	if mand == 'wb' then temp = "wb"
-	# 	if mand == 'bw' then temp = "bw"
-	# 	p0.col += temp[0]
-	# 	p1.col += temp[1]
 
 	unscramble : (solution) -> # [5,3,4,1,2,0] => [[0,5],[1,3],[2,4]]
 		solution = _.clone solution
@@ -189,17 +158,6 @@ export class Tournament
 		@virgin = false
 		if @round != 0 then @downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
 
-		# @personsSorted = _.clone @persons
-		# @personsSorted.sort (pa,pb) => 
-		# 	da = pa.elo
-		# 	db = pb.elo
-		# 	db - da
-
-		# for i in range @personsSorted.length
-		# 	@personsSorted[i].pos[@round] = i
-
-		# print 'sorted',@personsSorted
-
 		print ""
 		print "Lottning av rond #{@round} ====================================================="
 		document.title = "Round #{@round+1}"
@@ -227,6 +185,13 @@ export class Tournament
 		if @pairs.length < (@playersByID.length - @paused.length) // 2 
 			print 'Pairing impossible'
 			return 
+
+		print 'pre pairs', @pairs
+
+		@pairs.sort (a,b) => 
+			aelo = @playersByID[a[0]].elo + @playersByID[a[1]].elo
+			belo = @playersByID[b[0]].elo + @playersByID[b[1]].elo
+			belo - aelo
 
 		if @round == 0 then print 'pairs', @pairs
 		if @round > 0  then print 'pairs', ([a, b, @playersByID[a].elo, @playersByID[b].elo, Math.abs(@playersByID[a].elo - @playersByID[b].elo).toFixed(1)] for [a,b] in @pairs)
@@ -263,7 +228,6 @@ export class Tournament
 		print '################'
 
 	fetchData : (filename, data) ->
-		# print 'fetchData',filename, data
 		@filename = filename.replaceAll ".txt",""
 
 		data = data.split '\n'
@@ -297,7 +261,6 @@ export class Tournament
 					alert "#{line}\n in line #{nr+1}\n must look like\n    2882!CARLSEN Magnus or\n    1601!NILSSON Christer!2w0"
 					return
 				arr = line.split '!'
-				# print 'arr',arr
 				if not /^\d{4}$/.test arr[0]
 					alert "#{arr[0]}\n in line #{nr+1}\n must have four digits"
 					return
@@ -347,13 +310,13 @@ export class Tournament
 			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
 
-		if g.FACTOR > 0  
-			if g.FACTOR < 1.2 then g.FACTOR = 1.2
-			XMAX = @playersByELO[0].elo
-			XMIN = _.last(@playersByELO).elo
-			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
-			g.OFFSET = Math.round g.OFFSET
-			print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
+		# if g.FACTOR > 0  
+		# 	if g.FACTOR < 1.2 then g.FACTOR = 1.2
+		# 	XMAX = @playersByELO[0].elo
+		# 	XMIN = _.last(@playersByELO).elo
+		# 	g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
+		# 	g.OFFSET = Math.round g.OFFSET
+		# 	print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
 
 		print 'playersByELO', @playersByELO
 
@@ -410,6 +373,7 @@ export class Tournament
 		res.push "TPP=" + @tpp
 		res.push "PPP=" + @ppp
 		res.push "PAUSED=" + @makePaused()
+		res.push ""
 		res.push @makePlayers()
 		res.join '\n'
 

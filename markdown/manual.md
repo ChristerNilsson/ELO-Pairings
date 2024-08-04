@@ -53,13 +53,9 @@ Delete the red line before entering the correct result.
 		* Gray background - a Draw
 		* White id - white pieces
 		* Black id - black pieces
-	* **Quality** - the total Elo rating change in all rounds
-		* Most changes are approx: Win=10, Draw=0 and Loss=-10 as the elo differences are small. (K=20)
-		* A compensation, based on the elo difference will be taken from the stronger and given to the weaker player
-		* Players with K=10 (masters) may half the quality to find the correct elo change
-		* Players with K=40 (beginners) may double the quality to find the correct elo change
+	* **Quality** - the score weighted with the elo of the opponent.
 * Get detailed information about a game by hovering the mouse
-	* You will see the elo and name of the opponent, as well as *quality* and elo difference
+	* You will see the elo and name of the opponent, as well as *quality*
 
 ## Downloads
 
