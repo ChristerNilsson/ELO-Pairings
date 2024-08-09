@@ -14,8 +14,8 @@ KEYWORDS.ROUND = 'integer'
 KEYWORDS.PAUSED = '!-separated integers'
 KEYWORDS.TPP = 'integer (Tables Per Page, default: 30)'
 KEYWORDS.PPP = 'integer (Players Per Page, default: 60)'
-KEYWORDS.K = 'integer (default: 20)'
-KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
+# KEYWORDS.K = 'integer (default: 20)'
+# KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
 
 export class Tournament 
 	constructor : ->
@@ -175,10 +175,10 @@ export class Tournament
 			print 'cpu',end, (new Date() - start)
 
 			print 'solution', -1 not in solution, solution
-			if solution.length == g.N and -1 not in solution then break # tag hänsyn till BYE och PAUSED senare
-		if not (solution.length == g.N and -1 not in solution)
-			alert 'Pairing impossible. Too many rounds or paused players'
-			return
+			# if solution.length == g.N and -1 not in solution then break # tag hänsyn till BYE och PAUSED senare
+		# if not (solution.length == g.N and -1 not in solution)
+		# 	alert 'Pairing impossible. Too many rounds or paused players'
+		# 	return
 
 		@pairs = @unscramble solution
 
@@ -218,9 +218,9 @@ export class Tournament
 		print 'ROUND',@round
 		print 'TPP',@tpp
 		print 'PPP',@ppp
-		print 'K',g.K
 		print 'PAUSED',@paused
-		print 'FACTOR',g.FACTOR
+		# print 'K',g.K
+		# print 'FACTOR',g.FACTOR
 		# print 'PLAYERS'
 		# for p in @persons
 		# 	print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
@@ -241,9 +241,9 @@ export class Tournament
 		hash.ROUND = 0
 		hash.TPP = 30
 		hash.PPP = 60
-		hash.K = 20
-		hash.FACTOR = 2
 		hash.PAUSED = ""
+		# hash.K = 20
+		# hash.FACTOR = 2
 
 		for line,nr in data	
 			line = line.trim()
@@ -277,9 +277,9 @@ export class Tournament
 		@round = parseInt hash.ROUND
 		@tpp = parseInt hash.TPP # Tables Per Page
 		@ppp = parseInt hash.PPP # Players Per Page
-		g.K  = parseInt hash.K # 40, 20 or 10 normally
-		g.FACTOR = parseFloat hash.FACTOR
 		@paused = hash.PAUSED # list of zero based ids
+		# g.K  = parseInt hash.K # 40, 20 or 10 normally
+		# g.FACTOR = parseFloat hash.FACTOR
 
 		players = hash.PLAYERS
 		g.N = players.length
@@ -365,11 +365,11 @@ export class Tournament
 
 	makeTournament : () ->
 		res = []
-		res.push "FACTOR=" + g.FACTOR
 		res.push "ROUND=" + @round
 		res.push "TITLE=" + @title
 		res.push "DATE=" + @datum
-		res.push "K=" + g.K
+		# res.push "K=" + g.K
+		# res.push "FACTOR=" + g.FACTOR
 		res.push "TPP=" + @tpp
 		res.push "PPP=" + @ppp
 		res.push "PAUSED=" + @makePaused()
@@ -389,15 +389,17 @@ export class Tournament
 		res.join "\n"	
 
 	distans : (rounds) ->
+		print rounds
 		if rounds.length == 0 then return "0"
 		result = []
-		for i in range(rounds.length) 
+		for i in range rounds.length
 			for [a,b] in rounds[i]
+				if b==undefined then continue
 				if a < 0 or b < 0 then continue
 				pa = @playersByID[a]
 				pb = @playersByID[b]
-				if pa.active and pb.active 
-					result.push abs(pa.elo - pb.elo) 
+				# if pa.active and pb.active 
+				result.push abs(pa.elo - pb.elo) 
 		(g.sum(result)/result.length).toFixed 2
 
 	makeCanvas : (n) ->
@@ -412,7 +414,7 @@ export class Tournament
 	dumpCanvas : (title,average,canvas,n) ->
 		output = []
 		if title != "" then output.push title
-		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS} K:#{g.K}"
+		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}" # K:#{g.K}"
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @playersByELO)
@@ -427,11 +429,14 @@ export class Tournament
 		canvas = @makeCanvas n
 		for i in range rounds.length
 			for [a,b] in rounds[i]
+				if a == undefined then continue
+				if b == undefined then continue
 				inside = 0 <= a < n and 0 <= b < n
 				if not inside then continue
-				if @playersByID[a].active and @playersByID[b].active
-					canvas[a][b] = g.ALFABET[i]
-					canvas[b][a] = g.ALFABET[i]
+				# pa = @playersByELO[a]
+				# pb = @playersByELO[b]
+				canvas[a][b] = g.ALFABET[i]
+				canvas[b][a] = g.ALFABET[i]
 		@dumpCanvas title,@distans(rounds),canvas,n
 
 	makeMatrix : (n) ->

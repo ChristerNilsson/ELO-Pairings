@@ -38,8 +38,8 @@ export class Standings extends Page
 			s += ' ' + g.txtT p.elo.toString(),       4,  RIGHT
 			s += ' ' + g.txtT p.name,                25,  LEFT
 			s += ' ' + g.txtT '',      3 * (@t.round-1),  CENTER
-			if g.FACTOR == 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(3), 7, RIGHT
-			if g.FACTOR != 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(1), 7, RIGHT
+			# if g.FACTOR == 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(3), 7, RIGHT
+			s += ' ' + g.txtT p.change(@t.round).toFixed(1), 7, RIGHT
 			s += ' ' + g.txtT p.score().toString(),   5,  RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
@@ -53,11 +53,35 @@ export class Standings extends Page
 		r = round ((mouseX / g.ZOOM[g.state] - 24.2) / 1.8)
 		iy = @lista.offset + round mouseY / g.ZOOM[g.state] - 5
 		if 0 <= iy < @playersByPerformance.length and 0 <= r < g.tournament.round - 1
-			# a = iy
 			pa = @playersByPerformance[iy]
 			b = pa.opp[r]
-			if b == g.BYE   then g.help = "#{pa.elo} #{pa.name} has a bye => chg = #{g.K/2}"
-			if b == g.PAUSE then g.help = "#{pa.elo} #{pa.name} has a pause => chg = 0"
+
+			if b == g.BYE 
+				s = ""
+				s +=       g.txtT '',                      3,  RIGHT
+				s += ' ' + g.txtT '',                      3,  RIGHT
+				s += ' ' + g.txtT '',                      4,  RIGHT
+				s += ' ' + g.txtT 'has a bye',            25,  LEFT
+				s += ' ' + g.txtT '',       3 * (@t.round-1),  LEFT
+				# g.help = "#{pa.elo} #{pa.name} has a bye                   #{pa.elo.toFixed(1)}" # => chg = #{g.K/2}"
+				s += ' ' + g.txtT "#{pa.elo.toFixed(1)}",        7, RIGHT
+				g.help = s
+
+			if b == g.PAUSE
+				s = ""
+				s +=       g.txtT '',                      3,  RIGHT
+				s += ' ' + g.txtT '',                      3,  RIGHT
+				s += ' ' + g.txtT '',                      4,  RIGHT
+				s += ' ' + g.txtT 'has a pause',          25,  LEFT
+				s += ' ' + g.txtT '',       3 * (@t.round-1),  LEFT
+				# g.help = "#{pa.elo} #{pa.name} has a bye                   #{pa.elo.toFixed(1)}" # => chg = #{g.K/2}"
+				s += ' ' + g.txtT "0.0",                         7, RIGHT
+				g.help = s
+
+				# 	s += "#{pa.elo} #{pa.name} has a pause                    0.0" # => chg = 0"
+
+				# g.help = s
+
 			if b >= 0				
 				pb = @t.playersByID[b]
 				chg = pa.calcRound r
@@ -68,16 +92,16 @@ export class Standings extends Page
 				s += ' ' + g.txtT pb.elo.toString(),       4,  RIGHT
 				s += ' ' + g.txtT pb.name,                25,  LEFT
 				s += ' ' + g.txtT '',       3 * (@t.round-1),  LEFT
-				if g.FACTOR == 0
-					diff = pa.elo - pb.elo
-					s += ' ' + g.txtT chg.toFixed(3), 7,  RIGHT
-					s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(diff).toFixed(3)}"
-				else
-					s += ' ' + g.txtT chg.toFixed(1), 7,  RIGHT
-					# if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"
-					# if pa.res[r] == '2' then s += " = #{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT}"
-					if pa.res[r] == '1' then s += " = 0.5 * #{g.txtT pb.elo, 7, RIGHT}"
-					if pa.res[r] == '2' then s += " = #{g.txtT pb.elo, 7, RIGHT}"
+				# if g.FACTOR == 0
+				# 	diff = pa.elo - pb.elo
+				# 	s += ' ' + g.txtT chg.toFixed(3), 7,  RIGHT
+				# 	s += " = #{g.K}*(#{pa.res[r]/2}-p(#{diff})) p(#{diff})=#{g.F(diff).toFixed(3)}"
+				# else
+				s += ' ' + g.txtT chg.toFixed(1), 7,  RIGHT
+				# if pa.res[r] == '1' then s += " = 0.5 * (#{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT})"
+				# if pa.res[r] == '2' then s += " = #{g.OFFSET} + #{g.txtT pb.elo, 7, RIGHT}"
+				if pa.res[r] == '1' then s += " = 0.5 * #{g.txtT pb.elo, 7, RIGHT}"
+				if pa.res[r] == '2' then s += " = #{g.txtT pb.elo, 7, RIGHT}"
 					
 				g.help = s
 		else

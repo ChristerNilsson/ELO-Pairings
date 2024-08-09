@@ -11,14 +11,14 @@ export class Player
 
 	bye : -> g.BYE in @opp
 
-	calcRound0 : (r) ->
-		if @opp[r] == g.BYE then return g.K * (1.0 - g.F 0)
-		if @opp[r] == g.PAUSE then return 0
-		if r >= @res.length then return 0
-		a = @elo
-		b = g.tournament.playersByID[@opp[r]].elo
-		diff = a - b
-		g.K * (@res[r]/2 - g.F diff)
+	# calcRound0 : (r) ->
+	# 	if @opp[r] == g.BYE then return g.K * (1.0 - g.F 0)
+	# 	if @opp[r] == g.PAUSE then return 0
+	# 	if r >= @res.length then return 0
+	# 	a = @elo
+	# 	b = g.tournament.playersByID[@opp[r]].elo
+	# 	diff = a - b
+	# 	g.K * (@res[r]/2 - g.F diff)
 
 	calcRound1 : (r) -> 
 		if @opp[r] == g.BYE   then return @elo # + g.OFFSET
@@ -30,7 +30,8 @@ export class Player
 		0 # LOSS
 
 	calcRound : (r) ->
-		if g.FACTOR == 0 then @calcRound0 r else @calcRound1 r
+		# if g.FACTOR == 0 then @calcRound0 r else @calcRound1 r
+		@calcRound1 r
 
 	change : (rounds) ->
 		if rounds of @cache then return @cache[rounds]
@@ -44,7 +45,7 @@ export class Player
 
 	avgEloDiff : ->
 		res = []
-		for id in @opp.slice 0, @opp.length - 1
+		for id in @opp.slice 0, @opp.length # - 1
 			if id >= 0 then res.push abs @elo - g.tournament.playersByID[id].elo
 		if res.length == 0 then 0 else g.sum(res) / res.length
 
