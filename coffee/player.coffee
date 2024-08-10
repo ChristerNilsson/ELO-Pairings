@@ -37,11 +37,12 @@ export class Player
 		if rounds of @cache then return @cache[rounds]
 		@cache[rounds] = g.sum (@calcRound r for r in range rounds)
 
-	score : ->
-		result = 0
-		for ch in @res
-			result += parseInt ch
-		result
+	score : (rounds) -> g.sum (parseInt @res[r] for r in range rounds-1)
+		# result = 0
+		# for r in range rounds-1
+		# #for ch in @res
+		# 	result += parseInt @res[r]
+		# result
 
 	avgEloDiff : ->
 		res = []

@@ -156,7 +156,7 @@ export class Tournament
 			return
 
 		@virgin = false
-		if @round != 0 then @downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
+		@downloadFile @makeTournament(), "#{@filename}-R#{@round}.txt"
 
 		print ""
 		print "Lottning av rond #{@round} ====================================================="
@@ -414,7 +414,7 @@ export class Tournament
 	dumpCanvas : (title,average,canvas,n) ->
 		output = []
 		if title != "" then output.push title
-		output.push "Sparseness: #{average}  (Average Elo Difference) EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}" # K:#{g.K}"
+		output.push "Sparseness: #{average}  (Average Elo Difference)" # EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}" # K:#{g.K}"
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @playersByELO)

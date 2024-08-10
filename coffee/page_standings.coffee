@@ -40,7 +40,7 @@ export class Standings extends Page
 			s += ' ' + g.txtT '',      3 * (@t.round-1),  CENTER
 			# if g.FACTOR == 0 then s += ' ' + g.txtT p.change(@t.round).toFixed(3), 7, RIGHT
 			s += ' ' + g.txtT p.change(@t.round).toFixed(1), 7, RIGHT
-			s += ' ' + g.txtT p.score().toString(),   5,  RIGHT
+			s += ' ' + g.txtT p.score(@t.round).toString(),   5,  RIGHT
 
 			for r in range g.tournament.round - 1 #- 1
 				x = g.ZOOM[g.state] * (24.2 + 1.8*r)

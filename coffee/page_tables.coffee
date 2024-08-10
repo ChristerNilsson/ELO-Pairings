@@ -70,7 +70,7 @@ export class Tables extends Page
 
 	elo_probabilities : (diff) ->
 		if random() < 0.1 then return 1 # draw
-		if random() > g.F diff then 2 else 0
+		if random() > g.F diff then 0 else 2
 	
 	setActive : ->
 		@buttons.p.active = g.calcMissing() == 0
