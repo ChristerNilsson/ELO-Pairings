@@ -15,7 +15,7 @@ KEYWORDS.PAUSED = '!-separated integers'
 KEYWORDS.TPP = 'integer (Tables Per Page, default: 30)'
 KEYWORDS.PPP = 'integer (Players Per Page, default: 60)'
 # KEYWORDS.K = 'integer (default: 20)'
-# KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
+KEYWORDS.FACTOR = 'float, 0 or larger than 1.2 (default: 2)'
 
 export class Tournament 
 	constructor : ->
@@ -220,7 +220,7 @@ export class Tournament
 		print 'PPP',@ppp
 		print 'PAUSED',@paused
 		# print 'K',g.K
-		# print 'FACTOR',g.FACTOR
+		print 'FACTOR',g.FACTOR
 		# print 'PLAYERS'
 		# for p in @persons
 		# 	print '  ', p.id, p.elo, p.name, p.opp, p.col, p.res
@@ -228,6 +228,7 @@ export class Tournament
 		print '################'
 
 	fetchData : (filename, data) ->
+		randomSeed 99
 		@filename = filename.replaceAll ".txt",""
 
 		data = data.split '\n'
@@ -243,7 +244,7 @@ export class Tournament
 		hash.PPP = 60
 		hash.PAUSED = ""
 		# hash.K = 20
-		# hash.FACTOR = 2
+		hash.FACTOR = 2
 
 		for line,nr in data	
 			line = line.trim()
@@ -279,7 +280,7 @@ export class Tournament
 		@ppp = parseInt hash.PPP # Players Per Page
 		@paused = hash.PAUSED # list of zero based ids
 		# g.K  = parseInt hash.K # 40, 20 or 10 normally
-		# g.FACTOR = parseFloat hash.FACTOR
+		g.FACTOR = parseFloat hash.FACTOR
 
 		players = hash.PLAYERS
 		g.N = players.length
@@ -306,17 +307,17 @@ export class Tournament
 			@playersByID[i].elo = parseInt @playersByID[i].elo
 		
 		@playersByELO = _.clone @playersByID
-		@playersByELO.sort (a,b) -> 
+		@playersByELO.sort (a,b) ->  
 			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
 
-		# if g.FACTOR > 0  
-		# 	if g.FACTOR < 1.2 then g.FACTOR = 1.2
-		# 	XMAX = @playersByELO[0].elo
-		# 	XMIN = _.last(@playersByELO).elo
-		# 	g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
-		# 	g.OFFSET = Math.round g.OFFSET
-		# 	print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
+		if g.FACTOR > 0  
+			if g.FACTOR < 1.2 then g.FACTOR = 1.2
+			XMAX = @playersByELO[0].elo
+			XMIN = _.last(@playersByELO).elo
+			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
+			g.OFFSET = Math.round g.OFFSET
+			print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
 
 		print 'playersByELO', @playersByELO
 
@@ -368,8 +369,8 @@ export class Tournament
 		res.push "ROUND=" + @round
 		res.push "TITLE=" + @title
 		res.push "DATE=" + @datum
-		# res.push "K=" + g.K
-		# res.push "FACTOR=" + g.FACTOR
+		#res.push "K=" + g.K
+		res.push "FACTOR=" + g.FACTOR
 		res.push "TPP=" + @tpp
 		res.push "PPP=" + @ppp
 		res.push "PAUSED=" + @makePaused()
@@ -414,7 +415,7 @@ export class Tournament
 	dumpCanvas : (title,average,canvas,n) ->
 		output = []
 		if title != "" then output.push title
-		output.push "Sparseness: #{average}  (Average Elo Difference)" # EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}" # K:#{g.K}"
+		output.push "Sparseness: #{average}  (Average Elo Difference)  FACTOR:#{g.FACTOR}" # EXPONENT:#{g.EXPONENT} COLORS:#{g.COLORS}"
 		header = (str((i + 1) % 10) for i in range n).join(' ')
 		output.push '     ' + header + '   Elo    AED'
 		ordning = (p.elo for p in @playersByELO)

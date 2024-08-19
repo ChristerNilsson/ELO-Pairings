@@ -21,10 +21,10 @@ export class Player
 	# 	g.K * (@res[r]/2 - g.F diff)
 
 	calcRound1 : (r) -> 
-		if @opp[r] == g.BYE   then return @elo # + g.OFFSET
+		if @opp[r] == g.BYE   then return @elo + g.OFFSET
 		if @opp[r] == g.PAUSE then return 0
 		if r >= @res.length then return 0
-		b = g.tournament.playersByID[@opp[r]].elo # + g.OFFSET
+		b = g.tournament.playersByID[@opp[r]].elo + g.OFFSET
 		if @res[r] == '2' then return b   # WIN
 		if @res[r] == '1' then return b/2 # DRAW
 		0 # LOSS
