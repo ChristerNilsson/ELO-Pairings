@@ -166,7 +166,8 @@ export class Standings extends Page
 				if player.opp[r] >= 0
 					s += g.txtT "#{1+player.opp[r]}#{g.RINGS[player.col[r][0]]}#{"0½1"[player.res[r]]}", 6,  RIGHT			
 
-			s += ' ' + g.txtT (player.change(@t.round+1)).toFixed(1),  7,  RIGHT
+			s += ' ' + g.txtT player.change(@t.round+1).toFixed(1),  7,  RIGHT
+			# s += ' ' + g.txtT player.perChg(@t.round+1).toFixed(1),  7,  RIGHT
 			res.push s 
 			if i % @t.ppp == @t.ppp-1 then res.push "\f"
 		res.push "\f"

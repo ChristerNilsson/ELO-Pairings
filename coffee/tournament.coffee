@@ -219,7 +219,6 @@ export class Tournament
 		print 'TPP',@tpp
 		print 'PPP',@ppp
 		print 'PAUSED',@paused
-		# print 'K',g.K
 		print 'FACTOR',g.FACTOR
 		# print 'PLAYERS'
 		# for p in @persons
@@ -243,8 +242,8 @@ export class Tournament
 		hash.TPP = 30
 		hash.PPP = 60
 		hash.PAUSED = ""
-		# hash.K = 20
-		hash.FACTOR = 2
+		#hash.K = 2
+		hash.FACTOR = 2 # default
 
 		for line,nr in data	
 			line = line.trim()
@@ -271,7 +270,6 @@ export class Tournament
 						alert "#{item}\n in line #{nr+1}\n must follow the format <number> <color> <result>\n  where color is one of w,b or _\n  and result is one of 0, 1 or 2"
 						return
 				hash.PLAYERS.push arr
-			
 		@players = []
 		@title = hash.TITLE
 		@datum = hash.DATE
@@ -311,13 +309,16 @@ export class Tournament
 			if a.elo != b.elo then return b.elo - a.elo
 			if a.name > b.name then 1 else -1
 
-		if g.FACTOR > 0  
+		if g.FACTOR == 0  
+			g.OFFSET = 0
+			print 'g.OFFSET',g.OFFSET
+		else
 			if g.FACTOR < 1.2 then g.FACTOR = 1.2
 			XMAX = @playersByELO[0].elo
 			XMIN = _.last(@playersByELO).elo
 			g.OFFSET = (XMAX - XMIN) / (g.FACTOR - 1) - XMIN
 			g.OFFSET = Math.round g.OFFSET
-			print 'XMIN,XMAX,g.OFFSET',g.OFFSET,XMIN,XMAX
+			print 'XMIN,XMAX,g.OFFSET',XMIN,XMAX,g.OFFSET
 
 		print 'playersByELO', @playersByELO
 

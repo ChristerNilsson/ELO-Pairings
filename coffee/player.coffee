@@ -29,6 +29,15 @@ export class Player
 		if @res[r] == '1' then return b/2 # DRAW
 		0 # LOSS
 
+	# performance : (r) ->
+	# 	if @opp[r] == g.BYE   then return @elo + 400
+	# 	if @opp[r] == g.PAUSE then return 0
+	# 	if r >= @res.length then return 0
+	# 	b = g.tournament.playersByID[@opp[r]].elo
+	# 	if @res[r] == '2' then return b + 400  # WIN
+	# 	if @res[r] == '1' then return b        # DRAW
+	# 	if @res[r] == '0' then return b - 400  # LOSS
+
 	calcRound : (r) ->
 		# if g.FACTOR == 0 then @calcRound0 r else @calcRound1 r
 		@calcRound1 r
@@ -36,6 +45,9 @@ export class Player
 	change : (rounds) ->
 		if rounds of @cache then return @cache[rounds]
 		@cache[rounds] = g.sum (@calcRound r for r in range rounds)
+
+	# perChg : (rounds) -> # https://en.wikipedia.org/wiki/Performance_rating_(chess)
+	# 	g.sum(@performance r for r in range rounds)/(rounds-1)
 
 	score : (rounds) -> g.sum (parseInt @res[r] for r in range rounds-1)
 		# result = 0
